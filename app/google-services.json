@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "982234360673",
+    "project_id": "anappleaday-bf6c3",
+    "storage_bucket": "anappleaday-bf6c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:982234360673:android:9140b28856bffc65427320",
+        "android_client_info": {
+          "package_name": "com.cs125.AnApleADay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMIjba82Z7FnZLZN5FCBZrYLlwWZhY1LY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
