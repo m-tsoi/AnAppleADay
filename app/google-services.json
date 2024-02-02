@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:982234360673:android:9140b28856bffc65427320",
+        "mobilesdk_app_id": "1:982234360673:android:f50aa79bf0e2d4b9427320",
         "android_client_info": {
-          "package_name": "com.cs125.AnApleADay"
+          "package_name": "com.cs125.anappleaday"
         }
       },
       "oauth_client": [],
