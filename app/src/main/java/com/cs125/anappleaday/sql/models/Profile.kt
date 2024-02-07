@@ -1,11 +1,11 @@
-package com.cs125.anappleaday.models
+package com.cs125.anappleaday.sql.models
 
 import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Mass
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.cs125.anappleaday.models.enum.Gender
+import com.cs125.anappleaday.sql.enum.Gender
 
 
 @Entity

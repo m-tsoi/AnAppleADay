@@ -1,4 +1,4 @@
-package com.cs125.anappleaday.models
+package com.cs125.anappleaday.sql.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
