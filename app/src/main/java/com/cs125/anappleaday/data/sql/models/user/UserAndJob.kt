@@ -1,12 +1,13 @@
-package com.cs125.anappleaday.sql.models
+package com.cs125.anappleaday.data.sql.models.user
 
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class UserWithHealthPlans(
+data class UserAndJob(
     @Embedded val user: User,
     @Relation(
         parentColumn = "uid",
         entityColumn = "userId"
-    ) val healthPlans : List<HealthPlan>
+    )
+    val job: Job
 )
