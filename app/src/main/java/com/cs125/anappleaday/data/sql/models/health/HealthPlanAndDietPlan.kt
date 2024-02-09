@@ -8,5 +8,6 @@ data class HealthPlanAndDietPlan(
     @Relation(
         parentColumn = "hpId",
         entityColumn = "healthPlanId"
-    ) val dietPlan: DietPlan
+    )
+    val dietPlan: DietPlan
 )

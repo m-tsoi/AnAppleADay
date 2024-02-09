@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("com.google.gms.google-services")
+    id("androidx.room")
 }
 
 android {
@@ -19,6 +20,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    sourceSets {
+        // Adds exported schema location as test app assets.
+        getByName("androidTest").assets.srcDir("src/main/data/schemas")
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -28,15 +34,22 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
     buildFeatures {
         viewBinding = true
+    }
+
+    room {
+        schemaDirectory("src/main/res/schemas")
     }
 }
 
@@ -48,6 +61,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.room:room-runtime:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
+    testImplementation("androidx.room:room-testing:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("androidx.recyclerview:recyclerview:1.2.1")
