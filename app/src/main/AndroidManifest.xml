@@ -26,6 +26,8 @@
         <activity android:name=".ui.SleepActivity"></activity>
         <activity android:name=".ui.SelectPlanActivity"></activity>
         <activity android:name=".ui.PersonicleActivity"></activity>
+        <activity android:name=".ui.NutritionActivity"></activity>
+
     </application>
 
 </manifest>
