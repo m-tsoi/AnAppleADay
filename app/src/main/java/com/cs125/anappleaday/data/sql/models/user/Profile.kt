@@ -1,30 +1,21 @@
 package com.cs125.anappleaday.data.sql.models.user
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.cs125.anappleaday.data.enum.Gender
+import com.cs125.anappleaday.data.enumTypes.Gender
+import java.util.UUID
 
-@Entity(foreignKeys = [
-    ForeignKey(
-        entity = User::class,
-        parentColumns = ["uid"],
-        childColumns = ["userId"],
-        onDelete = ForeignKey.CASCADE
-    )])
+@Entity
 data class Profile(
-    @PrimaryKey val pid: String,
+    @PrimaryKey val pid: UUID,
 
-    val userId: String,
+    var avatar: String,             // image file path
 
-    val avatar: String,             // image file path
+    var age: Int,
 
-    val age: Int,
+    var gender: Gender,
 
-    val gender: Gender,
+    var personicleId: String,       // pointer to its collection stored in local/cloud
 
-    val personicleId: String,       // pointer to its collection stored in local/cloud
-
-    val medicalRecordId: String     // pointer to its collection stored in local/cloud
+    var medicalRecordId: String    // pointer to its collection stored in local/cloud
 )

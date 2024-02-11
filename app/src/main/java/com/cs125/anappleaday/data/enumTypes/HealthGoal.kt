@@ -1,4 +1,4 @@
-package com.cs125.anappleaday.data.enum
+package com.cs125.anappleaday.data.enumTypes
 
 enum class HealthGoal {
     BE_HEALTHY,

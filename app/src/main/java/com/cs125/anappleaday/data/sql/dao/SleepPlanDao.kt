@@ -9,11 +9,11 @@ import com.cs125.anappleaday.data.sql.models.health.SleepPlan
 
 @Dao
 interface SleepPlanDao {
-    @Query("SELECT * FROM ActivityPlan WHERE healthPlanId = :healthPlanId ")
-    suspend fun getActivityPlanByHealthPlanId(healthPlanId: String)
+    @Query("SELECT * FROM SleepPlan WHERE healthPlanId = :healthPlanId ")
+    suspend fun getSleepPlanByHealthPlanId(healthPlanId: String) : SleepPlan
 
     @Query("SELECT * FROM SleepPlan WHERE id= :sleepPlanId")
-    suspend fun getSleepPlanById(sleepPlanId: String)
+    suspend fun getSleepPlanById(sleepPlanId: String) : SleepPlan
 
     @Insert
     suspend fun insertSleepPlan(sleepPlan: SleepPlan)

@@ -4,11 +4,11 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.cs125.anappleaday.data.sql.models.health.HealthPlan
 
-data class UserWithHealthPlans(
-    @Embedded val user: User,
+data class ProfileWithHealthPlans(
+    @Embedded val profile: Profile,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "userId"
+        parentColumn = "pid",
+        entityColumn = "profileId"
     )
     val healthPlans : List<HealthPlan>
 )

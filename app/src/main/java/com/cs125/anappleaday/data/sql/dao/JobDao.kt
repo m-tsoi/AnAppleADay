@@ -10,7 +10,7 @@ import com.cs125.anappleaday.data.sql.models.user.Job
 @Dao
 interface JobDao {
     @Query("SELECT * FROM Job WHERE profileId = :profileId")
-    suspend fun getJobByProfileId(profileId: String)
+    suspend fun getJobByProfileId(profileId: String) : Job
 
     @Insert
     suspend fun insertJob(job: Job)

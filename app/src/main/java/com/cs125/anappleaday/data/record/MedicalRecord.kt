@@ -5,7 +5,7 @@ data class MedicalRecord(
 
     val allergies: List<String>,
 
-    val dietRestrictions: List<String>,
+    val foodRestrictions: List<String>,
 
-    val illnesses: List<String>
+    val disorders: List<String>
 )

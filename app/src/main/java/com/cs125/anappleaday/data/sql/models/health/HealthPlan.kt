@@ -5,25 +5,26 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.cs125.anappleaday.data.enum.HealthGoal
-import com.cs125.anappleaday.data.sql.models.user.User
+import com.cs125.anappleaday.data.enumTypes.HealthGoal
+import com.cs125.anappleaday.data.sql.models.user.Profile
 import java.util.UUID
 
 @Entity(foreignKeys = [
     ForeignKey(
-        entity = User::class,
-        parentColumns = ["uid"],
-        childColumns = ["userId"],
+        entity = Profile::class,
+        parentColumns = ["pid"],
+        childColumns = ["profileId"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["profileId"])]
 )
 data class HealthPlan(
     @ColumnInfo(name = "hpId")
-    @PrimaryKey val id: UUID = UUID.randomUUID(),
+    @PrimaryKey val id: UUID,
 
-    val userId: String,
+    val profileId: String,
 
-    val title: String?,
+    var title: String,
 
-    val goal: HealthGoal,
+    var goal: HealthGoal,
 )

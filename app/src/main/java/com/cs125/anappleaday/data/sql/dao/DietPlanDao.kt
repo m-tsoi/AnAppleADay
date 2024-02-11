@@ -6,15 +6,14 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.cs125.anappleaday.data.sql.models.health.DietPlan
-import com.cs125.anappleaday.data.sql.models.health.SleepPlan
 
 @Dao
 interface DietPlanDao {
     @Query("SELECT * FROM DietPlan WHERE healthPlanId = :healthPlanId")
-    suspend fun getDietPlanByHealthPlanId(healthPlanId: String)
+    suspend fun getDietPlanByHealthPlanId(healthPlanId: String) : DietPlan
 
     @Query("SELECT * FROM DietPlan WHERE id = :dietPlanId")
-    suspend fun getDietPlanById(dietPlanId: String)
+    suspend fun getDietPlanById(dietPlanId: String) : DietPlan
 
     @Insert
     suspend fun insertDietPlan(dietPlan: DietPlan)

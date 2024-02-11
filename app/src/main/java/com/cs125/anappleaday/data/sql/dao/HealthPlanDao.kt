@@ -1,7 +1,6 @@
 package com.cs125.anappleaday.data.sql.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -13,10 +12,10 @@ interface HealthPlanDao {
     suspend fun getAllHealthPlans() : List<HealthPlan>
 
     @Query("SELECT * FROM HealthPlan WHERE hpId = :healthPlanId")
-    suspend fun getHealthPlanById(healthPlanId: String)
+    suspend fun getHealthPlanById(healthPlanId: String) : HealthPlan
 
-    @Query("SELECT * FROM HealthPlan WHERE userId = :userId")
-    suspend fun getHealthPlanByUserId(userId: String)
+    @Query("SELECT * FROM HealthPlan WHERE profileId = :profileId")
+    suspend fun getHealthPlanByUserId(profileId: String) : HealthPlan
 
     @Insert
     suspend fun insertHealthPlan(healthPlan: HealthPlan)
