@@ -64,7 +64,7 @@ abstract class SQLDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     SQLDatabase::class.java,
-                    "word_database"
+                    "anappleaday_database"
                 ).build()
                 INSTANCE = instance
                 instance
