@@ -6,5 +6,5 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class FbSleepServices(firestore: FirebaseFirestore) : FbBaseServices<SleepData>(
     "SleepData", firestore) {
-    // TODO: override functions if needed
+    // Note: add functions if needed
 }

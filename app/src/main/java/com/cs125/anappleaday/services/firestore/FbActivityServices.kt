@@ -5,5 +5,5 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class FbActivityServices (firestore: FirebaseFirestore) : FbBaseServices<ActivityData>(
     "ActivityData", firestore) {
-    // TODO: override functions if needed
+    // Note: add functions if needed
 }

@@ -5,5 +5,5 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class FbNutritionServices(firestore: FirebaseFirestore) : FbBaseServices<NutritionData>(
     "NutritionData", firestore) {
-    // TODO: override functions if needed
+    // Note: add functions if needed
 }

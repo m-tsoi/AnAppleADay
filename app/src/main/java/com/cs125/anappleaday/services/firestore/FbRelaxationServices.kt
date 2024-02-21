@@ -5,5 +5,5 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class FbRelaxationServices(firestore: FirebaseFirestore) : FbBaseServices<RelaxationData>(
     "RelaxationData", firestore) {
-    // TODO: override functions if needed
+    // Note: add functions if needed
 }
