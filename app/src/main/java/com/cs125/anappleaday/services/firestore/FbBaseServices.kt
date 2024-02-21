@@ -8,7 +8,10 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
-open class FbBaseServices <T> (_collectionName: String, firestore: FirebaseFirestore) {
+open class FbBaseServices <T> (
+    _collectionName: String,
+    firestore: FirebaseFirestore,
+) {
     private val collectionName = _collectionName
     private var collectionRef: CollectionReference
 
@@ -36,7 +39,7 @@ open class FbBaseServices <T> (_collectionName: String, firestore: FirebaseFires
         }
     }
 
-    open fun <T : Any> update(data: T, id: String): Task<Void> {
+    open fun <T : Any> update(id: String, data: T): Task<Void> {
         return collectionRef.document(id).set(data, SetOptions.merge()).addOnSuccessListener {
             Log.d("$TAG: $collectionName", "document updated successfully")
             return@addOnSuccessListener
