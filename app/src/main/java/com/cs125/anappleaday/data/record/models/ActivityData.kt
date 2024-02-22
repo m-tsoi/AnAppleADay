@@ -7,5 +7,5 @@ data class ActivityData(
 
     val scores: MutableList<ScoreDay>,
 
-    val activities: List<ExerciseSessionRecord>,
+    val activities: MutableList<ExerciseSessionRecord>,
 )

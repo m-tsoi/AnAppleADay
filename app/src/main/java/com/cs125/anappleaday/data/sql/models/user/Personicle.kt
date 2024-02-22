@@ -38,17 +38,13 @@ data class Personicle(
     // Current body fat percentage
     var bodyFat: Double,
 
-    val nutritionDataId: String?,
+    val weightRecordsId: String?,
+
+    val dietDataId: String?,
 
     val activityDataId: String?,
 
-    val comfortDataId: String?,
+    val relaxationDataId: String?,
 
     val sleepDataId: String?,
-
-    val weightRecordsId: String?,
-
-    val bodyFatRecordsId: String?,
-
-    val totalCaloriesBurnedRecordsId: String?,
 )
