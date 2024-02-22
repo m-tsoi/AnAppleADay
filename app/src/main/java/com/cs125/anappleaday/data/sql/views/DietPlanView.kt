@@ -6,5 +6,5 @@ import androidx.room.DatabaseView
 data class DietPlanView(
     val id: String,
     val healthPlanId: String,
-    val nutritionDataId: String,
+    val dietDataId: String,
 )
