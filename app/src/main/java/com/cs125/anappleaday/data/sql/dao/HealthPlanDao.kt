@@ -15,7 +15,7 @@ interface HealthPlanDao {
     suspend fun getHealthPlanById(healthPlanId: String) : HealthPlan
 
     @Query("SELECT * FROM HealthPlan WHERE profileId = :profileId")
-    suspend fun getHealthPlanByUserId(profileId: String) : HealthPlan
+    suspend fun getHealthPlanByProfileId(profileId: String) : HealthPlan
 
     @Insert
     suspend fun insertHealthPlan(healthPlan: HealthPlan)
