@@ -1,8 +1,11 @@
 package com.cs125.anappleaday.data.record.models
 
-import java.time.Instant
+import java.util.Date
 
 data class SleepSession(
-    val startTime: Instant,
-    val endTime: Instant
+    val id: String,
+    var startTime: Long,
+    var endTime: Long,
+    var recomEndTime: Long,
+    var date: Date
 )
