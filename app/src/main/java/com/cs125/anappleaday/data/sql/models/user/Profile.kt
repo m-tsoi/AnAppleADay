@@ -9,6 +9,8 @@ import java.util.UUID
 data class Profile(
     @PrimaryKey val pid: UUID,
 
+    var name: String,
+
     var avatar: String,             // image file path
 
     var age: Int,
