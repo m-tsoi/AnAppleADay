@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.cs125.anappleaday"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -66,6 +66,8 @@ dependencies {
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
 
     // Kotlin Coroutine
     implementation("androidx.recyclerview:recyclerview:1.2.1")
