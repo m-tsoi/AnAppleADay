@@ -1,4 +1,4 @@
-package com.cs125.anappleaday.services.profile
+package com.cs125.anappleaday.services.user
 
 import com.cs125.anappleaday.data.enumTypes.Gender
 import com.cs125.anappleaday.data.sql.dto.ProfileDto
