@@ -7,11 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
 class FBAuth {
-    private lateinit var auth: FirebaseAuth
-
-    fun init() {
-        auth = Firebase.auth
-    }
+    private var auth: FirebaseAuth = Firebase.auth
 
     fun isCurrentUser(): Boolean {
         val currentUser = auth.currentUser
@@ -26,7 +22,7 @@ class FBAuth {
         return auth.signInWithEmailAndPassword(email, password)
     }
 
-    fun logout(email: String, password: String) {
+    fun logout() {
         auth.signOut()
     }
 }
