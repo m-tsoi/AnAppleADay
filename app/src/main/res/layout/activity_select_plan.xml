@@ -30,7 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/textViewHealthPlan">
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/selectTextGender"
+            android:id="@+id/selectHealthPlan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="HealthPlan"
