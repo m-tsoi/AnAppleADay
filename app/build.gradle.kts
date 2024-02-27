@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.cs125.anappleaday"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -60,11 +60,19 @@ dependencies {
     // Room Database
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+    implementation("nl.joery.timerangepicker:timerangepicker:1.0.0")
     testImplementation("androidx.room:room-testing:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+
+    // API tool
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
     // Kotlin Coroutine
     implementation("androidx.recyclerview:recyclerview:1.2.1")
