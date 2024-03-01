@@ -1,6 +1,6 @@
 package com.cs125.anappleaday.services.firestore
 
-import com.cs125.anappleaday.data.record.models.SleepData
+import com.cs125.anappleaday.data.record.models.live.SleepData
 import com.google.firebase.firestore.FirebaseFirestore
 
 

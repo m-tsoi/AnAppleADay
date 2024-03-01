@@ -1,21 +1,6 @@
-package com.cs125.anappleaday.data.sql.models.user
+package com.cs125.anappleaday.data.record.models.user
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import java.util.UUID
-
-@Entity(foreignKeys = [ForeignKey(entity = Profile::class,
-    parentColumns = ["pid"],
-    childColumns = ["profileId"],
-    onDelete = ForeignKey.CASCADE
-)],
-    indices = [Index(value = ["profileId"])])
 data class Personicle(
-    @PrimaryKey
-    val id: UUID,
-
     val profileId: String,
 
     var healthScore: Double,
