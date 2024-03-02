@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="gender_list">
+        <item>MALE</item>
+        <item>FEMALE</item>
+    </string-array>
+    <string-array name="health_plan_list">
+        <item>Stay Lean</item>
+        <item>Bulk Up</item>
+        <item>Be Healthy</item>
+        <item>Lose Fat</item>
+    </string-array>
+</resources>

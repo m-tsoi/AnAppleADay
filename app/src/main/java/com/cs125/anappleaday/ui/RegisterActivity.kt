@@ -19,7 +19,7 @@ class RegisterActivity : AppCompatActivity() {
                 //TODO: send register info to backend
 
                 finish()
-                val sendIntent = Intent(this, SelectPlanActivity::class.java)
+                val sendIntent = Intent(this, ProfileCreationActivity::class.java)
                 startActivity(sendIntent)
             }
     }

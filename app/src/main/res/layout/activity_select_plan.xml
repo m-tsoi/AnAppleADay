@@ -17,15 +17,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.24" />
 
-    <Spinner
-        android:id="@+id/spinnerHealthPlans"
-        android:layout_width="200dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/healthPlanLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="72dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        app:boxStrokeColor="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/textViewHealthPlan">
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/selectHealthPlan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="HealthPlan"
+            app:simpleItems="@array/health_plan_list"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/confirm_button"
