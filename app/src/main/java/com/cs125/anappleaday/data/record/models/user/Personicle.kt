@@ -20,9 +20,6 @@ data class Personicle(
     // Calories requires for the current body
     var bodyCalories: Double,
 
-    // Current body fat percentage
-    var bodyFat: Double,
-
     val weightRecordsId: String?,
 
     val dietDataId: String?,
