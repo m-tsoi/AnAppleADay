@@ -1,7 +1,6 @@
 package com.cs125.anappleaday.ui
 
 import android.app.TimePickerDialog
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,9 +8,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.cs125.anappleaday.R
-import com.cs125.anappleaday.data.record.models.SleepData
-import com.cs125.anappleaday.data.record.models.SleepSession
-import com.cs125.anappleaday.services.firestore.FbSleepServices
+import com.cs125.anappleaday.data.record.models.live.SleepData
+import com.cs125.anappleaday.data.record.models.live.SleepSession
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore

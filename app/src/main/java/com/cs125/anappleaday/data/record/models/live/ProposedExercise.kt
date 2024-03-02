@@ -1,4 +1,4 @@
-package com.cs125.anappleaday.data.record.models
+package com.cs125.anappleaday.data.record.models.live
 
 data class ProposedExercise(
     val name: String,

@@ -1,4 +1,4 @@
-package com.cs125.anappleaday.data.record.models
+package com.cs125.anappleaday.data.record.models.live
 
 import java.util.Date
 

@@ -1,4 +1,4 @@
-package com.cs125.anappleaday.data.record.models
+package com.cs125.anappleaday.data.record.models.live
 
 import com.cs125.anappleaday.data.enumTypes.StressLevel
 import java.util.Date
