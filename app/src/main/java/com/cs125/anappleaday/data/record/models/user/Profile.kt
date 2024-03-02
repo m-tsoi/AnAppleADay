@@ -3,7 +3,7 @@ package com.cs125.anappleaday.data.record.models.user
 import com.cs125.anappleaday.data.enumTypes.Gender
 
 data class Profile (
-    val id: String,
+    val uid: String,
 
     var name: String,
 
@@ -15,5 +15,5 @@ data class Profile (
 
     var personicleId: String,      // pointer to its collection stored in local/cloud
 
-    var medicalRecordId: MedicalRecord    // pointer to its collection stored in local/cloud
+    var medicalRecordId: MedicalRecord
 )
