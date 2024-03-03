@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">AnAppleADay</string>
+    <string name="john_doe">John Doe</string>
+    <string name="johndoe_gmail_com">johndoe@gmail.com</string>
+    <string name="user">User</string>
+    <string name="profile">Profile</string>
+    <string name="healthplan">Health Plan</string>
+    <string name="personicle">Personicle</string>
+    <string name="diet">Diet</string>
+    <string name="exercise">Exercise</string>
+    <string name="relaxation">Relaxation</string>
+    <string name="sleep">Sleep</string>
+    <string name="logout">Logout</string>
+    <string name="open_nav">open_nav</string>
+    <string name="close_nav">close_nav</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
 </resources>
