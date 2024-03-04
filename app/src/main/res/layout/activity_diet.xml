@@ -21,18 +21,6 @@
         app:layout_constraintVertical_bias="0.065" />
 
     <TextView
-        android:id="@+id/textViewScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="##"
-        android:textSize="56sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.175" />
-
-    <TextView
         android:id="@+id/textViewActivities"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,22 +31,48 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.318" />
+        app:layout_constraintVertical_bias="0.466" />
 
-    <Button
-        android:id="@+id/submitDiet"
+    <TextView
+        android:id="@+id/textViewScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="395dp" />
+        android:text="##"
+        android:textSize="56sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.341" />
 
     <SearchView
         android:id="@+id/dietYesterdaySearch"
         android:layout_width="249dp"
         android:layout_height="77dp"
         tools:layout_editor_absoluteX="81dp"
-        tools:layout_editor_absoluteY="275dp" />
+        tools:layout_editor_absoluteY="380dp" />
+
+    <Button
+        android:id="@+id/submitDiet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        tools:layout_editor_absoluteX="159dp"
+        tools:layout_editor_absoluteY="475dp" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="98dp"
+        android:layout_height="94dp"
+        app:srcCompat="@drawable/plate"
+        tools:layout_editor_absoluteX="156dp"
+        tools:layout_editor_absoluteY="114dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="615dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
