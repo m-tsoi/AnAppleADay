@@ -5,12 +5,6 @@ data class Personicle(
 
     var healthScore: Double,
 
-    // Current height (in.)
-    var height: Double,
-
-    // Current weight (lbs)
-    var weight: Double,
-
     // Body Mass Index
     var bmi: Double,
 
