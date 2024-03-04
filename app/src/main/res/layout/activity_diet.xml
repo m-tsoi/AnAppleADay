@@ -45,5 +45,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.318" />
 
+    <Button
+        android:id="@+id/submitDiet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        tools:layout_editor_absoluteX="160dp"
+        tools:layout_editor_absoluteY="395dp" />
+
+    <SearchView
+        android:id="@+id/dietYesterdaySearch"
+        android:layout_width="249dp"
+        android:layout_height="77dp"
+        tools:layout_editor_absoluteX="81dp"
+        tools:layout_editor_absoluteY="275dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
