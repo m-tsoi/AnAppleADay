@@ -5,7 +5,7 @@ data class MedicalRecord(
 
     val allergies: MutableList<String>,
 
-    val foodRestrictions: MutableList<String>,
+    val foodRestriction: MutableList<String>,
 
     val disorders: MutableList<String>
 )
