@@ -93,13 +93,12 @@
         app:layout_constraintVertical_bias="0.922" />
 
     <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="408dp"
-        android:layout_height="302dp"
-        android:layout_marginStart="4dp"
+        android:id="@+id/imageView4"
+        android:layout_width="416dp"
+        android:layout_height="234dp"
         android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/badApple"
-        tools:layout_editor_absoluteY="-28dp" />
+        app:srcCompat="@drawable/maneatingaple"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

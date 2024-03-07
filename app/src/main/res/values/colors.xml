@@ -2,4 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Chirag frontend tutorial-->
+    <color name="colorPrimary">#131EEA</color>
+    <color name="colorPrimaryDark">#131EEA</color>
+    <color name="colorAccent">#F13413</color>
+    <color name="colorLayerDark">#D6000000</color>
+    <color name="colorLayerSemiDark">#60000000</color>
+    <color name="colorTextPrimary">#212121</color>
+    <color name="colorTextHint">##808080</color>
 </resources>
