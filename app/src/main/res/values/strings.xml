@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">AnAppleADay</string>
+    <string name="submit">Submit</string>
+    <string name="gender">Gender</string>
+    <string name="age">Age</string>
+    <string name="name">Name</string>
+    <string name="avatar">Avatar</string>
+    <string name="inches">in.</string>
+    <string name="feet">ft.</string>
 </resources>

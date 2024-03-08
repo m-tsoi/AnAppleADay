@@ -13,10 +13,7 @@ class FbProfileServices (firestore: FirebaseFirestore):
         var profile: Profile? = null
         collectionRef.document(uid).get()
             .addOnSuccessListener {
-                document ->
-                if (document != null) {
-                    profile = document.toObject(Profile::class.java)!!
-                }
+                document -> profile = document.toObject(Profile::class.java)
             }.addOnFailureListener { exception ->
                 Log.e(TAG, "Failed to retrieve profile", exception)
             }
@@ -25,24 +22,25 @@ class FbProfileServices (firestore: FirebaseFirestore):
     }
 
     fun createProfile(uid: String, _profile: Profile): Task<Void> {
-        return collectionRef.document(uid).set({
-            "age" to _profile.age
-            "gender" to _profile.gender.toString()
-            "height" to _profile.height
-            "weight" to _profile.weight
-            "personicleId" to UUID.randomUUID().toString()
-            "medicalRecords" to mapOf<String, MutableList<String>>(
-                "allergies" to ArrayList(),
-                "foodRestriction" to ArrayList(),
-                "disorders" to ArrayList()
+        return collectionRef.document(uid).set(
+            hashMapOf(
+                "age" to _profile.age,
+                "gender" to _profile.gender.toString(),
+                "height" to _profile.height,
+                "weight" to _profile.weight,
+                "personicleId" to UUID.randomUUID().toString(),
+                "medicalRecords" to mapOf<String, List<String>>(
+                    "allergies" to ArrayList(),
+                    "foodRestriction" to ArrayList(),
+                    "disorders" to ArrayList()
+                )
             )
-        })
+        )
     }
-
 
     fun updateProfile(uid: String, _profile: Profile): Task<Void> {
         return collectionRef.document(uid).update(
-            mapOf(
+            hashMapOf(
                 "age" to _profile.age,
                 "gender" to _profile.gender.toString(),
                 "height" to _profile.height,
