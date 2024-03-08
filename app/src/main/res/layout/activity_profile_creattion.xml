@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -30,13 +29,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/titleCreateProfile">
 
-        <ImageButton
-            android:id="@+id/avatarImageView"
+        <ImageView
+            android:id="@+id/avatarView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:srcCompat="@tools:sample/avatars"
             android:scaleType="centerCrop"
-            android:contentDescription="Avatar"/>
+            android:contentDescription="@string/avatar"/>
     </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -54,7 +52,7 @@
             android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
+            android:hint="@string/name"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,10 +68,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/nameLayout">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextAge"
+            android:id="@+id/editNumberAge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Age"
+            android:hint="@string/age"
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,17 +82,17 @@
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="72dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-        app:boxStrokeColor="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/ageLayout">
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/selectTextGender"
+            android:id="@+id/selectGender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Gender"
-            app:simpleItems="@array/gender_list"/>
+            android:hint="@string/gender"
+            app:simpleItems="@array/gender_list"
+            android:inputType="none"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <GridLayout
@@ -103,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginVertical="72dp"
-        android:columnCount="2"
+        android:columnCount="3"
         android:verticalSpacing="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -111,7 +109,7 @@
         app:layout_constraintTop_toTopOf="@id/genderLayout"
         >
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/heightLayout"
+            android:id="@+id/feetLayout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_columnWeight="1"
@@ -122,11 +120,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/genderLayout">
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextHeight"
+                android:id="@+id/editHeightFeet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Height (in)"
-                android:inputType="numberDecimal" />
+                android:hint="@string/feet"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inchLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="10dp"
+            app:boxStrokeColor="@color/design_default_color_primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/genderLayout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editHeightInch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/inches"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -134,27 +151,26 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
-            android:layout_columnWeight="1"
+            android:layout_columnWeight="2"
             app:boxStrokeColor="@color/design_default_color_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/heightLayout">
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextWeight"
+                android:id="@+id/editWeight"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Weight (lbs)"
-                android:inputType="numberDecimal" />
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
     </GridLayout>
 
-
     <Button
-        android:id="@+id/register_button"
+        android:id="@+id/submitBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Done"
+        android:text="@string/submit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
