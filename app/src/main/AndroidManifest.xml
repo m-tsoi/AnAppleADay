@@ -25,6 +25,7 @@
         <meta-data android:name="photopicker_activity:0:required" android:value="" />
         <activity android:name=".ui.HomeActivity" />
         <activity android:name=".ui.RegisterActivity"/>
+        <activity android:name=".ui.MedicalRecordActivity"></activity>
         <activity android:name=".ui.SleepActivity"/>
         <activity android:name=".ui.SelectPlanActivity"/>
         <activity android:name=".ui.PersonicleActivity"/>
