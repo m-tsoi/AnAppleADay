@@ -8,10 +8,10 @@ data class Profile (
     var gender: Gender,
 
     // Current height (in.)
-    var height: Double,
+    var height: Int,
 
     // Current weight (lbs)
-    var weight: Double,
+    var weight: Int,
 
     var personicleId: String,      // pointer to its collection stored in local/cloud
 
