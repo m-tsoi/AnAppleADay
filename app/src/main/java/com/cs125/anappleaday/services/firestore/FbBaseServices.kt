@@ -13,7 +13,7 @@ open class FbBaseServices <T> (
     firestore: FirebaseFirestore,
 ) {
     private val collectionName = _collectionName
-    private var collectionRef: CollectionReference
+    var collectionRef: CollectionReference
 
     init {
         collectionRef = firestore.collection(collectionName)
@@ -60,6 +60,6 @@ open class FbBaseServices <T> (
     }
 
     companion object {
-        private var TAG = "Collection"
+        val TAG = "Collection"
     }
 }

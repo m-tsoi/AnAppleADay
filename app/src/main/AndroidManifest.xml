@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -21,15 +22,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.HomeActivity"></activity>
-        <activity android:name=".ui.RegisterActivity"></activity>
+        <meta-data android:name="photopicker_activity:0:required" android:value="" />
+        <activity android:name=".ui.HomeActivity" />
+        <activity android:name=".ui.RegisterActivity"/>
         <activity android:name=".ui.MedicalRecordActivity"></activity>
-        <activity android:name=".ui.SleepActivity"></activity>
-        <activity android:name=".ui.SelectPlanActivity"></activity>
-        <activity android:name=".ui.PersonicleActivity"></activity>
-        <activity android:name=".ui.NutritionActivity"></activity>
-        <activity android:name=".ui.ProfileCreationActivity"></activity>
-
+        <activity android:name=".ui.SleepActivity"/>
+        <activity android:name=".ui.SelectPlanActivity"/>
+        <activity android:name=".ui.PersonicleActivity"/>
+        <activity android:name=".ui.NutritionActivity"/>
+        <activity android:name=".ui.ProfileCreationActivity"/>
     </application>
 
 </manifest>

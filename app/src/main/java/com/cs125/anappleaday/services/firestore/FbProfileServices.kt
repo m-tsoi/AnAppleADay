@@ -1,30 +1,57 @@
 package com.cs125.anappleaday.services.firestore
 
-import com.cs125.anappleaday.data.sql.models.user.Profile
+import android.util.Log
+import com.cs125.anappleaday.data.record.models.user.Profile
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.UUID
 
-class FbProfileServices(firestore: FirebaseFirestore)
-    : FbBaseServices<Profile>("Profile", firestore) {
+class FbProfileServices (firestore: FirebaseFirestore):
+    FbBaseServices<Profile>(firestore = firestore, _collectionName = "Profile"){
 
-    private fun mapProfileToDoc(profile: Profile): MutableMap<String, Any> {
-        return mutableMapOf<String, Any>(
-            "pid" to profile.pid,
-            "avatar" to profile.avatar,
-            "gender" to profile.gender.toString(),
-            "personicleId" to profile.personicleId,
-            "medicalRecordId" to profile.medicalRecordId
+    fun getProfile(uid: String): Profile? {
+        var profile: Profile? = null
+        collectionRef.document(uid).get()
+            .addOnSuccessListener {
+                document -> profile = document.toObject(Profile::class.java)
+            }.addOnFailureListener { exception ->
+                Log.e(TAG, "Failed to retrieve profile", exception)
+            }
+
+        return profile
+    }
+
+    fun createProfile(uid: String, _profile: Profile): Task<Void> {
+        return collectionRef.document(uid).set(
+            hashMapOf(
+                "age" to _profile.age,
+                "gender" to _profile.gender.toString(),
+                "height" to _profile.height,
+                "weight" to _profile.weight,
+                "personicleId" to UUID.randomUUID().toString(),
+                "medicalRecords" to mapOf<String, List<String>>(
+                    "allergies" to ArrayList(),
+                    "foodRestriction" to ArrayList(),
+                    "disorders" to ArrayList()
+                )
+            )
         )
     }
 
-    fun addProfile(profile: Profile): Task<DocumentReference> {
-        val docData = mapProfileToDoc(profile)
-        return super.add(docData)
-    }
-
-    fun updateProfile(profile: Profile): Task<Void> {
-        val docData = mapProfileToDoc(profile)
-        return super.update(profile.pid.toString(), docData)
+    fun updateProfile(uid: String, _profile: Profile): Task<Void> {
+        return collectionRef.document(uid).update(
+            hashMapOf(
+                "age" to _profile.age,
+                "gender" to _profile.gender.toString(),
+                "height" to _profile.height,
+                "weight" to _profile.weight,
+                "personicleId" to _profile.personicleId,
+                "medicalRecords" to mapOf<String, MutableList<String>>(
+                    "allergies" to _profile.medicalRecord.allergies,
+                    "foodRestriction" to _profile.medicalRecord.foodRestriction,
+                    "disorders" to _profile.medicalRecord.disorders
+                )
+            )
+        )
     }
 }
