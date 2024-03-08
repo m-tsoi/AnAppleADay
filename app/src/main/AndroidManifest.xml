@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".ui.HomeActivity"></activity>
         <activity android:name=".ui.RegisterActivity"></activity>
+        <activity android:name=".ui.MedicalRecordActivity"></activity>
         <activity android:name=".ui.SleepActivity"></activity>
         <activity android:name=".ui.SelectPlanActivity"></activity>
         <activity android:name=".ui.PersonicleActivity"></activity>
