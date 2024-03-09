@@ -10,72 +10,101 @@
         android:layout_height="wrap_content"
         android:text="Medical Record"
         android:textSize="32sp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="96dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.084" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
         android:id="@+id/allergiesLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="72dp"
-        app:boxStrokeColor="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/titleMedicalRecords">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/allergies"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Allergies (eg. seafood, peanut, ..)"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:text="Allergies:"
+            android:textSize="18sp" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/design_default_color_primary">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/allergies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="Eg: peanut, seafood, mushroom, ..." />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
         android:id="@+id/foodRestrictionsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="72dp"
-        app:boxStrokeColor="@color/design_default_color_primary"
+        android:layout_marginTop="96dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/allergiesLayout">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/foodRestrictions"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Food Restrictions (eg. high sugar, fat,..)"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:text="Food Restrictions:"
+            android:textSize="18sp" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/design_default_color_primary">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/foodRestrictions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="Eg: potato, peanut, crab, ..." />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
         android:id="@+id/disordersLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="72dp"
-        app:boxStrokeColor="@color/design_default_color_primary"
+        android:layout_marginTop="96dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/foodRestrictionsLayout">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/disorders"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Disorders or Illnesses (eg. diabetes, ...)"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
-
+            android:text="Disorders:"
+            android:textSize="18sp" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/design_default_color_primary">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/disorders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="Eg: diabetes, high blood pressure,..." />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
     <Button
-        android:id="@+id/register_button"
+        android:id="@+id/submitBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit"
