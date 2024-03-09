@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.Firebase
 import com.cs125.anappleaday.R
 import com.cs125.anappleaday.databinding.ActivityLoginBinding
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbProfileServices
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -34,36 +36,43 @@ class LoginActivity : AppCompatActivity() {
             .setOnClickListener{
                 Log.d("BUTTONS", "User tapped the login")
 
-
                 val email = binding.editTextEmail.text.toString()
                 val password = binding.editTextPassword.text.toString()
 
-                if (email.isNotEmpty() && password.isNotEmpty()) {
-                    fbAuth.login(email, password).addOnCompleteListener{
-                        if (it.isSuccessful) {
-                            val userId = fbAuth.getUser()?.uid
-                            if (userId != null) {
-                                if (profileService.getProfile(userId) == null) {
-                                    startActivity(
-                                        Intent(this, ProfileCreationActivity::class.java)
-                                    )
-                                }
-                            } else {
-                                startActivity(
-                                    Intent(this, HomeActivity::class.java)
-                                )
-                            }
-                        } else {
-                            Toast
-                                .makeText(this, "Incorrect email or password.", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-                } else {
+                if (email.isEmpty() || password.isEmpty()) {
                     Toast
                         .makeText(this, "Field cannot be blank", Toast.LENGTH_SHORT)
                         .show()
-
+                } else {
+                    fbAuth.login(email, password).addOnCompleteListener{
+                        if (!it.isSuccessful) {
+                            Toast.makeText(this, "Incorrect email or password.",
+                                    Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            Toast.makeText(this, "Access granted.",
+                                Toast.LENGTH_SHORT)
+                                .show()
+                            lifecycleScope.launch {
+                                val userId = fbAuth.getUser()?.uid
+                                if (userId != null) {
+                                    if (profileService.getProfile(userId) == null) {
+                                        startActivity(
+                                            Intent(
+                                                this@LoginActivity,
+                                                ProfileCreationActivity::class.java
+                                            )
+                                        )
+                                    } else {
+                                        startActivity(
+                                            Intent(this@LoginActivity,
+                                                HomeActivity::class.java)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
