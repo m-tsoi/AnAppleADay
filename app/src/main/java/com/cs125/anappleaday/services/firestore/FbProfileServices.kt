@@ -4,21 +4,31 @@ import android.util.Log
 import com.cs125.anappleaday.data.record.models.user.Profile
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
+import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
 class FbProfileServices (firestore: FirebaseFirestore):
     FbBaseServices<Profile>(firestore = firestore, _collectionName = "Profile"){
 
-    fun getProfile(uid: String): Profile? {
-        var profile: Profile? = null
-        collectionRef.document(uid).get()
-            .addOnSuccessListener {
-                document -> profile = document.toObject(Profile::class.java)
-            }.addOnFailureListener { exception ->
-                Log.e(TAG, "Failed to retrieve profile", exception)
-            }
+    suspend fun getProfile(uid: String): Profile? {
 
-        return profile
+        return try {
+            val document = collectionRef.document(uid).get().await()
+            document.toObject<Profile>()
+        } catch (e: Exception){
+            Log.e(TAG, "Failed to retrieve profile", e)
+            null
+        }
+//        var profile: Profile? = null
+//        collectionRef.document(uid).get()
+//            .addOnSuccessListener {
+//                document -> profile = document.toObject(Profile::class.java)
+//            }.addOnFailureListener { exception ->
+//                Log.e(TAG, "Failed to retrieve profile", exception)
+//            }
+//
+//        return profile
     }
 
     fun createProfile(uid: String, _profile: Profile): Task<Void> {
@@ -46,10 +56,10 @@ class FbProfileServices (firestore: FirebaseFirestore):
                 "height" to _profile.height,
                 "weight" to _profile.weight,
                 "personicleId" to _profile.personicleId,
-                "medicalRecords" to mapOf<String, MutableList<String>>(
-                    "allergies" to _profile.medicalRecord.allergies,
-                    "foodRestriction" to _profile.medicalRecord.foodRestriction,
-                    "disorders" to _profile.medicalRecord.disorders
+                "medicalRecords" to mapOf(
+                    "allergies" to _profile.medicalRecords.allergies,
+                    "foodRestriction" to _profile.medicalRecords.foodRestriction,
+                    "disorders" to _profile.medicalRecords.disorders
                 )
             )
         )
