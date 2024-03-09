@@ -1,13 +1,13 @@
 package com.cs125.anappleaday.data.record.models.healthPlans
 
 data class DietPlan(
-    val dayCaloriesIntake: Double,
+    var dayCaloriesIntake: Double = 0.0,
 
-    val dayProteinIntake: Double,
+    var dayProteinIntake: Double = 0.0,
 
-    val dayCarbIntake: Double,
+    var dayCarbIntake: Double = 0.0,
 
-    val dayFatIntake: Double,
+    var dayFatIntake: Double = 0.0,
 
-    val supportNutrition: MutableList<String>
+    val supportNutrition: MutableList<String> = mutableListOf()
 )
