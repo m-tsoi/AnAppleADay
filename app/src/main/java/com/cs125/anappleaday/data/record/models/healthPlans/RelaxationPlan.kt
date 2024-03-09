@@ -1,9 +1,9 @@
 package com.cs125.anappleaday.data.record.models.healthPlans
 
 data class RelaxationPlan(
-    val suggestedActivities: MutableList<String>,
+    val suggestedActivities: MutableList<String> = mutableListOf(),
 
-    var suggestedMusic: MutableList<String>,
+    val suggestedMusic: MutableList<String> = mutableListOf(),
 
-    var breakTime: Double,
+    var breakTime: Double = 0.0,
 )

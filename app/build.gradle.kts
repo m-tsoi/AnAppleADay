@@ -56,6 +56,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.4.1")
     implementation("androidx.navigation:navigation-ui-ktx:2.4.1")
+    implementation(kotlin("reflect"))
 
     // Room Database
     implementation("androidx.room:room-runtime:2.6.1")

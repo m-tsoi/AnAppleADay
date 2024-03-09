@@ -1,9 +1,11 @@
 package com.cs125.anappleaday.data.record.models.healthPlans
 
+import com.cs125.anappleaday.data.enumTypes.ActivityLevel
+
 data class ExercisePlan(
-    val exerciseType: String,
+    var exerciseType: ActivityLevel = ActivityLevel.MODERATE,
 
-    val suggestExercises: MutableList<String>,
+    val suggestExercises: MutableList<String> = mutableListOf(),
 
-    val totalDuration: Double
+    var totalDuration: Double = 0.0
 )

@@ -3,15 +3,15 @@ package com.cs125.anappleaday.data.record.models.healthPlans
 import com.cs125.anappleaday.data.enumTypes.HealthGoal
 
 data class HealthPlan (
-    val healthGoal: HealthGoal,
+    val healthGoal: HealthGoal = HealthGoal.BE_HEALTHY,
 
-    val score: Double,
+    var score: Double = 0.0,
 
-    val dietPlan: DietPlan,
+    val dietPlan: DietPlan = DietPlan(),
 
-    val exercisePlan: ExercisePlan,
+    val exercisePlan: ExercisePlan = ExercisePlan(),
 
-    val relaxationPlan: RelaxationPlan,
+    val relaxationPlan: RelaxationPlan = RelaxationPlan(),
 
-    val sleepPlan: SleepPlan,
+    val sleepPlan: SleepPlan = SleepPlan(),
 )

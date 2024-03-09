@@ -1,26 +1,24 @@
 package com.cs125.anappleaday.data.record.models.user
 
 data class Personicle(
-    val profileId: String,
-
-    var healthScore: Double,
+    var healthScore: Double = 0.0,
 
     // Body Mass Index
-    var bmi: Double,
+    var bmi: Double = 0.0,
 
     // Rest Metabolic Rate
-    var rmr: Double,
+    var rmr: Double = 0.0,
 
     // Calories requires for the current body
-    var bodyCalories: Double,
+    var bodyCalories: Double = 0.0,
 
-    val weightRecordsId: String?,
+    val weightRecordsId: String? = null,
 
-    val dietDataId: String?,
+    val dietDataId: String? = null,
 
-    val activityDataId: String?,
+    val activityDataId: String? = null,
 
-    val relaxationDataId: String?,
+    val relaxationDataId: String? = null,
 
-    val sleepDataId: String?,
+    val sleepDataId: String? = null,
 )
