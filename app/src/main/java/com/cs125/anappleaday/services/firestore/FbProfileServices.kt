@@ -12,7 +12,6 @@ class FbProfileServices (firestore: FirebaseFirestore):
     FbBaseServices<Profile>(firestore = firestore, _collectionName = "Profile"){
 
     suspend fun getProfile(uid: String): Profile? {
-
         return try {
             val document = collectionRef.document(uid).get().await()
             document.toObject<Profile>()
@@ -20,15 +19,6 @@ class FbProfileServices (firestore: FirebaseFirestore):
             Log.e(TAG, "Failed to retrieve profile", e)
             null
         }
-//        var profile: Profile? = null
-//        collectionRef.document(uid).get()
-//            .addOnSuccessListener {
-//                document -> profile = document.toObject(Profile::class.java)
-//            }.addOnFailureListener { exception ->
-//                Log.e(TAG, "Failed to retrieve profile", exception)
-//            }
-//
-//        return profile
     }
 
     fun createProfile(uid: String, _profile: Profile): Task<Void> {
@@ -38,6 +28,7 @@ class FbProfileServices (firestore: FirebaseFirestore):
                 "gender" to _profile.gender.toString(),
                 "height" to _profile.height,
                 "weight" to _profile.weight,
+                "healthPlanId" to _profile.healthPlanId,
                 "personicleId" to UUID.randomUUID().toString(),
                 "medicalRecords" to mapOf<String, List<String>>(
                     "allergies" to ArrayList(),
@@ -48,20 +39,7 @@ class FbProfileServices (firestore: FirebaseFirestore):
         )
     }
 
-    fun updateProfile(uid: String, _profile: Profile): Task<Void> {
-        return collectionRef.document(uid).update(
-            hashMapOf(
-                "age" to _profile.age,
-                "gender" to _profile.gender.toString(),
-                "height" to _profile.height,
-                "weight" to _profile.weight,
-                "personicleId" to _profile.personicleId,
-                "medicalRecords" to mapOf(
-                    "allergies" to _profile.medicalRecords.allergies,
-                    "foodRestriction" to _profile.medicalRecords.foodRestriction,
-                    "disorders" to _profile.medicalRecords.disorders
-                )
-            )
-        )
+    fun updateProfile(uid: String, dataToUpdate: Map<String, Any?>): Task<Void> {
+        return collectionRef.document(uid).update(dataToUpdate)
     }
 }

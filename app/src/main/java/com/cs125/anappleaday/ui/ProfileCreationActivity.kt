@@ -115,11 +115,12 @@ class ProfileCreationActivity: AppCompatActivity() {
 
                 // Create profile
                 val profile = Profile(
-                    age,
-                    Gender.valueOf(gender),
-                    height,
-                    weight,
-                    UUID.randomUUID().toString(),
+                    age = age,
+                    gender = Gender.valueOf(gender),
+                    height = height,
+                    weight = weight,
+                    personicleId = UUID.randomUUID().toString(),
+                    healthPlanId = null,
                     MedicalRecord(ArrayList(), ArrayList(), ArrayList())
                 )
                 val userId = fbAuth.getUser()?.uid

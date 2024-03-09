@@ -19,7 +19,7 @@ open class FbBaseServices <T> (
         collectionRef = firestore.collection(collectionName)
     }
 
-    open fun <T : Any> getDocument(id: String) : Task<DocumentSnapshot> {
+    open fun getDocument(id: String) : Task<DocumentSnapshot> {
         return collectionRef.document(id).get().addOnSuccessListener {
             Log.d("$TAG: $collectionName", "document saved successfully")
             return@addOnSuccessListener
