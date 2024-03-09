@@ -39,6 +39,7 @@ class HomeActivity : AppCompatActivity() {
         findViewById<Button>(R.id.change_plan_button)
             .setOnClickListener{
                 Log.d("BUTTONS", "User tapped the login")
+                fbAuth.logout()
                 val sendIntent = Intent(this, SelectPlanActivity::class.java)
                 startActivity(sendIntent)
             }

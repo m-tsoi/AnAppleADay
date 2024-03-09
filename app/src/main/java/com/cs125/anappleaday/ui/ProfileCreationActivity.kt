@@ -131,7 +131,7 @@ class ProfileCreationActivity: AppCompatActivity() {
                                 Toast.makeText(this, "Created profile successfully.",
                                     Toast.LENGTH_SHORT)
                                     .show()
-                                startActivity(Intent(this, SelectPlanActivity::class.java))
+                                startActivity(Intent(this, MedicalRecordActivity::class.java))
                             }
                         }.addOnFailureListener{
                             Toast.makeText(this, "Failed to create profile.",
