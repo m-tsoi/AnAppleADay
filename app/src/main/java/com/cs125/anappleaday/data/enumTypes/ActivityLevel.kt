@@ -1,6 +1,8 @@
 package com.cs125.anappleaday.data.enumTypes
 
 enum class ActivityLevel(val value: Double) {
+    // src "https://www.niddk.nih.gov/bwp"
+    // Assuming physical activity level at work for studying is Light
     VERY_LITTLE(1.5),
     LIGHT(1.6),
     MODERATE(1.7),
