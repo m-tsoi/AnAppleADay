@@ -9,8 +9,8 @@ data class Personicle(
     // Rest Metabolic Rate
     var rmr: Double = 0.0,
 
-    // Calories requires for the current body
-    var bodyCalories: Double = 0.0,
+    // Total Daily Energy Expenditure
+    var caloriesBudget: Double = 0.0,
 
     val weightRecordsId: String? = null,
 
