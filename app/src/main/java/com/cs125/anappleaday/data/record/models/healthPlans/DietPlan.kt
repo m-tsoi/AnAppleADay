@@ -9,5 +9,7 @@ data class DietPlan(
 
     var dayFatIntake: Double = 0.0,
 
-    val supportNutrition: MutableList<String> = mutableListOf()
+    val supportedNutrients: MutableList<String> = mutableListOf(),
+
+    val limitedFoods: MutableList<String> = mutableListOf()
 )

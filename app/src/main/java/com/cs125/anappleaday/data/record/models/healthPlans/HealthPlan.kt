@@ -2,7 +2,7 @@ package com.cs125.anappleaday.data.record.models.healthPlans
 
 import com.cs125.anappleaday.data.enumTypes.HealthGoal
 
-data class HealthPlan (
+data class HealthPlan(
     val healthGoal: HealthGoal = HealthGoal.BE_HEALTHY,
 
     var score: Double = 0.0,
@@ -11,7 +11,11 @@ data class HealthPlan (
 
     val exercisePlan: ExercisePlan = ExercisePlan(),
 
-    val relaxationPlan: RelaxationPlan = RelaxationPlan(),
+//    val relaxationPlan: RelaxationPlan = RelaxationPlan(),
 
     val sleepPlan: SleepPlan = SleepPlan(),
+
+    val startDate: Long = 0,
+
+    val endDate: Long = 0
 )
