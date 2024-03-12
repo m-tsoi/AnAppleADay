@@ -26,14 +26,9 @@ class StatCalculator {
             }
         }
 
-        fun computeBodyCalories(rmr: Double, activityLevel: ActivityLevel): Double {
-            return BigDecimal(when (activityLevel) {
-                ActivityLevel.VERY_LITTLE -> rmr * 1.2
-                ActivityLevel.LIGHT -> rmr * 1.375
-                ActivityLevel.MODERATE -> rmr * 1.55
-                ActivityLevel.VERY_ACTIVE -> rmr * 1.725
-                ActivityLevel.EXTRA_ACTIVE -> rmr * 1.9
-            }).setScale(2, RoundingMode.HALF_UP).toDouble()
+        fun computeCaloriesBudget(rmr: Double, activityLevel: ActivityLevel): Double {
+            return BigDecimal(rmr * activityLevel.value)
+                .setScale(2, RoundingMode.HALF_UP).toDouble()
         }
     }
 }
