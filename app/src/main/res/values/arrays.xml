@@ -4,6 +4,13 @@
         <item>MALE</item>
         <item>FEMALE</item>
     </string-array>
+    <string-array name="activity_level_list">
+        <item>Very Little</item>
+        <item>Light</item>
+        <item>Moderate</item>
+        <item>Very Active</item>
+        <item>Extra Active</item>
+    </string-array>
     <string-array name="health_plan_list">
         <item>Stay Lean</item>
         <item>Bulk Up</item>
