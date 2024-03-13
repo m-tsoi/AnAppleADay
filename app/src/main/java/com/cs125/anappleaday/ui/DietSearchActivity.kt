@@ -3,8 +3,11 @@ package com.cs125.anappleaday.ui
 import android.view.View
 import android.os.Bundle
 import android.util.Log
+import android.widget.SearchView
+import android.widget.TextView
 import com.cs125.anappleaday.R
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.api.ApiMain
 import com.google.gson.JsonObject
 
@@ -19,14 +22,36 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class DietSearchActivity : AppCompatActivity() {
 
+    private lateinit var searchView : SearchView
+    private lateinit var recyclerResults : RecyclerView
+    // also add in adapter???
+
     private val apiService = ApiMain.getAPIServices()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diet_search)
 
+        searchView = findViewById<SearchView>(R.id.searchView)
+        recyclerResults = findViewById<RecyclerView>(R.id.recyclerResults)
+        // add recycler adapter
 
-        val call = apiService.getNutrition("1lb brisket and fries")
+        // listener for search view
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let { fetchSearchResults(it) }
+                return true
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
+
+    }
+
+    private fun fetchSearchResults(query: String) {
+        val call = apiService.getNutrition(query)
 
         call.enqueue(object : Callback<List<NutritionData>> {
             override fun onResponse(call: Call<List<NutritionData>>, response: Response<List<NutritionData>>) {
