@@ -19,6 +19,21 @@ import java.util.Date
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+/**
+ * GET List Resources
+ */
+val call = apiServices.getRecommendedExercises(param1, param2, param3) // params are query params in url
+call.enqueue(object : Callback<RecommendedExercises> {
+    override fun onResponse(call: Call<RecommendedExercises>, response: Response<RecommendedExercises>) {
+        val exercises = response.body()
+        // do something here
+    }
+
+    override fun onFailure(call: Call<RecommendedExercises>, t: Throwable) {
+        // do something here
+        call.cancel()
+    }
+})
 class ExerciseActivity : AppCompatActivity() {
 
     private lateinit var MET : TextView // Metabolic Equivalent of Task
