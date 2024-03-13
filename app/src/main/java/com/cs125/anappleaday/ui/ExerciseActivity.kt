@@ -18,6 +18,7 @@ import nl.joery.timerangepicker.TimeRangePicker
 import java.util.Date
 import kotlin.math.min
 import kotlin.math.roundToInt
+val apiServices = ApiMain.getAPIServices() <- init in a class
 
 /**
  * GET List Resources
