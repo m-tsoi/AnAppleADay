@@ -7,4 +7,8 @@
     <string name="avatar">Avatar</string>
     <string name="inches">in.</string>
     <string name="feet">ft.</string>
+    <string name="protein">Protein</string>
+    <string name="carb">Carb</string>
+    <string name="fat">Fat</string>
+    <string name="health_plan">Health Plan</string>
 </resources>

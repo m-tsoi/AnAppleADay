@@ -58,7 +58,7 @@ class MedicalRecordActivity: AppCompatActivity() {
                             Toast.LENGTH_SHORT)
                             .show()
                         startActivity(Intent(this@MedicalRecordActivity,
-                            SelectPlanActivity::class.java))
+                            InitPersonicleActivity::class.java))
                     }.addOnFailureListener{
                         Toast.makeText(this@MedicalRecordActivity,
                             "Failed to add medical records to profile.",
