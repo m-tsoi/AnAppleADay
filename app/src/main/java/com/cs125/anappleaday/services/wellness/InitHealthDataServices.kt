@@ -7,6 +7,7 @@ import com.cs125.anappleaday.data.record.models.healthPlans.ExercisePlan
 import com.cs125.anappleaday.data.record.models.healthPlans.HealthPlan
 import com.cs125.anappleaday.data.record.models.healthPlans.SleepPlan
 import com.cs125.anappleaday.services.firestore.FbHealthPlanServices
+import com.cs125.anappleaday.utils.toMap
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,8 +17,8 @@ class InitHealthDataServices (firestore: FirebaseFirestore) {
 
     fun initData( healthGoal: HealthGoal,
                   rmr: Double,
-                  startDate: Long,
-                  endDate: Long): Task<DocumentReference> {
+                  startDate: String,
+                  endDate: String): Task<DocumentReference> {
         val healthPlan = initHealthData(healthGoal, rmr, startDate, endDate)
         return fbHealthPlanServices.createHealthPlan(healthPlan)
     }
@@ -29,8 +30,8 @@ class InitHealthDataServices (firestore: FirebaseFirestore) {
             )
 
         fun initHealthData(healthGoal: HealthGoal, rmr: Double,
-                           startDate: Long,
-                           endDate: Long): HealthPlan  {
+                           startDate: String,
+                           endDate: String): HealthPlan  {
             val plans =  when (healthGoal) {
                 HealthGoal.BE_HEALTHY -> startHealthyPlan(rmr)
                 HealthGoal.BULK_UP -> startBulkPlan(rmr)
@@ -54,7 +55,7 @@ class InitHealthDataServices (firestore: FirebaseFirestore) {
             // plan: src:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5793336/"
             val exercisePlan = ExercisePlan(
                 exerciseType = ActivityLevel.MODERATE,
-                dailyDuration = 0.3
+                dailyDuration = 0.5
             )
             val dietPlan = DietPlan(
                 dayCaloriesIntake = exercisePlan.exerciseType.value * rmr,    // TODO: compute gain/loss calories per day
@@ -104,7 +105,7 @@ class InitHealthDataServices (firestore: FirebaseFirestore) {
             // Some limited foods are omitted since it is not ideal for students
             val exercisePlan = ExercisePlan(
                 exerciseType = ActivityLevel.VERY_ACTIVE,
-                dailyDuration = 0.45,
+                dailyDuration = 0.75,
             )
             val dietPlan = DietPlan(
                 dayCaloriesIntake = exercisePlan.exerciseType.value * rmr * 0.9,
