@@ -148,7 +148,7 @@ class InitHealthDataServices (firestore: FirebaseFirestore) {
                 dayCarbIntake = 0.5,
                 dayFatIntake = 0.2,
                 supportedNutrients = mutableListOf(
-                    "omega-3", "omega-6", "B12", "vintamin D", "zinc", "iodine"
+                    "omega-3", "omega-6", "B12", "vitamin D", "zinc", "iodine"
                 ),
                 limitedFoods = mutableListOf(
                     "dairy",  "low-fiber", "fast food", "sweets"
