@@ -1,7 +1,5 @@
 package com.cs125.anappleaday.services.wellness
 
-import android.content.Context
-import android.widget.Toast
 import com.cs125.anappleaday.data.enumTypes.ActivityLevel
 import com.cs125.anappleaday.data.enumTypes.HealthGoal
 import com.cs125.anappleaday.data.record.models.healthPlans.DietPlan
@@ -16,20 +14,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 class InitHealthDataServices (firestore: FirebaseFirestore) {
     private val fbHealthPlanServices: FbHealthPlanServices = FbHealthPlanServices(firestore)
 
-    fun initData(context: Context,
-                         healthGoal: HealthGoal,
-                         rmr: Double,
-                         startDate: Long,
-                         endDate: Long): Task<DocumentReference> {
+    fun initData( healthGoal: HealthGoal,
+                  rmr: Double,
+                  startDate: Long,
+                  endDate: Long): Task<DocumentReference> {
         val healthPlan = initHealthData(healthGoal, rmr, startDate, endDate)
         return fbHealthPlanServices.createHealthPlan(healthPlan)
-            .addOnSuccessListener {
-                Toast.makeText(context, "Personicle was created.",
-                    Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener{
-                Toast.makeText(context, "Failed to create Health Plan",
-                    Toast.LENGTH_SHORT).show()
-            }
     }
 
     companion object {
