@@ -10,8 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Personicle"
-        android:textSize="34sp"
-        android:textColor="@color/design_default_color_primary"
+        android:textSize="30sp"
+        android:textColor="#ff6750a4"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,11 +46,13 @@
             <TextView
                 android:id="@+id/labelHeight"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_columnWeight="1"
                 android:layout_marginEnd="10dp"
-                android:text="Height (in)"
-                android:textSize="24sp" />
+                android:text="Height"
+                android:textSize="20sp"
+                android:textColor="#ff6750a4"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/numHeight"
@@ -57,8 +60,8 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:gravity="end"
-                android:text="100"
-                android:textSize="24sp" />
+                android:text="0ft. 0in."
+                android:textSize="20sp" />
         </GridLayout>
 
         <GridLayout
@@ -79,8 +82,10 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_marginEnd="10dp"
-                android:text="Weight (lbs)"
-                android:textSize="24sp" />
+                android:text="Weight"
+                android:textSize="20sp"
+                android:textColor="#ff6750a4"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/numWeight"
@@ -88,8 +93,8 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:gravity="end"
-                android:text="100"
-                android:textSize="24sp" />
+                android:text="0 (lbs)"
+                android:textSize="20sp" />
         </GridLayout>
 
         <GridLayout
@@ -101,7 +106,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.235"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/weightLayout">
+            app:layout_constraintTop_toTopOf="@id/weightLayout"
+            app:layout_constraintVertical_bias="0.117">
 
             <TextView
                 android:id="@+id/labelBMI"
@@ -110,7 +116,9 @@
                 android:layout_columnWeight="1"
                 android:layout_marginEnd="10dp"
                 android:text="BMI"
-                android:textSize="24sp" />
+                android:textSize="20sp"
+                android:textColor="#ff6750a4"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/numBMI"
@@ -118,8 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:gravity="end"
-                android:text="100"
-                android:textSize="24sp" />
+                android:text="0"
+                android:textSize="20sp" />
         </GridLayout>
 
         <GridLayout
@@ -131,7 +139,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.235"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/BMILayout">
+            app:layout_constraintTop_toTopOf="@id/BMILayout"
+            app:layout_constraintVertical_bias="0.117">
 
             <TextView
                 android:id="@+id/labelRMR"
@@ -139,8 +148,10 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_marginEnd="10dp"
-                android:text="RMR\n(cal/hr)"
-                android:textSize="24sp" />
+                android:text="RMR"
+                android:textSize="20sp"
+                android:textColor="#ff6750a4"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/numRMR"
@@ -148,12 +159,12 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:gravity="end"
-                android:text="100"
-                android:textSize="24sp" />
+                android:text="0 (cal/day)"
+                android:textSize="20sp" />
         </GridLayout>
 
         <GridLayout
-            android:id="@+id/bodyCaloriesLayout"
+            android:id="@+id/caloriesBudgetLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="12dp"
@@ -161,7 +172,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.235"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/BMILayout">
+            app:layout_constraintTop_toTopOf="@id/BMILayout"
+            app:layout_constraintVertical_bias="0.117">
 
             <TextView
                 android:id="@+id/labelBodyCalories"
@@ -169,18 +181,28 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_marginEnd="10dp"
-                android:text="Body Calories\n(cal/day)"
-                android:textSize="24sp" />
+                android:text="Calories\nBudget"
+                android:textSize="20sp"
+                android:textColor="#ff6750a4"
+                android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/numBodyCalories"
+                android:id="@+id/numCaloriesBudget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:gravity="end"
-                android:text="100"
-                android:textSize="24sp" />
+                android:text="0 (cal/day)"
+                android:textSize="20sp" />
         </GridLayout>
+
+        <Button
+            android:id="@+id/homeButton"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home"
+            />
     </LinearLayout>
 
 
