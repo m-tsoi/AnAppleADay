@@ -1,5 +1,6 @@
 package com.cs125.anappleaday.ui
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,7 +24,9 @@ import com.google.android.material.card.MaterialCardView
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
-import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class SelectPlanActivity : AppCompatActivity() {
     private lateinit var fbAuth: FBAuth
@@ -60,6 +63,17 @@ class SelectPlanActivity : AppCompatActivity() {
     // Sleep Card
     private lateinit var sleepDurationTextView: TextView
     private lateinit var wakeUpTimeTextView: TextView
+
+    // Buttons
+    private lateinit var changeButton: Button
+    private lateinit var confirmButton: Button
+    private lateinit var homeButton: Button
+    private lateinit var cancelButton: Button
+
+    private val calendar = Calendar.getInstance()
+    private val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,46 +115,108 @@ class SelectPlanActivity : AppCompatActivity() {
         sleepDurationTextView = findViewById(R.id.sleep_duration)
         wakeUpTimeTextView = findViewById(R.id.wake_up_time)
 
-        // Confirm button functionalities
+        // Buttons
+        confirmButton = findViewById(R.id.confirm_button)
+        changeButton = findViewById(R.id.change_button)
+        cancelButton = findViewById(R.id.cancel_button)
+        homeButton = findViewById(R.id.home_button)
+        
+
+        // Set listeners
         submitSelectedHealthPlan()
+        setDatePickerDialogListeners()
+        setChangeHealthPlanListerner()
+        setCancelChangeHealthPlanListener()
+        setRedirectUIListeners()
+    }
+
+    override fun onStart() {
+        val userId = fbAuth.getUser()?.uid
+        if (userId != null) {
+            lifecycleScope.launch {
+                healthPlanSelectionLayout.visibility = View.INVISIBLE
+                val profile = profileServices.getProfile(userId)
+                if (profile?.healthPlanId != null) {
+                    fetchHealthPlanResult(profile.healthPlanId!!)
+                }
+
+                if (healthPlan == null)
+                    healthPlanSelectionLayout.visibility = View.VISIBLE
+            }
+        }
+        super.onStart()
+    }
+
+    private suspend fun fetchHealthPlanResult(healthPlanId: String) {
+        healthPlan = healthPlanServices.getHealthPLan(healthPlanId)
+
+        if (healthPlan != null) {
+            renderHealthPlanResult()
+        }
+    }
+
+    fun openDatePickerDialog(dateButton: Button) {
+        val datePickerDialog = DatePickerDialog(
+            this, {DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(year, monthOfYear, dayOfMonth)
+                val formattedDate = dateFormat.format(selectedDate.time)
+                dateButton.text = "$formattedDate"
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        // Show the DatePicker dialog
+        datePickerDialog.show()
     }
 
     fun submitSelectedHealthPlan() {
         findViewById<Button>(R.id.confirm_button)
             .setOnClickListener{
-                val healthGoal = HealthGoal.getValueOfName(binding.selectedHealthPlan.toString())
+                val healthGoal = HealthGoal.getValueOfName(binding.selectedHealthPlan.text.toString())
+                val startDate = binding.startDateButton.text.toString()
+                val endDate = binding.endDateButton.text.toString()
                 val userId = fbAuth.getUser()?.uid
-
-                lifecycleScope.launch {
-
-                    if (userId != null) {
-                        val profile = profileServices.getProfile(userId)
-                        if (profile != null) {
-                            val rmr = StatCalculator.computeRMR(
-                                age = profile.age,
-                                gender = profile.gender,
-                                height = profile.height.toDouble(),
-                                weight = profile.weight.toDouble()
-                            )
-
-                            initHealthDataServices.initData(
-                                healthGoal = healthGoal,
-                                rmr = rmr,
-                                startDate = 10000,
-                                endDate = 10000,
-                            ).addOnSuccessListener {
-                                profileServices.updateProfile(
-                                    userId,
-                                    hashMapOf("healthPlanId" to it.id)
+                
+                if (startDate == "" || endDate == "" || startDate > endDate) {
+                    Toast.makeText(this@SelectPlanActivity,
+                        "Invalid date", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    lifecycleScope.launch {
+                        if (userId != null) {
+                            val profile = profileServices.getProfile(userId)
+                            if (profile != null) {
+                                val rmr = StatCalculator.computeRMR(
+                                    age = profile.age,
+                                    gender = profile.gender,
+                                    height = profile.height.toDouble(),
+                                    weight = profile.weight.toDouble()
                                 )
-                                healthPlanSelectionLayout.visibility = View.GONE
-                                Toast.makeText(this@SelectPlanActivity,
-                                    "Health plan was created.", Toast.LENGTH_SHORT)
-                                    .show()
-                            }.addOnFailureListener{
-                                Toast.makeText(this@SelectPlanActivity,
-                                    "Failed to create health plan.", Toast.LENGTH_SHORT)
-                                    .show()
+
+                                initHealthDataServices.initData(
+                                    healthGoal = healthGoal,
+                                    rmr = rmr,
+                                    startDate = startDate,
+                                    endDate = endDate,
+                                ).addOnSuccessListener {
+                                    lifecycleScope.launch {
+                                        healthPlanSelectionLayout.visibility = View.GONE
+                                        profileServices.updateProfile(
+                                            userId,
+                                            hashMapOf("healthPlanId" to it.id)
+                                        )
+                                        fetchHealthPlanResult(it.id)
+                                    }
+                                    Toast.makeText(this@SelectPlanActivity,
+                                        "Health plan was created.", Toast.LENGTH_SHORT)
+                                        .show()
+                                }.addOnFailureListener{
+                                    Toast.makeText(this@SelectPlanActivity,
+                                        "Failed to create health plan.", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
                             }
                         }
                     }
@@ -148,46 +224,69 @@ class SelectPlanActivity : AppCompatActivity() {
             }
     }
 
-    fun changeHealthPlan() {
-        findViewById<Button>(R.id.change_button).setOnClickListener {
+    private fun setChangeHealthPlanListerner() {
+        changeButton.setOnClickListener {
             healthPlanCard.visibility = View.INVISIBLE
+            healthPlanSelectionLayout.visibility = View.VISIBLE
+            cancelButton.visibility = View.VISIBLE
         }
     }
 
-    suspend fun pullHealthPlan(id: String) {
-        if (healthPlan == null) {
-            healthPlan = healthPlanServices.getHealthPLan(id)
+    private fun setCancelChangeHealthPlanListener() {
+        cancelButton.setOnClickListener {
+            healthPlanSelectionLayout.visibility = View.GONE
+            healthPlanCard.visibility = View.VISIBLE
         }
     }
 
-    fun renderHealthPlanResult() {
+    private fun setDatePickerDialogListeners() {
+        binding.startDateButton.setOnClickListener {
+            openDatePickerDialog(binding.startDateButton)
+        }
+
+        binding.endDateButton.setOnClickListener {
+            openDatePickerDialog(binding.endDateButton)
+        }
+    }
+
+    private fun setRedirectUIListeners() {
+        homeButton.setOnClickListener {
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
+    }
+
+
+    private fun renderHealthPlanResult() {
         findViewById<ConstraintLayout>(R.id.health_plan_result)
             .visibility = View.VISIBLE
 
+        if (healthPlanCard.visibility == View.INVISIBLE)
+            healthPlanCard.visibility = View.VISIBLE
+
         if (healthPlan != null) {
-            goalTextView.text = "< Goal: ${healthPlan!!.healthGoal} >"
-            startDateTextView.text = "${Date(healthPlan!!.startDate)}"
-            startDateTextView.text = "${Date(healthPlan!!.endDate)}"
+            goalTextView.text = "< Goal: ${healthPlan!!.healthGoal.displayName} >"
+            startDateTextView.text = healthPlan!!.startDate
+            endDateTextView.text = healthPlan!!.endDate
 
-            caloriesIntakeTextView.text = "${healthPlan!!.dietPlan.dayCaloriesIntake} (cal)"
-            proteinIntakeTextView.text = "${healthPlan!!.dietPlan.dayProteinIntake * 100}%"
-            carbIntakeTextView.text = "${healthPlan!!.dietPlan.dayCarbIntake * 100}%"
-            fatIntakeTextView.text = "${healthPlan!!.dietPlan.dayFatIntake * 100}%"
-            limitedFoodsTextView.text = toStringCommaList(
+            caloriesIntakeTextView.text = "Daily Calories Intake: ${String.format("%.1f", healthPlan!!.dietPlan.dayCaloriesIntake)} (cal)"
+            proteinIntakeTextView.text = "${String.format("%.1f", healthPlan!!.dietPlan.dayProteinIntake * 100)}%"
+            carbIntakeTextView.text = "${String.format("%.1f", healthPlan!!.dietPlan.dayCarbIntake * 100)}%"
+            fatIntakeTextView.text = "${String.format("%.1f", healthPlan!!.dietPlan.dayFatIntake * 100)}%"
+            limitedFoodsTextView.text = "Limited Food: ${toStringCommaList(
                 healthPlan!!.dietPlan.limitedFoods
-            )
-            supportedNutrientsTextView.text = toStringCommaList(
+            )}"
+            supportedNutrientsTextView.text = "Supported Nutrients: ${toStringCommaList(
                 healthPlan!!.dietPlan.supportedNutrients
-            )
+            )}"
 
-            exerciseLevelTextView.text = "${healthPlan!!.exercisePlan.exerciseType}"
-            dailyExerciseDuration.text = "${healthPlan!!.exercisePlan.dailyDuration}"
-            suggestedExercise.text = toStringCommaList(
+            exerciseLevelTextView.text = healthPlan!!.exercisePlan.exerciseType.displayName
+            dailyExerciseDuration.text = convertToHourMinString(healthPlan!!.exercisePlan.dailyDuration)
+            suggestedExercise.text = "Suggested exercises: ${toStringCommaList(
                 healthPlan!!.exercisePlan.suggestedExercises
-            )
+            )}"
 
-            sleepDurationTextView.text = "${healthPlan!!.sleepPlan.sleepDuration} hrs"
-            wakeUpTimeTextView.text = "${healthPlan!!.sleepPlan.wakeupTime} am"
+            sleepDurationTextView.text = "Duration: ${healthPlan!!.sleepPlan.sleepDuration} hrs"
+            wakeUpTimeTextView.text = "Wake up at: ${healthPlan!!.sleepPlan.wakeupTime} am"
 
 
         } else {
@@ -196,7 +295,18 @@ class SelectPlanActivity : AppCompatActivity() {
         }
     }
 
-    fun toStringCommaList(mutableList: MutableList<String>): String {
-        return mutableList.joinToString(", ") { it + "," }
+    private fun toStringCommaList(mutableList: MutableList<String>): String {
+        return mutableList.joinToString(", ")
+    }
+
+    private fun convertToHourMinString(_hours: Double): String {
+        val hours = _hours.toInt()
+        val minutes = ((_hours - hours) * 60).toInt()
+
+        return when {
+            hours > 0 -> "$hours hours and $minutes minutes"
+            minutes > 0 -> "$minutes minutes"
+            else -> "0 minutes"
+        }
     }
 }
