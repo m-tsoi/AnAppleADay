@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.cs125.anappleaday.R
 import com.cs125.anappleaday.data.enumTypes.ActivityLevel
+import com.cs125.anappleaday.data.record.models.live.SleepData
 import com.cs125.anappleaday.data.record.models.user.Personicle
 import com.cs125.anappleaday.databinding.ActivityInitPersonicleBinding
 import com.cs125.anappleaday.services.auth.FBAuth
@@ -20,6 +21,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class InitPersonicleActivity: AppCompatActivity() {
     private lateinit var fbAuth: FBAuth
@@ -69,6 +71,12 @@ class InitPersonicleActivity: AppCompatActivity() {
                             )
                             val caloriesBudget = StatCalculator.computeCaloriesBudget(rmr, activityLevel)
 
+                            // Create new blank SleepData, DietData, ActivityData documents in firestore for this user
+                            val db = Firebase.firestore
+                            val sleepDataDocUUID = UUID.randomUUID().toString()
+                            db.collection("SleepData").document(sleepDataDocUUID).set(SleepData())
+                            // TODO: do the same for DietData and ActivityData
+
                             // Create personicle in firestore
                             personicleServices.createPersonicle(
                                 personicleId = profile.personicleId,
@@ -76,7 +84,9 @@ class InitPersonicleActivity: AppCompatActivity() {
                                     healthScore = 0.0,
                                     bmi = bmi,
                                     rmr = rmr ,
-                                    caloriesBudget = caloriesBudget
+                                    caloriesBudget = caloriesBudget,
+                                    sleepDataId = sleepDataDocUUID
+                                    // TODO: do the same for DietData and ActivityData
                                 )
                             ).addOnSuccessListener {
                                 Toast.makeText(this@InitPersonicleActivity,
