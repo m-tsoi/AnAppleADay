@@ -31,11 +31,14 @@ class ExerciseActivity : AppCompatActivity() {
 
     private lateinit var recyclerRecommendations : RecyclerView //Helps recycle data already loaded, exercise data
 
-    private lateinit var submit_calories : Button
+    // Buttons
+    private lateinit var submit_exercise : Button // Submit exercises as list
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise)
+
+        fbAuth = FBAuth()
 
         MET = findViewById(R.id.MET)
         calories_burned = findViewById(R.id.calories_burned)
