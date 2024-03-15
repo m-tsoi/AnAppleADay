@@ -15,6 +15,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.cs125.anappleaday.data.ApiMain
 import com.cs125.anappleaday.data.RecommendedExercises
+import com.cs125.anappleaday.data.record.models.live.ProposedExercise
 import com.cs125.anappleaday.data.record.models.live.SleepData
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
@@ -31,7 +32,7 @@ class ExerciseActivity : AppCompatActivity() {
     private lateinit var MET: TextView // Metabolic Equivalent of Task
     private lateinit var calories_burned: TextView
     private lateinit var exercise_duration_mins: TextView
-
+    private lateinit var exercise_score : TextView
     //Placeholders until retrieving stored data
     private lateinit var calories_total: TextView // calories_burned +/- calories_total + diet
     private lateinit var recyclerRecommendations : RecyclerView //Helps recycle data already loaded, exercise data
@@ -59,16 +60,19 @@ class ExerciseActivity : AppCompatActivity() {
         val durationHours: Double = exercise_duration_mins.text.toString().toDoubleOrNull() ?: 0.0
 
         // Calculate calories burned using private function
-        val caloriesBurnedValue: Double = caloriesBurnedCalculation(metValue, personWeight, durationHours)
-        calories_burned.text = "Calories burned: ${caloriesBurnedValue.roundToInt()}"
+        //val caloriesBurnedValue: Double = caloriesBurnedCalculation(metValue, personWeight, durationHours)
+        //calories_burned.text = "Calories burned: ${caloriesBurnedValue.roundToInt()}"
 
         // Make API call to NinjaAPI
         val apiServices = ApiMain.getAPIServices()
         val call = apiServices.getRecommendedExercises(param1, param2, param3) //Edit params
-        call.enqueue(object : Callback<RecommendedExercises> {
-            override fun onResponse(call: Call<RecommendedExercises>, response: Response<RecommendedExercises>) {
+        call.enqueue(object : Callback<recommendedExercises> {
+            override fun onResponse(call: Call<recommendedExercises>, response: Response<RecommendedExercises>) {
                 if (response.isSuccessful) {
-                    val exercises = response.body()
+                    val exerciseDataList = response.body()
+                    val exerciseResultNames = mutableListOf<String>()
+
+                    exerciseDataList?.forEach{ exerciseDate}
                 } else {
                     // Unsuccessful
                 }
@@ -132,64 +136,20 @@ class ExerciseActivity : AppCompatActivity() {
                     val exerciseData = document.toObject(ActivityData::class.java)!!
                     Log.d("EXERCISE DATA", exerciseData.recommendedExercises.toString())
 
-                    if (sleepData.dailySleepRecords.isNotEmpty()) {
-                        val sleepRecordsToday = sleepData.dailySleepRecords.last()
-                        if (!isToday(sleepRecordsToday.enteredDate))  {
+                    if (ActivityData.dailyExerciseRecords.isNotEmpty()) {
+                        val exerciseRecordsToday = exerciseData.dailyExerciseRecords.last()
+                        if (!isToday(exerciseRecordsToday.enteredDate))  {
                             time_range_confirm.setVisibility(View.VISIBLE)
-                            sleep_score.setText("??")
+                            exercise_score.setText("??")
                         } else {
-                            val sleepStartTime : TimeRangePicker.Time?
-                            if (sleepRecordsToday.startTime != null) {
-                                sleepStartTime = TimeRangePicker.Time(
-                                    sleepRecordsToday.startTime!!.hours,
-                                    sleepRecordsToday.startTime!!.minutes
-                                )
-                            } else {
-                                sleepStartTime = null
-                            }
 
-                            val sleepEndTime : TimeRangePicker.Time?
-                            if (sleepRecordsToday.endTime != null) {
-                                sleepEndTime = TimeRangePicker.Time(
-                                    sleepRecordsToday.endTime!!.hours,
-                                    sleepRecordsToday.endTime!!.minutes
-                                )
-                            } else {
-                                sleepEndTime = null
-                            }
-
-                            if (sleepStartTime != null && sleepEndTime != null) {
-                                val sleepEndTimeMinutes = sleepRecordsToday.endTime!!.hours * 60 + sleepRecordsToday.endTime!!.minutes
-                                sleep_duration_picker.startTime = sleepStartTime
-                                sleep_duration_picker.endTimeMinutes = sleepEndTimeMinutes
-                                time_range_confirm.setVisibility(View.GONE)
-                                sleep_duration.setText("You have slept for " + TimeRangePicker.TimeDuration(sleepStartTime, sleepEndTime).toString())
-                                sleep_score.setText(sleepRecordsToday.sleepScore.toString())
-                            } else {
-                                sleep_duration_picker.startTime = TimeRangePicker.Time(1, 0)
-                                sleep_duration_picker.endTimeMinutes = 2 * 60
-                                time_range_confirm.setVisibility(View.VISIBLE)
-                                sleep_duration.setText("")
-                                sleep_score.setText("??")
-                            }
-
-                            sleep_rec.setText("To wake up refreshed tomorrow, you should head to bed at "
-                                    + sleepRecordsToday.recomEndTime?.hours + ":" + sleepRecordsToday.recomEndTime?.minutes)
-                        }
-                    } else {
-                        sleep_duration_picker.startTime = TimeRangePicker.Time(1, 0)
-                        sleep_duration_picker.endTimeMinutes = 2 * 60
-                        time_range_confirm.setVisibility(View.VISIBLE)
-                        sleep_duration.setText("")
-                        sleep_score.setText("??")
-                    }
 
                 } else {
-                    Log.d("SLEEP DATA", "failed :<")
+                    Log.d("EXERCISE DATA", "failed :(")
                 }
             }
             .addOnFailureListener { exception ->
-                Log.d("SLEEP DATA", "get failed with ", exception)
+                Log.d("EXERCISE DATA", "get failed with ", exception)
             }
     }
     // Might be scrapped due to API
