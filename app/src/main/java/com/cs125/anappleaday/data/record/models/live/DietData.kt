@@ -1,11 +1,12 @@
 package com.cs125.anappleaday.data.record.models.live
 
-import android.health.connect.datatypes.NutritionRecord
+import com.cs125.anappleaday.data.enumTypes.NutritionData
 
 data class DietData(
-    val id: String,
+    val dietScore: Int = 0,
 
-    val scores: MutableList<ScoreDay>,
-
-    val nutrition: MutableList<NutritionRecord>
-)
+    val dietRecords: MutableList<NutritionData> = mutableListOf() ){
+    fun addNutritionData(nutritionData: NutritionData) {
+        dietRecords.add(nutritionData)
+    }
+}

@@ -7,12 +7,18 @@ import android.widget.SearchView
 import android.widget.TextView
 import com.cs125.anappleaday.R
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.api.ApiMain
 import com.google.gson.JsonObject
 
 
 import com.cs125.anappleaday.data.enumTypes.NutritionData
+import com.cs125.anappleaday.data.recycler.DietResultAdapter
+import com.cs125.anappleaday.services.auth.FBAuth
+import com.cs125.anappleaday.services.firestore.FbDietServices
+import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,24 +26,31 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class DietSearchActivity : AppCompatActivity() {
+class DietSearchActivity : AppCompatActivity(), DietResultAdapter.OnAddClickListener  {
+
+    private lateinit var fbAuth: FBAuth
+    private lateinit var dietServices: FbDietServices
+    private val apiService = ApiMain.getNinjaServices()
 
     private lateinit var searchView : SearchView
     private lateinit var recyclerResults : RecyclerView
-    // also add in adapter???
+    private lateinit var resultAdapter: DietResultAdapter
 
-    private val apiService = ApiMain.getAPIServices()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diet_search)
 
+        fbAuth = FBAuth()
+        dietServices = FbDietServices(com.google.firebase.Firebase.firestore)
+
         searchView = findViewById<SearchView>(R.id.searchView)
         recyclerResults = findViewById<RecyclerView>(R.id.recyclerResults)
-        // add recycler adapter
+        resultAdapter = DietResultAdapter(mutableListOf(), this)
+        recyclerResults.adapter = resultAdapter
 
-        // listener for search view
+        // listener for search view (edit later)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let { fetchSearchResults(it) }
@@ -57,36 +70,31 @@ class DietSearchActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<NutritionData>>, response: Response<List<NutritionData>>) {
                 if (response.isSuccessful) {
                     val nutritionDataList = response.body()
-                    val resultNames = mutableListOf<String>()
-
-                    nutritionDataList?.forEach { nutritionData ->
-                        val foodName = nutritionData.name // get names to display
-                        resultNames.add(foodName)
-                    }
-
-
-                    // Bind the list of food names to your search bar or any UI component
-                    // For example, if you're using an AutoCompleteTextView for the search bar:
-                    //val adapter = ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, foodNames)
-                    //searchBar.setAdapter(adapter)
-
+                    val mutableList: MutableList<NutritionData> = nutritionDataList?.toMutableList() ?: mutableListOf()
+                    //change to one instead of a list
+                    resultAdapter.updateDataSet(mutableList)
                 } else {
-                    Log.e("YourActivity", "API Request failed with code: ${response.code()}")
+                    Log.e("DietSearchActivity", "API Request failed with code: ${response.code()}")
                 }
             }
-
             override fun onFailure(call: Call<List<NutritionData>>, t: Throwable) {
-                Log.e("YourActivity", "API Request failed", t)
+                Log.e("DietSearchActivity", "API Request failed", t)
             }
         })
     }
 
+    override fun onAddClick(position: Int) {
+        val userId = fbAuth.getUser()?.uid
+        if (userId != null) {
+            lifecycleScope.launch {
+                val dietData = dietServices.getDietData(userId)
+                if (dietData != null && dietData.dietScore != null) {
+                    // add new thing to dietRecords
 
-
-    private fun updateUI(response: JsonObject) {
-        // Update UI based on the API response
+                }
+            }
+        }
 
     }
-
 
 }
