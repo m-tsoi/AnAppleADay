@@ -4,11 +4,12 @@ import android.health.connect.datatypes.ExerciseSessionRecord
 import android.health.connect.datatypes.NutritionRecord
 import com.cs125.anappleaday.data.enumTypes.NutritionData
 import com.cs125.anappleaday.data.record.models.live.ProposedExercise
+import com.google.gson.JsonElement
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface ApiService {
+interface NinjaService {
     @GET("caloriesburnedactivities")
     fun getCaloriesBurnedExercises(
         @Query("activity") name: String,
