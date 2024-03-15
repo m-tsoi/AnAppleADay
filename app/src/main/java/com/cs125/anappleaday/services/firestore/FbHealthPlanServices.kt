@@ -28,8 +28,10 @@ class FbHealthPlanServices(firestore: FirebaseFirestore):
             hashMapOf(
                 "healthGoal" to _healthPlan.healthGoal,
                 "score" to 0,
+                "startDate" to _healthPlan.startDate,
+                "endDate" to _healthPlan.endDate,
                 "dietPlan" to _healthPlan.dietPlan.toMap(),
-                "exercisePLan" to _healthPlan.exercisePlan.toMap(),
+                "exercisePlan" to _healthPlan.exercisePlan.toMap(),
                 "sleepPlan" to _healthPlan.sleepPlan.toMap()
             )
         )

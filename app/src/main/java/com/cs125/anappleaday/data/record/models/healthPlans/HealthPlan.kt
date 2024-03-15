@@ -15,7 +15,7 @@ data class HealthPlan(
 
     val sleepPlan: SleepPlan = SleepPlan(),
 
-    val startDate: Long = 0,
+    val startDate: String = "",
 
-    val endDate: Long = 0
+    val endDate: String = ""
 )
