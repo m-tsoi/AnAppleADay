@@ -16,12 +16,10 @@ import com.google.firebase.ktx.Firebase
 import com.cs125.anappleaday.data.ApiMain
 import com.cs125.anappleaday.data.RecommendedExercises
 import com.cs125.anappleaday.data.record.models.live.ProposedExercise
-import com.cs125.anappleaday.data.record.models.live.SleepData
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
 import kotlinx.coroutines.launch
-import nl.joery.timerangepicker.TimeRangePicker
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,9 +34,12 @@ class ExerciseActivity : AppCompatActivity() {
     //Placeholders until retrieving stored data
     private lateinit var calories_total: TextView // calories_burned +/- calories_total + diet
     private lateinit var recyclerRecommendations : RecyclerView //Helps recycle data already loaded, exercise data
+
+    // API
     private lateinit var fbAuth: FBAuth
     private lateinit var exerciseDataDocRef : DocumentReference
-
+    private lateinit var autoCompleteTextViewExercise: AutoCompleteTextView
+    private lateinit var exerciseAdapter: ArrayAdapter<String>
 
     // Buttons
     private lateinit var submit_exercise : Button // Submit exercises as list

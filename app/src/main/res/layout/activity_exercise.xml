@@ -5,46 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextViewExercise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="53dp"
+        android:hint="Search for an exercise"
+        app:layout_constraintTop_toBottomOf="@+id/textViewExerciseSearch"
+        tools:layout_editor_absoluteX="0dp" />
+
     <TextView
-        android:id="@+id/textViewHealthPlan"
+        android:id="@+id/textViewExerciseSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Health Plan"
+        android:text="Exercise Search"
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.24" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/healthPlanLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="72dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-        app:boxStrokeColor="@color/design_default_color_primary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textViewHealthPlan">
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/selectHealthPlan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="HealthPlan"
-            app:simpleItems="@array/health_plan_list"/>
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintVertical_bias="0.166" />
 
     <Button
         android:id="@+id/confirm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Confirm"
+        android:text="Submit Exercises for Recommendation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.806" />
+        app:layout_constraintVertical_bias="0.913" />
 </androidx.constraintlayout.widget.ConstraintLayout>
