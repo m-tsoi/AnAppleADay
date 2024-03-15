@@ -15,10 +15,12 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.cs125.anappleaday.data.ApiMain
 import com.cs125.anappleaday.data.RecommendedExercises
+import com.cs125.anappleaday.data.record.models.live.SleepData
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
 import kotlinx.coroutines.launch
+import nl.joery.timerangepicker.TimeRangePicker
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,12 +30,14 @@ class ExerciseActivity : AppCompatActivity() {
 
     private lateinit var MET: TextView // Metabolic Equivalent of Task
     private lateinit var calories_burned: TextView
-    private lateinit var exercise_duration: TextView
+    private lateinit var exercise_duration_mins: TextView
 
     //Placeholders until retrieving stored data
     private lateinit var calories_total: TextView // calories_burned +/- calories_total + diet
     private lateinit var recyclerRecommendations : RecyclerView //Helps recycle data already loaded, exercise data
     private lateinit var fbAuth: FBAuth
+    private lateinit var exerciseDataDocRef : DocumentReference
+
 
     // Buttons
     private lateinit var submit_exercise : Button // Submit exercises as list
@@ -47,13 +51,12 @@ class ExerciseActivity : AppCompatActivity() {
         // Displayed variables through UI
         MET = findViewById(R.id.MET)
         calories_burned = findViewById(R.id.calories_burned)
-        exercise_duration = findViewById(R.id.exercise_duration)
+        exercise_duration_mins = findViewById(R.id.exercise_duration)
 
         // MET, weight, and exercise duration
         // toDoubleOrNull is like ternary statement in JavaScript, return double if double, return null if nondouble
         val metValue: Double = MET.text.toString().toDoubleOrNull() ?: 0.0
-        val personWeight: Double = weight.text.toString().toDoubleOrNull() ?: 0.0
-        val durationHours: Double = exercise_duration.text.toString().toDoubleOrNull() ?: 0.0
+        val durationHours: Double = exercise_duration_mins.text.toString().toDoubleOrNull() ?: 0.0
 
         // Calculate calories burned using private function
         val caloriesBurnedValue: Double = caloriesBurnedCalculation(metValue, personWeight, durationHours)
@@ -91,15 +94,15 @@ class ExerciseActivity : AppCompatActivity() {
                 if (profile != null && profile.personicleId != null) {
                     val personicle = personicleServices.getPersonicle(profile.personicleId)
                     if (personicle != null) {
-                        val sleepDataId = personicle.sleepDataId
-                        if (sleepDataId != null) {
-                            sleepDataDocRef =  db.collection("SleepData").document(sleepDataId)
-                            Log.d("BUG", "sleepDataId is not null")
+                        val activityDataId = personicle.activityDataId
+                        if (activityDataId != null) {
+                            // Retrieve user's exercise data from firebase
+                            exerciseDataDocRef =  db.collection("SleepData").document(activityDataId)
+                            Log.d("BUG", "activityDataId is not null")
 
                         } else {
-                            Log.d("HomeActivity", "sleepDataId is null")
+                            Log.d("HomeActivity", "activityDataId is null")
                         }
-                        // TODO: get activityDataId and dietDataId
 
                         // Initialize UI with data from db
                         updateUI()
@@ -110,14 +113,84 @@ class ExerciseActivity : AppCompatActivity() {
                 } else {
                     Log.d("BUG", "profile or personicleId is null")
                 }
-                if (!this@SleepActivity::sleepDataDocRef.isInitialized) {
-                    Toast.makeText(this@SleepActivity, "Could not get sleepDataId for this user", Toast.LENGTH_SHORT).show()
+                if (!this@ExerciseActivity::exerciseDataDocRef.isInitialized) {
+                    Toast.makeText(this@ExerciseActivity, "Could not get activityDataId for this user", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
-            Toast.makeText(this, "Could not get sleepDataId for this user", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Could not get activityDataId for this user", Toast.LENGTH_SHORT).show()
             Log.d("BUG", "userId is null")
         }
+    }
+
+    // Update UI with data from db
+    fun updateUI() {
+        exerciseDataDocRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d("EXERCISE DATA", document.data.toString())
+                    val exerciseData = document.toObject(ActivityData::class.java)!!
+                    Log.d("EXERCISE DATA", exerciseData.recommendedExercises.toString())
+
+                    if (sleepData.dailySleepRecords.isNotEmpty()) {
+                        val sleepRecordsToday = sleepData.dailySleepRecords.last()
+                        if (!isToday(sleepRecordsToday.enteredDate))  {
+                            time_range_confirm.setVisibility(View.VISIBLE)
+                            sleep_score.setText("??")
+                        } else {
+                            val sleepStartTime : TimeRangePicker.Time?
+                            if (sleepRecordsToday.startTime != null) {
+                                sleepStartTime = TimeRangePicker.Time(
+                                    sleepRecordsToday.startTime!!.hours,
+                                    sleepRecordsToday.startTime!!.minutes
+                                )
+                            } else {
+                                sleepStartTime = null
+                            }
+
+                            val sleepEndTime : TimeRangePicker.Time?
+                            if (sleepRecordsToday.endTime != null) {
+                                sleepEndTime = TimeRangePicker.Time(
+                                    sleepRecordsToday.endTime!!.hours,
+                                    sleepRecordsToday.endTime!!.minutes
+                                )
+                            } else {
+                                sleepEndTime = null
+                            }
+
+                            if (sleepStartTime != null && sleepEndTime != null) {
+                                val sleepEndTimeMinutes = sleepRecordsToday.endTime!!.hours * 60 + sleepRecordsToday.endTime!!.minutes
+                                sleep_duration_picker.startTime = sleepStartTime
+                                sleep_duration_picker.endTimeMinutes = sleepEndTimeMinutes
+                                time_range_confirm.setVisibility(View.GONE)
+                                sleep_duration.setText("You have slept for " + TimeRangePicker.TimeDuration(sleepStartTime, sleepEndTime).toString())
+                                sleep_score.setText(sleepRecordsToday.sleepScore.toString())
+                            } else {
+                                sleep_duration_picker.startTime = TimeRangePicker.Time(1, 0)
+                                sleep_duration_picker.endTimeMinutes = 2 * 60
+                                time_range_confirm.setVisibility(View.VISIBLE)
+                                sleep_duration.setText("")
+                                sleep_score.setText("??")
+                            }
+
+                            sleep_rec.setText("To wake up refreshed tomorrow, you should head to bed at "
+                                    + sleepRecordsToday.recomEndTime?.hours + ":" + sleepRecordsToday.recomEndTime?.minutes)
+                        }
+                    } else {
+                        sleep_duration_picker.startTime = TimeRangePicker.Time(1, 0)
+                        sleep_duration_picker.endTimeMinutes = 2 * 60
+                        time_range_confirm.setVisibility(View.VISIBLE)
+                        sleep_duration.setText("")
+                        sleep_score.setText("??")
+                    }
+
+                } else {
+                    Log.d("SLEEP DATA", "failed :<")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("SLEEP DATA", "get failed with ", exception)
+            }
     }
     // Might be scrapped due to API
     private fun caloriesBurnedCalculation(met: Double, weight: Double, durationHours: Double): Double {
