@@ -30,7 +30,9 @@
         <activity android:name=".ui.SleepActivity"/>
         <activity android:name=".ui.SelectPlanActivity"/>
         <activity android:name=".ui.PersonicleActivity"/>
-        <activity android:name=".ui.NutritionActivity"/>
+        <activity android:name=".ui.DietActivity"/>
+        <activity android:name=".ui.DietSearchActivity" />
+        <activity android:name=".ui.DietViewActivity" />
         <activity android:name=".ui.ProfileCreationActivity"/>
     </application>
 

@@ -67,8 +67,8 @@ class HomeActivity : AppCompatActivity() {
                 Log.d("BUTTONS", "User tapped the login")
 
                 // TODO: link to Diet page
-//                val sendIntent = Intent(this, SleepActivity::class.java)
-//                startActivity(sendIntent)
+                val sendIntent = Intent(this, DietActivity::class.java)
+                startActivity(sendIntent)
             }
 
         // Exercise button functionalities
