@@ -7,13 +7,19 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.cs125.anappleaday.R
 import com.cs125.anappleaday.data.record.models.live.SleepData
 import com.cs125.anappleaday.data.record.models.live.SleepSession
+import com.cs125.anappleaday.services.auth.FBAuth
+import com.cs125.anappleaday.services.firestore.FbPersonicleServices
+import com.cs125.anappleaday.services.firestore.FbProfileServices
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 import nl.joery.timerangepicker.TimeRangePicker
 import java.util.Date
 import kotlin.math.min
@@ -26,10 +32,13 @@ class SleepActivity : AppCompatActivity() {
     private lateinit var sleep_duration_picker : TimeRangePicker
     private lateinit var enter_next_sleep : Button
     private lateinit var time_range_confirm : Button
+    private lateinit var fbAuth: FBAuth
     private lateinit var sleepDataDocRef : DocumentReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sleep)
+
+        fbAuth = FBAuth()
 
         sleep_score = findViewById(R.id.sleep_score)
         sleep_duration = findViewById(R.id.sleep_duration)
@@ -37,14 +46,6 @@ class SleepActivity : AppCompatActivity() {
         sleep_duration_picker = findViewById<TimeRangePicker>(R.id.sleep_duration_picker)
         enter_next_sleep = findViewById<Button>(R.id.enter_next_sleep)
         time_range_confirm = findViewById<Button>(R.id.time_range_confirm)
-
-        val db = Firebase.firestore
-
-        //TODO: get the right document from the right user
-        sleepDataDocRef =  db.collection("SleepData").document("rWZTS6CwoL3aq8fnMci8")
-
-        // Initialize the UI with the info from db
-        updateUI()
 
         // Record last night's sleep duration to calculate the sleep score
         sleep_duration_picker
@@ -107,6 +108,49 @@ class SleepActivity : AppCompatActivity() {
             }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val db = Firebase.firestore
+        val profileServices = FbProfileServices(db)
+        val personicleServices = FbPersonicleServices(db)
+        val userId = fbAuth.getUser()?.uid
+        if (userId != null) {
+            lifecycleScope.launch {
+                val profile = profileServices.getProfile(userId)
+                if (profile != null && profile.personicleId != null) {
+                    val personicle = personicleServices.getPersonicle(profile.personicleId)
+                    if (personicle != null) {
+                        val sleepDataId = personicle.sleepDataId
+                        if (sleepDataId != null) {
+                            sleepDataDocRef =  db.collection("SleepData").document(sleepDataId)
+                            Log.d("BUG", "sleepDataId is not null")
+
+                        } else {
+                            Log.d("HomeActivity", "sleepDataId is null")
+                        }
+                        // TODO: get activityDataId and dietDataId
+
+                        // Initialize UI with data from db
+                        updateUI()
+
+                    } else {
+                        Log.d("BUG", "personicle is null")
+                    }
+                } else {
+                    Log.d("BUG", "profile or personicleId is null")
+                }
+                if (!this@SleepActivity::sleepDataDocRef.isInitialized) {
+                    Toast.makeText(this@SleepActivity, "Could not get sleepDataId for this user", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            Toast.makeText(this, "Could not get sleepDataId for this user", Toast.LENGTH_SHORT).show()
+            Log.d("BUG", "userId is null")
+        }
+    }
+
+
     // Update UI with data from db
     fun updateUI() {
         sleepDataDocRef.get()
@@ -116,49 +160,58 @@ class SleepActivity : AppCompatActivity() {
                     val sleepData = document.toObject(SleepData::class.java)!!
                     Log.d("SLEEP DATA", sleepData.dailySleepRecords.toString())
 
-                    val sleepRecordsToday = sleepData.dailySleepRecords.last()
-                    if (!isToday(sleepRecordsToday.enteredDate))  {
-                        time_range_confirm.setVisibility(View.VISIBLE)
-                        sleep_score.setText("??")
-                    } else {
-                        val sleepStartTime : TimeRangePicker.Time?
-                        if (sleepRecordsToday.startTime != null) {
-                            sleepStartTime = TimeRangePicker.Time(
-                                sleepRecordsToday.startTime!!.hours,
-                                sleepRecordsToday.startTime!!.minutes
-                            )
-                        } else {
-                            sleepStartTime = null
-                        }
-
-                        val sleepEndTime : TimeRangePicker.Time?
-                        if (sleepRecordsToday.endTime != null) {
-                            sleepEndTime = TimeRangePicker.Time(
-                                sleepRecordsToday.endTime!!.hours,
-                                sleepRecordsToday.endTime!!.minutes
-                            )
-                        } else {
-                            sleepEndTime = null
-                        }
-
-                        if (sleepStartTime != null && sleepEndTime != null) {
-                            val sleepEndTimeMinutes = sleepRecordsToday.endTime!!.hours * 60 + sleepRecordsToday.endTime!!.minutes
-                            sleep_duration_picker.startTime = sleepStartTime
-                            sleep_duration_picker.endTimeMinutes = sleepEndTimeMinutes
-                            time_range_confirm.setVisibility(View.GONE)
-                            sleep_duration.setText("You have slept for " + TimeRangePicker.TimeDuration(sleepStartTime, sleepEndTime).toString())
-                            sleep_score.setText(sleepRecordsToday.sleepScore.toString())
-                        } else {
-                            sleep_duration_picker.startTime = TimeRangePicker.Time(1, 0)
-                            sleep_duration_picker.endTimeMinutes = 2 * 60
+                    if (sleepData.dailySleepRecords.isNotEmpty()) {
+                        val sleepRecordsToday = sleepData.dailySleepRecords.last()
+                        if (!isToday(sleepRecordsToday.enteredDate))  {
                             time_range_confirm.setVisibility(View.VISIBLE)
-                            sleep_duration.setText("")
                             sleep_score.setText("??")
-                        }
+                        } else {
+                            val sleepStartTime : TimeRangePicker.Time?
+                            if (sleepRecordsToday.startTime != null) {
+                                sleepStartTime = TimeRangePicker.Time(
+                                    sleepRecordsToday.startTime!!.hours,
+                                    sleepRecordsToday.startTime!!.minutes
+                                )
+                            } else {
+                                sleepStartTime = null
+                            }
 
-                        sleep_rec.setText("To wake up refreshed tomorrow, you should head to bed at "
-                                + sleepRecordsToday.recomEndTime?.hours + ":" + sleepRecordsToday.recomEndTime?.minutes)
+                            val sleepEndTime : TimeRangePicker.Time?
+                            if (sleepRecordsToday.endTime != null) {
+                                sleepEndTime = TimeRangePicker.Time(
+                                    sleepRecordsToday.endTime!!.hours,
+                                    sleepRecordsToday.endTime!!.minutes
+                                )
+                            } else {
+                                sleepEndTime = null
+                            }
+
+                            if (sleepStartTime != null && sleepEndTime != null) {
+                                val sleepEndTimeMinutes = sleepRecordsToday.endTime!!.hours * 60 + sleepRecordsToday.endTime!!.minutes
+                                sleep_duration_picker.startTime = sleepStartTime
+                                sleep_duration_picker.endTimeMinutes = sleepEndTimeMinutes
+                                time_range_confirm.setVisibility(View.GONE)
+                                sleep_duration.setText("You have slept for " + TimeRangePicker.TimeDuration(sleepStartTime, sleepEndTime).toString())
+                                sleep_score.setText(sleepRecordsToday.sleepScore.toString())
+                            } else {
+                                sleep_duration_picker.startTime = TimeRangePicker.Time(1, 0)
+                                sleep_duration_picker.endTimeMinutes = 2 * 60
+                                time_range_confirm.setVisibility(View.VISIBLE)
+                                sleep_duration.setText("")
+                                sleep_score.setText("??")
+                            }
+
+                            sleep_rec.setText("To wake up refreshed tomorrow, you should head to bed at "
+                                    + sleepRecordsToday.recomEndTime?.hours + ":" + sleepRecordsToday.recomEndTime?.minutes)
+                        }
+                    } else {
+                        sleep_duration_picker.startTime = TimeRangePicker.Time(1, 0)
+                        sleep_duration_picker.endTimeMinutes = 2 * 60
+                        time_range_confirm.setVisibility(View.VISIBLE)
+                        sleep_duration.setText("")
+                        sleep_score.setText("??")
                     }
+
                 } else {
                     Log.d("SLEEP DATA", "failed :<")
                 }
@@ -174,9 +227,13 @@ class SleepActivity : AppCompatActivity() {
             .addOnSuccessListener { document ->
                 if (document != null) {
                     val sleepData = document.toObject(SleepData::class.java)!!
-                    val sleepRecordsToday = sleepData.dailySleepRecords.last()
 
-                    if (isToday(sleepRecordsToday.enteredDate))  {
+                    var sleepRecordsToday : SleepSession? = null
+                    if (sleepData.dailySleepRecords.isNotEmpty()) {
+                        sleepRecordsToday = sleepData.dailySleepRecords.last()
+                    }
+
+                    if (sleepRecordsToday != null && isToday(sleepRecordsToday.enteredDate))  {
                         sleepDataDocRef.update("dailySleepRecords", FieldValue.arrayRemove(sleepRecordsToday))
                         if (startTime != null) {
                             sleepRecordsToday.startTime = startTime

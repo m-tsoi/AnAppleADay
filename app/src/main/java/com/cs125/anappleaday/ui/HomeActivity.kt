@@ -3,23 +3,32 @@ package com.cs125.anappleaday.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.lifecycleScope
 import com.cs125.anappleaday.R
 import com.cs125.anappleaday.data.record.models.live.SleepData
 import com.cs125.anappleaday.services.auth.FBAuth
+import com.cs125.anappleaday.services.firestore.FbPersonicleServices
+import com.cs125.anappleaday.services.firestore.FbProfileServices
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 import nl.joery.timerangepicker.TimeRangePicker
 import java.util.Date
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var fbAuth: FBAuth
+    private lateinit var imageView: ImageView
     private lateinit var sleepDataDocRef : DocumentReference
     private lateinit var ls_score : TextView
     private lateinit var sleep_region : ConstraintLayout
@@ -37,11 +46,10 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
 
         fbAuth = FBAuth()
-        val db = Firebase.firestore
-        //TODO: get the right document from the right user
-        sleepDataDocRef =  db.collection("SleepData").document("rWZTS6CwoL3aq8fnMci8")
+
 
         ls_score = findViewById<TextView>(R.id.lifestyle_score)
+        imageView = findViewById<ImageView>(R.id.imageView)
         sleep_region = findViewById<ConstraintLayout>(R.id.sleep_region)
         sleep_score = findViewById<TextView>(R.id.sleep_score)
         diet_region = findViewById<ConstraintLayout>(R.id.diet_region)
@@ -106,8 +114,64 @@ class HomeActivity : AppCompatActivity() {
                 startActivity(Intent(this, LoginActivity::class.java))
             }
 
-        // Initialize UI with data from db
-        updateUI()
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Log the user out if the user is not logged in
+        if (!fbAuth.isCurrentUser()) {
+            startActivity(Intent(this, LoginActivity::class.java))
+        } else {
+            val photoUrl = fbAuth.getUser()?.photoUrl
+            if (photoUrl != null) {
+                imageView.setImageURI(photoUrl)
+                imageView.scaleType = ImageView.ScaleType.FIT_XY
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val db = Firebase.firestore
+        val profileServices = FbProfileServices(db)
+        val personicleServices = FbPersonicleServices(db)
+        val userId = fbAuth.getUser()?.uid
+        if (userId != null) {
+            lifecycleScope.launch {
+                val profile = profileServices.getProfile(userId)
+                if (profile != null && profile.personicleId != null) {
+                    val personicle = personicleServices.getPersonicle(profile.personicleId)
+                    if (personicle != null) {
+                        val sleepDataId = personicle.sleepDataId
+                        if (sleepDataId != null) {
+                            sleepDataDocRef =  db.collection("SleepData").document(sleepDataId)
+                            Log.d("BUG", "sleepDataId is not null")
+
+                        } else {
+                            Log.d("HomeActivity", "sleepDataId is null")
+                        }
+                        // TODO: get activityDataId and dietDataId
+
+                        // Initialize UI with data from db
+                        updateUI()
+
+                    } else {
+                        Log.d("BUG", "personicle is null")
+                    }
+                } else {
+                    Log.d("BUG", "profile or personicleId is null")
+                }
+                if (!this@HomeActivity::sleepDataDocRef.isInitialized) {
+                    Toast.makeText(this@HomeActivity, "Could not get sleepDataId for this user", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            Toast.makeText(this, "Could not get sleepDataId for this user", Toast.LENGTH_SHORT).show()
+            Log.d("BUG", "userId is null")
+        }
     }
 
     fun updateUI() {
@@ -119,12 +183,17 @@ class HomeActivity : AppCompatActivity() {
                     val sleepData = document.toObject(SleepData::class.java)!!
                     Log.d("SLEEP DATA", sleepData.dailySleepRecords.toString())
 
-                    val sleepRecordsToday = sleepData.dailySleepRecords.last()
-                    if (!isToday(sleepRecordsToday.enteredDate))  {
-                        sleep_score.setText("??")
+                    if (sleepData.dailySleepRecords.isNotEmpty()) {
+                        val sleepRecordsToday = sleepData.dailySleepRecords.last()
+                        if (isToday(sleepRecordsToday.enteredDate))  {
+                            sleep_score.setText(sleepRecordsToday.sleepScore.toString())
+                        } else {
+                            sleep_score.setText("??")
+                        }
                     } else {
-                        sleep_score.setText(sleepRecordsToday.sleepScore.toString())
+                        sleep_score.setText("??")
                     }
+
                 } else {
                     Log.d("SLEEP DATA", "failed :<")
                 }
@@ -141,17 +210,6 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (!fbAuth.isCurrentUser()) {
-            startActivity(Intent(this, LoginActivity::class.java))
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        updateUI()
-    }
 
     fun isToday(date: Date?): Boolean {
         val today = Date()
