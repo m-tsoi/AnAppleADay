@@ -7,7 +7,7 @@ data class ActivityData(
     //val id: String,
     //val scores: MutableList<ScoreDay>, // Might not be used
     //val activities: MutableList<ExerciseSessionRecord>,
-    val dailyExerciseSession: MutableList<ExerciseSession> = mutableListOf<ExerciseSession>()
+    val dailyExerciseRecords: MutableList<ExerciseSession> = mutableListOf<ExerciseSession>(),
     val recommendedExercises: MutableList<ProposedExercise>
 
 )

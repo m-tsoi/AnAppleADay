@@ -1,5 +1,6 @@
 package com.cs125.anappleaday.ui
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -13,9 +14,8 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.cs125.anappleaday.data.ApiMain
-import com.cs125.anappleaday.data.RecommendedExercises
-import com.cs125.anappleaday.data.record.models.live.ProposedExercise
+import com.cs125.anappleaday.api.ApiMain
+import com.cs125.anappleaday.data.record.models.live.ActivityData
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
@@ -24,6 +24,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.Date
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.FirebaseFirestore
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.roundToInt
 class ExerciseActivity : AppCompatActivity() {
 
@@ -65,9 +70,9 @@ class ExerciseActivity : AppCompatActivity() {
         //calories_burned.text = "Calories burned: ${caloriesBurnedValue.roundToInt()}"
 
         // Make API call to NinjaAPI
-        val apiServices = ApiMain.getAPIServices()
+        val apiServices = ApiMain.getNinjaServices()
         val call = apiServices.getRecommendedExercises(param1, param2, param3) //Edit params
-        call.enqueue(object : Callback<recommendedExercises> {
+        call.enqueue(object : Callback<ActivityData.recommendedExercises> {
             override fun onResponse(call: Call<recommendedExercises>, response: Response<RecommendedExercises>) {
                 if (response.isSuccessful) {
                     val exerciseDataList = response.body()
