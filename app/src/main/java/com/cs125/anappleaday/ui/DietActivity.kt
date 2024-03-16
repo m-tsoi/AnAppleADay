@@ -1,5 +1,6 @@
 package com.cs125.anappleaday.ui
 
+import DietViewActivity
 import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -30,16 +31,18 @@ import kotlinx.coroutines.launch
 
 class DietActivity : AppCompatActivity() {
 
-    // will add number changing functionality based off API value??? (or from database)
-    // will add in adding food eaten that day
+    // firebase variables
     private lateinit var fbAuth: FBAuth
     private lateinit var profileServices: FbProfileServices
     private lateinit var personicleServices: FbPersonicleServices
     private lateinit var healthPlanServices: FbHealthPlanServices
     private lateinit var dietServices: FbDietServices
-    private var dietPlan: DietPlan? = null
-    private var dietData: DietData? = null
 
+    // diet variables
+    private var dietPlan: DietPlan? = null // for recommendations
+    private var dietData: DietData? = null  // for recs+accessing nutrients info
+
+    // UI components
     private lateinit var textScore : TextView
     private lateinit var recyclerRecommendations : RecyclerView
     private lateinit var buttonEnter : Button
@@ -56,22 +59,18 @@ class DietActivity : AppCompatActivity() {
         dietServices = FbDietServices(Firebase.firestore)
         personicleServices = FbPersonicleServices(Firebase.firestore)
 
-        //textDiet = findViewById(R.id.textDiet)
+        // init UI components
         textScore = findViewById(R.id.textScore)
         recyclerRecommendations = findViewById<RecyclerView>(R.id.recyclerRecommendations)
         buttonEnter = findViewById<Button>(R.id.buttonEnter)
         buttonView = findViewById<Button>(R.id.buttonView)
-
-        // database?
-        // get information on previous day's score
-        // may also need this to display meals and stuff after entered
     }
 
     override fun onStart() {
         super.onStart()
         if (fbAuth.getUser()?.uid  != null) {
             lifecycleScope.launch {
-
+                // set the score?
             }
         }
     }
