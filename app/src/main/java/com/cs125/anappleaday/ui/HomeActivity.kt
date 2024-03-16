@@ -3,9 +3,12 @@ package com.cs125.anappleaday.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -25,6 +28,7 @@ import java.util.Date
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var fbAuth: FBAuth
+    private lateinit var imageView: ImageView
     private lateinit var sleepDataDocRef : DocumentReference
     private lateinit var ls_score : TextView
     private lateinit var sleep_region : ConstraintLayout
@@ -45,6 +49,7 @@ class HomeActivity : AppCompatActivity() {
 
 
         ls_score = findViewById<TextView>(R.id.lifestyle_score)
+        imageView = findViewById<ImageView>(R.id.imageView)
         sleep_region = findViewById<ConstraintLayout>(R.id.sleep_region)
         sleep_score = findViewById<TextView>(R.id.sleep_score)
         diet_region = findViewById<ConstraintLayout>(R.id.diet_region)
@@ -118,6 +123,12 @@ class HomeActivity : AppCompatActivity() {
         // Log the user out if the user is not logged in
         if (!fbAuth.isCurrentUser()) {
             startActivity(Intent(this, LoginActivity::class.java))
+        } else {
+            val photoUrl = fbAuth.getUser()?.photoUrl
+            if (photoUrl != null) {
+                imageView.setImageURI(photoUrl)
+                imageView.scaleType = ImageView.ScaleType.FIT_XY
+            }
         }
     }
 
