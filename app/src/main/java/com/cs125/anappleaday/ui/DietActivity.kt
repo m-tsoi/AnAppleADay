@@ -18,6 +18,7 @@ import com.cs125.anappleaday.R
 import com.google.gson.JsonObject
 
 import androidx.lifecycle.lifecycleScope
+import com.cs125.anappleaday.api.ApiMain
 import com.cs125.anappleaday.data.record.models.healthPlans.DietPlan
 import com.cs125.anappleaday.data.record.models.live.DietData
 import com.cs125.anappleaday.services.auth.FBAuth
@@ -30,20 +31,25 @@ import kotlinx.coroutines.launch
 
 class DietActivity : AppCompatActivity() {
 
-    // will add number changing functionality based off API value??? (or from database)
-    // will add in adding food eaten that day
+    // firebase variables
     private lateinit var fbAuth: FBAuth
     private lateinit var profileServices: FbProfileServices
     private lateinit var personicleServices: FbPersonicleServices
     private lateinit var healthPlanServices: FbHealthPlanServices
     private lateinit var dietServices: FbDietServices
-    private var dietPlan: DietPlan? = null
-    private var dietData: DietData? = null
 
+    // diet variables
+    private var dietPlan: DietPlan? = null // for recommendations
+    private var dietData: DietData? = null  // for recs+accessing nutrients info
+
+    // UI components
     private lateinit var textScore : TextView
     private lateinit var recyclerRecommendations : RecyclerView
     private lateinit var buttonEnter : Button
     private lateinit var buttonView : Button
+
+    // Edamam API
+    private val apiService = ApiMain.getEdamamServices()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,22 +62,18 @@ class DietActivity : AppCompatActivity() {
         dietServices = FbDietServices(Firebase.firestore)
         personicleServices = FbPersonicleServices(Firebase.firestore)
 
-        //textDiet = findViewById(R.id.textDiet)
+        // init UI components
         textScore = findViewById(R.id.textScore)
         recyclerRecommendations = findViewById<RecyclerView>(R.id.recyclerRecommendations)
         buttonEnter = findViewById<Button>(R.id.buttonEnter)
         buttonView = findViewById<Button>(R.id.buttonView)
-
-        // database?
-        // get information on previous day's score
-        // may also need this to display meals and stuff after entered
     }
 
     override fun onStart() {
         super.onStart()
         if (fbAuth.getUser()?.uid  != null) {
             lifecycleScope.launch {
-
+                loadUserData()
             }
         }
     }
@@ -87,10 +89,19 @@ class DietActivity : AppCompatActivity() {
                     dietPlan = healthPlan.dietPlan
                 }
                 if (personicle != null) {
-                    dietData = dietServices.getDietData(personicle.dietDataId!!)
+                    if (personicle.dietDataId != null)
+                        dietData = dietServices.getDietData(personicle.dietDataId!!)
                 }
             }
         }
+    }
+
+    private fun getRecommendations(){
+
+        // adjust parameters
+        val call = apiService.getRecipes(q ="star")
+
+
     }
 
     // opens search and view respectively

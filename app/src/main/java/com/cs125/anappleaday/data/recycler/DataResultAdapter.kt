@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.data.enumTypes.NutritionData
 
 
-class DietResultAdapter(private var dataSet: MutableList<NutritionData>, private val onAddClickListener: OnAddClickListener) :
+class DietResultAdapter(private var dataSet: MutableList<NutritionData>, private val onAddClickListener: (Int) -> Unit) :
     RecyclerView.Adapter<DietResultHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietResultHolder {
@@ -18,24 +18,13 @@ class DietResultAdapter(private var dataSet: MutableList<NutritionData>, private
             .inflate(R.layout.diet_result, parent, false)
         return DietResultHolder(view)
     }
-
-    interface OnAddClickListener {
-        fun onAddClick(position: Int)
-    }
     override fun onBindViewHolder(holder: DietResultHolder, position: Int) {
         holder.textName.text = dataSet[position].name
         holder.buttonAdd.setOnClickListener {
-            onAddClickListener.onAddClick(position)
+            onAddClickListener.invoke(position)
         }
     }
     override fun getItemCount() = dataSet.size
-
-    fun updateDataSet(newDataSet: MutableList<NutritionData>) {
-        dataSet = newDataSet
-        notifyDataSetChanged()
-    }
-
-
 }
 class DietResultHolder(dietResult: View) : RecyclerView.ViewHolder(dietResult) {
     var textName : TextView =  dietResult.findViewById(R.id.textName)
