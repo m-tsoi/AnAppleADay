@@ -10,16 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.api.ApiMain
 import com.google.gson.JsonObject
 
-import com.cs125.anappleaday.data.enumTypes.ActivityMetrics
 import com.cs125.anappleaday.data.record.models.live.DietData
-import com.cs125.anappleaday.data.recycler.DietResultAdapter
+import com.cs125.anappleaday.data.recycler.ExerciseResultAdapter
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbDietServices
-import com.cs125.anappleaday.services.firestore.FbHealthPlanServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.ktx.firestore
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -38,7 +34,7 @@ class ExerciseSearchActivity : AppCompatActivity() {
 
     private lateinit var searchView : SearchView
     private lateinit var recyclerResults : RecyclerView
-    private lateinit var dietResultAdapter: DietResultAdapter
+    private lateinit var exerciseResultAdapter: ExerciseResultAdapter
 
     // also add in adapter???
 
