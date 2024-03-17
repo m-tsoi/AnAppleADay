@@ -52,9 +52,9 @@ class ExerciseViewActivity : AppCompatActivity() { // displays meals correspondi
                 val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
                 if (personicle != null) {
                     if (personicle.dietDataId != null){
-                        val dietData = exerciseServices.getDietData(personicle?.activityDataId!!)
-                        if (dietData != null) {
-                            exercisesDataList = dietData.nutrition[Date()]!!
+                        val exerciseData = exerciseServices.getActivityData(personicle?.activityDataId!!)
+                        if (exerciseData != null) {
+                            exercisesDataList = exerciseData.nutrition[Date()]!!
                         }
 
                         val onDeleteClickListener: (MutableList<ExerciseData>) -> Unit = { dataSet ->
