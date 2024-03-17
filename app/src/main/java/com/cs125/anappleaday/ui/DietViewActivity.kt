@@ -1,11 +1,13 @@
 package com.cs125.anappleaday.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.R
+import com.cs125.anappleaday.data.enumTypes.NutritionData
 import com.cs125.anappleaday.data.recycler.DietViewAdapter
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbDietServices
@@ -41,34 +43,47 @@ class DietViewActivity : AppCompatActivity() { // displays meals corresponding t
         // initialize firebase
         fbAuth = FBAuth()
         profileServices = FbProfileServices(Firebase.firestore)
-        dietServices = FbDietServices(Firebase.firestore)
         personicleServices = FbPersonicleServices(Firebase.firestore)
+        dietServices = FbDietServices(Firebase.firestore)
+    }
 
-        //load data
-        /*val userId =  fbAuth.getUser()?.uid
+    override fun onStart(){
+        var nutritionDataList = mutableListOf<NutritionData>()
+
+        val userId =  fbAuth.getUser()?.uid
         if (  userId != null) {
             lifecycleScope.launch {
                 val profile = profileServices.getProfile(userId)
-                val healthPlan = healthPlanServices.getHealthPLan(profile?.healthPlanId!!)
                 val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
-                if (healthPlan != null) {
-                    dietPlan = healthPlan.dietPlan
-                }
                 if (personicle != null) {
-                    dietData = dietServices.getDietData(personicle.dietDataId!!)
+                    if (personicle.dietDataId != null){
+                        val dietData = dietServices.getDietData(personicle?.dietDataId!!)
+                        if (dietData != null) {
+                            nutritionDataList = dietData.nutrition[Date()]!!
+                        }
+
+                        val onDeleteClickListener: (MutableList<NutritionData>) -> Unit = { dataSet ->
+                            Log.d("DietViewActivity", "Reset NutritionData: $dataSet")
+                            launch {
+                                dietServices.resetNutritionData(
+                                    personicle.dietDataId,
+                                    Date(),
+                                    dataSet
+                                )
+                            }
+                        }
+
+                        dietViewAdapter = DietViewAdapter(nutritionDataList,onDeleteClickListener )
+                        recyclerMeals.adapter = dietViewAdapter
+
+
+                    }
                 }
             }
-        }*/
+        }
 
-        // to get list of uhhh things we haev to access the firebase
-        var tester: MutableList<String> = mutableListOf("cheese")
-        tester.add("bread")
-        tester.add("milk")
 
-        dietViewAdapter = DietViewAdapter(tester)
-        recyclerMeals.adapter = dietViewAdapter
-
-        recyclerMeals.layoutManager = LinearLayoutManager(this)
+        super.onStart()
 
     }
 

@@ -2,6 +2,7 @@ package com.cs125.anappleaday.services.firestore
 
 import android.util.Log
 import com.cs125.anappleaday.data.enumTypes.NutritionData
+import com.cs125.anappleaday.data.record.models.healthPlans.HealthPlan
 import com.cs125.anappleaday.data.record.models.live.DietData
 import com.cs125.anappleaday.utils.toMap
 import com.google.android.gms.tasks.Task
@@ -18,7 +19,7 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
     "DietData", firestore) {
     // Note: add functions if needed
 
-    private val subCollectionName = "NutritionRecord"
+    private val subCollectionName = "DietData"
 
     suspend fun getDietData(id: String): DietData? {
         return try {
@@ -46,6 +47,20 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
             }
         } catch (e: Exception) {
             Log.e(TAG + "AddNutritionData", "${e.message}")
+        }
+    }
+
+    suspend fun resetNutritionData(id: String, date: Date, nutritionDataList: MutableList<NutritionData>) {
+        try {   // this is to straight up resent NutritionData list
+            val document = collectionRef.document(id).get().await()
+            val dietData = document.toObject(DietData::class.java)
+
+            dietData?.let { // if not null
+                it.nutrition[date] = nutritionDataList  // sets date to list
+                document.reference.set(it)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG + "ResetNutritionData", "${e.message}")
         }
     }
 
@@ -81,12 +96,6 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
             Log.e(TAG + "Diet average score", "${e.message}")
             null
         }
-    }
-
-    fun addNutritionRecord(id: String, nutritionRecord: NutritionRecord): Task<DocumentReference> {
-        var nutritionRecordMap = nutritionRecord.toMap().toMutableMap()
-        nutritionRecordMap["startTime"] = FieldValue.serverTimestamp()
-        return collectionRef.document(id).collection(subCollectionName).add(nutritionRecordMap)
     }
 
     fun addScoreRecord(id: String, score: Double): Task<DocumentReference> {

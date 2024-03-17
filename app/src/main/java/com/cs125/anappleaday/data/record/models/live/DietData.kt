@@ -5,6 +5,6 @@ import java.util.Date
 
 
 data class DietData(
-    val scores: MutableList<ScoreDay>,
-    val nutrition: MutableMap<Date, MutableList<NutritionData>>
+    val scores: MutableList<ScoreDay> = mutableListOf(),
+    val nutrition: MutableMap<Date, MutableList<NutritionData>> =  mutableMapOf()
 )

@@ -18,15 +18,21 @@ import com.cs125.anappleaday.R
 import com.google.gson.JsonObject
 
 import androidx.lifecycle.lifecycleScope
+import com.cs125.anappleaday.advise.diet.DietAdvisor
 import com.cs125.anappleaday.api.ApiMain
 import com.cs125.anappleaday.data.record.models.healthPlans.DietPlan
 import com.cs125.anappleaday.data.record.models.live.DietData
+import com.cs125.anappleaday.data.record.models.live.RecommendedMeal
+import com.cs125.anappleaday.data.recycler.DietRecAdapter
+import com.cs125.anappleaday.data.recycler.DietResultAdapter
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbDietServices
 import com.cs125.anappleaday.services.firestore.FbHealthPlanServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Date
 
 
 class DietActivity : AppCompatActivity() {
@@ -41,10 +47,12 @@ class DietActivity : AppCompatActivity() {
     // diet variables
     private var dietPlan: DietPlan? = null // for recommendations
     private var dietData: DietData? = null  // for recs+accessing nutrients info
+    private var dietAdvisor: DietAdvisor? = null
 
     // UI components
     private lateinit var textScore : TextView
     private lateinit var recyclerRecommendations : RecyclerView
+    private lateinit var dietRecAdapter: DietRecAdapter
     private lateinit var buttonEnter : Button
     private lateinit var buttonView : Button
 
@@ -74,6 +82,7 @@ class DietActivity : AppCompatActivity() {
         if (fbAuth.getUser()?.uid  != null) {
             lifecycleScope.launch {
                 loadUserData()
+                updateUI()
             }
         }
     }
@@ -87,9 +96,10 @@ class DietActivity : AppCompatActivity() {
                 val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
                 if (healthPlan != null) {
                     dietPlan = healthPlan.dietPlan
+                    dietAdvisor = DietAdvisor(dietPlan!!)
                 }
                 if (personicle != null) {
-                    if (personicle.dietDataId != null)
+                    if (personicle.dietDataId != null) // causing issues rn cause dietDataId was not there
                         dietData = dietServices.getDietData(personicle.dietDataId!!)
                 }
             }
@@ -97,11 +107,12 @@ class DietActivity : AppCompatActivity() {
     }
 
     private fun getRecommendations(){
+        //maybe return as list
+        // api call moment
+        if (dietData != null && dietPlan != null){
 
-        // adjust parameters
-        val call = apiService.getRecipes(q ="star")
 
-
+        }
     }
 
     // opens search and view respectively
@@ -120,8 +131,32 @@ class DietActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun updateUI(response: JsonObject) {
-        // Update UI based on the API response
-        // probably for the uhhhhhhh firebase score and idk suggestions???
+    private fun updateUI() {
+        // Update UI for Score and Recs
+
+        // score finding for PREVIOUS DAY (can change it if this is inc)
+        var score = 0
+        var mealRecs = mutableListOf<RecommendedMeal>()
+        if (dietAdvisor != null && dietData != null){
+            // get prev day
+            var calendar = Calendar.getInstance()
+            calendar.add(Calendar.DATE, -1)
+            val prevDate = calendar.time
+
+            // get nutrition for previous day
+            val nutrition = dietData!!.nutrition[prevDate]
+            if (nutrition != null) {
+                score = dietAdvisor!!.computeDailyScore(nutrition)
+                // setting rec
+                var exampleNutritionData = nutrition[0]
+                mealRecs = dietAdvisor!!.checkMealAndRecommend(exampleNutritionData )
+            }
+        }
+        textScore.text = score.toString()
+
+        // update/bind recycler
+        dietRecAdapter = DietRecAdapter(mealRecs)
+        recyclerRecommendations.adapter = dietRecAdapter
+
     }
 }

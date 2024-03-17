@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.cs125.anappleaday.R
 import com.cs125.anappleaday.data.enumTypes.ActivityLevel
+import com.cs125.anappleaday.data.record.models.live.ActivityData
+import com.cs125.anappleaday.data.record.models.live.DietData
 import com.cs125.anappleaday.data.record.models.live.SleepData
 import com.cs125.anappleaday.data.record.models.user.Personicle
 import com.cs125.anappleaday.databinding.ActivityInitPersonicleBinding
@@ -74,8 +76,11 @@ class InitPersonicleActivity: AppCompatActivity() {
                             // Create new blank SleepData, DietData, ActivityData documents in firestore for this user
                             val db = Firebase.firestore
                             val sleepDataDocUUID = UUID.randomUUID().toString()
+                            val dietDataDocUUID = UUID.randomUUID().toString()
+                            val activityDataDocUUID = UUID.randomUUID().toString()
                             db.collection("SleepData").document(sleepDataDocUUID).set(SleepData())
-                            // TODO: do the same for DietData and ActivityData
+                            db.collection("DietData").document(dietDataDocUUID).set(DietData())
+                            db.collection("ActivityData").document(activityDataDocUUID).set(ActivityData())
 
                             // Create personicle in firestore
                             personicleServices.createPersonicle(
@@ -85,8 +90,9 @@ class InitPersonicleActivity: AppCompatActivity() {
                                     bmi = bmi,
                                     rmr = rmr ,
                                     caloriesBudget = caloriesBudget,
-                                    sleepDataId = sleepDataDocUUID
-                                    // TODO: do the same for DietData and ActivityData
+                                    sleepDataId = sleepDataDocUUID,
+                                    dietDataId = dietDataDocUUID,
+                                    activityDataId = activityDataDocUUID
                                 )
                             ).addOnSuccessListener {
                                 Toast.makeText(this@InitPersonicleActivity,

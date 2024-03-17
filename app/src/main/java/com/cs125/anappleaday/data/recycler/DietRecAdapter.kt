@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.cs125.anappleaday.data.record.models.live.RecommendedMeal
 
-class DietRecAdapter(private val dataSet: MutableList<String>) :
+class DietRecAdapter(private val dataSet: MutableList<RecommendedMeal>) :
     RecyclerView.Adapter<DietRecHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietRecHolder {
         val view = LayoutInflater.from(parent.context)
@@ -16,7 +17,7 @@ class DietRecAdapter(private val dataSet: MutableList<String>) :
     }
 
     override fun onBindViewHolder(holder: DietRecHolder, position: Int) {
-        holder.textName.text = dataSet[position]
+        holder.textName.text = dataSet[position].label
     }
     override fun getItemCount() = dataSet.size
 }

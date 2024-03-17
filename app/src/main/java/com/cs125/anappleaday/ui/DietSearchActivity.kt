@@ -47,6 +47,12 @@ class DietSearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diet_search)
 
+        // fb setting
+        fbAuth = FBAuth()
+        profileServices = FbProfileServices(com.google.firebase.ktx.Firebase.firestore)
+        personicleServices = FbPersonicleServices(com.google.firebase.ktx.Firebase.firestore)
+        dietServices = FbDietServices(com.google.firebase.ktx.Firebase.firestore)
+
         // setting UI components
         searchView = findViewById<SearchView>(R.id.searchView)
         recyclerResults = findViewById<RecyclerView>(R.id.recyclerResults)
@@ -96,12 +102,8 @@ class DietSearchActivity : AppCompatActivity() {
     }
 
     private fun addNutritionDataToFirebase(nutritionData: NutritionData) {
-        // do firebase stuff here
+        // do firebase stuff here (
         // add to nutrition, which is Date -> <MutableList>NutritionData
-        fbAuth = FBAuth()
-        profileServices = FbProfileServices(com.google.firebase.ktx.Firebase.firestore)
-        personicleServices = FbPersonicleServices(com.google.firebase.ktx.Firebase.firestore)
-        dietServices = FbDietServices(com.google.firebase.ktx.Firebase.firestore)
 
         val userId =  fbAuth.getUser()?.uid
         if (  userId != null) {
@@ -109,20 +111,12 @@ class DietSearchActivity : AppCompatActivity() {
                 val profile = profileServices.getProfile(userId)
                 val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
                 if (personicle != null) {
-                    // the problem child
-                    // i think nothing is being passed rn
-                    dietServices.addNutritionData(personicle.dietDataId!!, nutritionData)
+                    if (personicle.dietDataId!= null)
+                        // if dietDataId is there this SHOULD work....... I hope\
+                        // sorry idk how to reinitialize the personicle
+                        dietServices.addNutritionData(personicle.dietDataId!!, nutritionData)
                 }
             }
         }
     }
-
-
-
-    private fun updateUI(response: JsonObject) {
-        // Update UI based on the API response
-
-    }
-
-
 }
