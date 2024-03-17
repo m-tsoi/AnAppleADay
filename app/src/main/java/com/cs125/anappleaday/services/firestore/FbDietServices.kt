@@ -5,6 +5,8 @@ import com.cs125.anappleaday.data.enumTypes.NutritionData
 import com.cs125.anappleaday.data.record.models.live.DietData
 import com.cs125.anappleaday.utils.toMap
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.AggregateField
+import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -13,7 +15,7 @@ import kotlinx.coroutines.tasks.await
 import java.util.Date
 
 class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
-    "NutritionData", firestore) {
+    "DietData", firestore) {
     // Note: add functions if needed
 
     private val subCollectionName = "NutritionRecord"
@@ -52,7 +54,6 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
         return try {
             val document = collectionRef.document(id).get().await()
             val dietData = document.toObject(DietData::class.java)
-
             dietData?.let {
                 val nutritionForDate = it.nutrition[date]
                 nutritionForDate ?: mutableListOf()
@@ -61,6 +62,39 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
             Log.e(TAG + "getPastNutritionData", "${e.message}")
             mutableListOf()
         }
+    }
 
+    suspend fun getAverageScore(id: String): Double? {
+        return try {
+            val avgResult = collectionRef.document(id)
+                .collection("Scores")
+                .whereLessThan("date", FieldValue.serverTimestamp())
+                .aggregate(AggregateField.average("score"))
+                .get(AggregateSource.SERVER)
+                .await()
+
+            avgResult?.let {
+                val averageScore = it.getDouble(AggregateField.average("score")) // Extracting the average score
+                averageScore
+            }
+        } catch (e: Exception) {
+            Log.e(TAG + "Diet average score", "${e.message}")
+            null
+        }
+    }
+
+    fun addNutritionRecord(id: String, nutritionRecord: NutritionRecord): Task<DocumentReference> {
+        var nutritionRecordMap = nutritionRecord.toMap().toMutableMap()
+        nutritionRecordMap["startTime"] = FieldValue.serverTimestamp()
+        return collectionRef.document(id).collection(subCollectionName).add(nutritionRecordMap)
+    }
+
+    fun addScoreRecord(id: String, score: Double): Task<DocumentReference> {
+         return collectionRef.document(id).collection("Scores").add(
+             hashMapOf(
+                 "score" to score,
+                 "date" to FieldValue.serverTimestamp()
+             )
+         )
     }
 }
