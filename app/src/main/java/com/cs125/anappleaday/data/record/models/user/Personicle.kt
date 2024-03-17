@@ -16,7 +16,7 @@ data class Personicle(
 
     val dietDataId: String? = null,
 
-    val activityDataId: String? = null,
+    val exerciseDataId: String? = null,
 
     val sleepDataId: String? = null,
 )
