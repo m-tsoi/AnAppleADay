@@ -52,7 +52,7 @@ class ExerciseViewActivity : AppCompatActivity() { // displays meals correspondi
                 val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
                 if (personicle != null) {
                     if (personicle.dietDataId != null){
-                        val exerciseData = exerciseServices.getActivityData(personicle?.activityDataId!!)
+                        val exerciseData = exerciseServices.getExerciseData(personicle?.activityDataId!!)
                         if (exerciseData != null) {
                             exercisesDataList = exerciseData.nutrition[Date()]!!
                         }
@@ -61,7 +61,7 @@ class ExerciseViewActivity : AppCompatActivity() { // displays meals correspondi
                             Log.d("DietViewActivity", "Reset NutritionData: $dataSet")
                             launch {
                                 exerciseServices.resetNutritionData(
-                                    personicle.dietDataId,
+                                    personicle.activityDataId,
                                     Date(),
                                     dataSet
                                 )
