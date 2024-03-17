@@ -9,45 +9,50 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.api.ApiMain
 import com.google.gson.JsonObject
-
-import com.cs125.anappleaday.data.record.models.live.DietData
+import com.cs125.anappleaday.data.enumTypes.ExerciseData
+import com.cs125.anappleaday.data.record.models.live.ActivityData
 import com.cs125.anappleaday.data.recycler.ExerciseResultAdapter
 import com.cs125.anappleaday.services.auth.FBAuth
-import com.cs125.anappleaday.services.firestore.FbDietServices
+import com.cs125.anappleaday.services.firestore.FbActivityServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.ktx.firestore
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ExerciseSearchActivity1 : AppCompatActivity() {
+class DietSearchActivity : AppCompatActivity() {
 
-    //
+    // firebase i think
     private lateinit var fbAuth: FBAuth
     private lateinit var profileServices: FbProfileServices
     private lateinit var personicleServices: FbPersonicleServices
-    private lateinit var dietServices: FbDietServices
+    private lateinit var exerciseServices : FbActivityServices
 
-    private var dietData: DietData? = null
-
+    // UI components
     private lateinit var searchView : SearchView
     private lateinit var recyclerResults : RecyclerView
     private lateinit var exerciseResultAdapter: ExerciseResultAdapter
 
-    // also add in adapter???
-
+    // nutrition api
     private val apiService = ApiMain.getNinjaServices()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise_search)
 
+        // fb setting
+        fbAuth = FBAuth()
+        profileServices = FbProfileServices(com.google.firebase.ktx.Firebase.firestore)
+        personicleServices = FbPersonicleServices(com.google.firebase.ktx.Firebase.firestore)
+        exerciseServices = FbActivityServices(com.google.firebase.ktx.Firebase.firestore)
+
+        // setting UI components
         searchView = findViewById<SearchView>(R.id.searchView)
         recyclerResults = findViewById<RecyclerView>(R.id.recyclerResults)
-        // add recycler adapter
 
         // listener for search view
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -66,38 +71,36 @@ class ExerciseSearchActivity1 : AppCompatActivity() {
 
         val call = apiService.getNutrition(query)
 
-        call.enqueue(object : Callback<List<NutritionData>> {
-            override fun onResponse(call: Call<List<NutritionData>>, response: Response<List<NutritionData>>) {
+        call.enqueue(object : Callback<List<ExerciseData>> {
+            override fun onResponse(call: Call<List<ExerciseData>>, response: Response<List<ExerciseData>>) {
                 if (response.isSuccessful) {
-                    val nutritionDataList = response.body()
-                    val mutableDataList: MutableList<NutritionData> = nutritionDataList?.toMutableList() ?: mutableListOf()
+                    val exerciseDataList = response.body()
+                    val mutableDataList: MutableList<ActivityData> = exerciseDataList?.toMutableList() ?: mutableListOf()
 
                     val onAddClickListener: (Int) -> Unit = { position ->
-                        var selectedNutritionData = mutableDataList[position]
-                        addNutritionDataToFirebase(selectedNutritionData)
+                        var selectedExerciseData = mutableDataList[position]
+
+                        Log.d("DietSearchActivity", "Selected NutritionData: $selectedExerciseData")
+                        addExerciseDataToFirebase(selectedExerciseData)
                     }
 
-                    dietResultAdapter = DietResultAdapter(mutableDataList,onAddClickListener)
-                    recyclerResults.adapter = dietResultAdapter
+                    exerciseResultAdapter = ExerciseResultAdapter(mutableDataList,onAddClickListener)
+                    recyclerResults.adapter = exerciseResultAdapter
 
                 } else {
                     Log.e("YourActivity", "API Request failed with code: ${response.code()}")
                 }
             }
 
-            override fun onFailure(call: Call<List<NutritionData>>, t: Throwable) {
+            override fun onFailure(call: Call<List<ActivityData>>, t: Throwable) {
                 Log.e("YourActivity", "API Request failed", t)
             }
         })
     }
 
-    private fun addNutritionDataToFirebase(nutritionData: NutritionData) {
-        // do firebase stuff here
+    private fun addExerciseDataToFirebase(nutritionData: ActivityData) {
+        // do firebase stuff here (
         // add to nutrition, which is Date -> <MutableList>NutritionData
-        fbAuth = FBAuth()
-        profileServices = FbProfileServices(com.google.firebase.ktx.Firebase.firestore)
-        personicleServices = FbPersonicleServices(com.google.firebase.ktx.Firebase.firestore)
-        dietServices = FbDietServices(com.google.firebase.ktx.Firebase.firestore)
 
         val userId =  fbAuth.getUser()?.uid
         if (  userId != null) {
@@ -105,18 +108,12 @@ class ExerciseSearchActivity1 : AppCompatActivity() {
                 val profile = profileServices.getProfile(userId)
                 val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
                 if (personicle != null) {
-                    dietServices.addNutritionData(personicle.dietDataId!!, nutritionData)
+                    if (personicle.dietDataId!= null)
+                    // if dietDataId is there this SHOULD work....... I hope\
+                    // sorry idk how to reinitialize the personicle
+                        exerciseServices.addExerciseSessionRecordRecord(personicle.dietDataId!!, nutritionData)
                 }
             }
         }
     }
-
-
-
-    private fun updateUI(response: JsonObject) {
-        // Update UI based on the API response
-
-    }
-
-
-}
+}}

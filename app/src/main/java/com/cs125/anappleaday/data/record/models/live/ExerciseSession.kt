@@ -5,5 +5,4 @@ class ExerciseSession (
     // One session for exercise (day of)
     var enteredDate: Date? = Date(),
     var exercise_duration: Int? = 0,
-
     )

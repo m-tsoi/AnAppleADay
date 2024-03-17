@@ -104,7 +104,7 @@ class ExerciseActivity2 : AppCompatActivity() {
 
     // opens search and view respectively
     fun openDietSearch(view: View){
-        val intent = Intent(this, ExerciseSearchActivity1::class.java)
+        val intent = Intent(this, ExerciseSearchActivity::class.java)
         startActivity(intent)
     }
 

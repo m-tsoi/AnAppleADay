@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.cs125.anappleaday.data.enumTypes.ExerciseData
 
 class ExerciseViewAdapter(private val dataSet: MutableList<ExerciseData>, private val onDeleteClickListener: (MutableList<ExerciseData>) -> Unit) :
     RecyclerView.Adapter<ExerciseViewHolder>() {

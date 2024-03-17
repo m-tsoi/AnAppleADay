@@ -6,9 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.R
-import com.cs125.anappleaday.data.enumTypes.ExerciseData
-import com.cs125.anappleaday.data.record.models.live.ActivityData
 import com.cs125.anappleaday.data.recycler.ExerciseViewAdapter
+import com.cs125.anappleaday.data.record.models.live.ActivityData
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbActivityServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
@@ -43,7 +42,7 @@ class ExerciseViewActivity : AppCompatActivity() { // displays meals correspondi
     }
 
     override fun onStart(){
-        var exercisesDataList = mutableListOf<ExerciseData>()
+        var exercisesDataList = mutableListOf<ActivityData>()
 
         val userId =  fbAuth.getUser()?.uid
         if (  userId != null) {
@@ -51,36 +50,35 @@ class ExerciseViewActivity : AppCompatActivity() { // displays meals correspondi
                 val profile = profileServices.getProfile(userId)
                 val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
                 if (personicle != null) {
-                    if (personicle.dietDataId != null){
-                        val exerciseData = exerciseServices.getExerciseData(personicle?.activityDataId!!)
+                    if (personicle.dietDataId != null) {
+                        val exerciseData =
+                            exerciseServices.getExerciseData(personicle?.activityDataId!!)
                         if (exerciseData != null) {
-                            exercisesDataList = exerciseData.nutrition[Date()]!!
+                            exercisesDataList = ActivityData.dailyExerciseRecords[Date()]!!
                         }
 
-                        val onDeleteClickListener: (MutableList<ExerciseData>) -> Unit = { dataSet ->
-                            Log.d("DietViewActivity", "Reset NutritionData: $dataSet")
-                            launch {
-                                exerciseServices.resetNutritionData(
-                                    personicle.activityDataId,
-                                    Date(),
-                                    dataSet
-                                )
+                        val onDeleteClickListener: (MutableList<ActivityData>) -> Unit =
+                            { dataSet ->
+                                Log.d("DietViewActivity", "Reset NutritionData: $dataSet")
+                                launch {
+                                    exerciseServices.resetNutritionData(
+                                        personicle.activityDataId,
+                                        Date(),
+                                        dataSet
+                                    )
+                                }
                             }
-                        }
 
-                        exerciseViewAdapter = ExerciseViewAdapter(exercisesDataList,onDeleteClickListener )
+                        exerciseViewAdapter =
+                            ExerciseViewAdapter(exercisesDataList, onDeleteClickListener)
                         recyclerExercises.adapter = exerciseViewAdapter
-
 
                     }
                 }
             }
         }
 
-
         super.onStart()
 
     }
-
-
 }
