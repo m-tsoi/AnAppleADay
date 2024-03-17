@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.R
 import com.cs125.anappleaday.data.enumTypes.ExerciseData
-import com.cs125.anappleaday.data.recycler.DietViewAdapter
+import com.cs125.anappleaday.data.record.models.live.ActivityData
+import com.cs125.anappleaday.data.recycler.ExerciseViewAdapter
 import com.cs125.anappleaday.services.auth.FBAuth
-import com.cs125.anappleaday.services.firestore.FbDietServices
-import com.cs125.anappleaday.services.firestore.FbHealthPlanServices
+import com.cs125.anappleaday.services.firestore.FbActivityServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
 import com.google.firebase.firestore.ktx.firestore
@@ -21,34 +20,30 @@ import kotlinx.coroutines.launch
 import java.util.Date
 
 
-class DietViewActivity : AppCompatActivity() { // displays meals corresponding to current Date
+class ExerciseViewActivity : AppCompatActivity() { // displays meals corresponding to current Date
 
-    // firebase but i cant code
     private lateinit var fbAuth: FBAuth
     private lateinit var profileServices: FbProfileServices
     private lateinit var personicleServices: FbPersonicleServices
-    private lateinit var dietServices: FbDietServices
-
-    // UI components
-    private lateinit var recyclerMeals: RecyclerView
-    private lateinit var dietViewAdapter: DietViewAdapter
-    // could love to have a cute graph but we cant always win in life
+    private lateinit var exerciseServices: FbActivityServices
+    private lateinit var recyclerExercises: RecyclerView
+    private lateinit var exerciseViewAdapter: ExerciseViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_diet_view)
+        setContentView(R.layout.activity_exercise_view)
 
-        recyclerMeals = findViewById<RecyclerView>(R.id.recyclerMeals)
+        recyclerExercises = findViewById<RecyclerView>(R.id.recyclerExercises)
 
         // initialize firebase
         fbAuth = FBAuth()
         profileServices = FbProfileServices(Firebase.firestore)
         personicleServices = FbPersonicleServices(Firebase.firestore)
-        dietServices = FbDietServices(Firebase.firestore)
+        exerciseServices = FbActivityServices(Firebase.firestore)
     }
 
     override fun onStart(){
-        var nutritionDataList = mutableListOf<NutritionData>()
+        var exercisesDataList = mutableListOf<ExerciseData>()
 
         val userId =  fbAuth.getUser()?.uid
         if (  userId != null) {
@@ -57,15 +52,15 @@ class DietViewActivity : AppCompatActivity() { // displays meals corresponding t
                 val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
                 if (personicle != null) {
                     if (personicle.dietDataId != null){
-                        val dietData = dietServices.getDietData(personicle?.dietDataId!!)
+                        val dietData = exerciseServices.getDietData(personicle?.dietDataId!!)
                         if (dietData != null) {
-                            nutritionDataList = dietData.nutrition[Date()]!!
+                            exercisesDataList = dietData.nutrition[Date()]!!
                         }
 
-                        val onDeleteClickListener: (MutableList<NutritionData>) -> Unit = { dataSet ->
+                        val onDeleteClickListener: (MutableList<ExerciseData>) -> Unit = { dataSet ->
                             Log.d("DietViewActivity", "Reset NutritionData: $dataSet")
                             launch {
-                                dietServices.resetNutritionData(
+                                exerciseServices.resetNutritionData(
                                     personicle.dietDataId,
                                     Date(),
                                     dataSet
@@ -73,8 +68,8 @@ class DietViewActivity : AppCompatActivity() { // displays meals corresponding t
                             }
                         }
 
-                        dietViewAdapter = DietViewAdapter(nutritionDataList,onDeleteClickListener )
-                        recyclerMeals.adapter = dietViewAdapter
+                        exerciseViewAdapter = ExerciseViewAdapter(exercisesDataList,onDeleteClickListener )
+                        recyclerExercises.adapter = exerciseViewAdapter
 
 
                     }
