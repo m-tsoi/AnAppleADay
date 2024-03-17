@@ -26,7 +26,7 @@ class FbSleepServices(firestore: FirebaseFirestore) : FbBaseServices<SleepData>(
                 .await()
 
             if (document != null)
-                document.get(AggregateField.average("score"))?.toDouble()
+                return document.get(AggregateField.average("score"))?.toDouble()!!
 
             0.0
         } catch (e: Exception) {
