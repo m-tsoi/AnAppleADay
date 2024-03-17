@@ -10,19 +10,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.data.enumTypes.ExerciseData
 
 
-class ExerciseResultAdapter(private var dataSet: MutableList<NutritionData>, private val onAddClickListener: OnAddClickListener) :
-    RecyclerView.Adapter<DietResultHolder>() {
+class ExerciseResultAdapter(private var dataSet: MutableList<ExerciseData>, private val onAddClickListener: OnAddClickListener) :
+    RecyclerView.Adapter<ExerciseResultHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietResultHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseResultHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.diet_result, parent, false)
-        return DietResultHolder(view)
+        return ExerciseResultHolder(view)
     }
 
     interface OnAddClickListener {
         fun onAddClick(position: Int)
     }
-    override fun onBindViewHolder(holder: DietResultHolder, position: Int) {
+    override fun onBindViewHolder(holder: ExerciseResultHolder, position: Int) {
         holder.textName.text = dataSet[position].name
         holder.buttonAdd.setOnClickListener {
             onAddClickListener.onAddClick(position)
@@ -30,14 +30,14 @@ class ExerciseResultAdapter(private var dataSet: MutableList<NutritionData>, pri
     }
     override fun getItemCount() = dataSet.size
 
-    fun updateDataSet(newDataSet: MutableList<NutritionData>) {
+    fun updateDataSet(newDataSet: MutableList<ExerciseData>) {
         dataSet = newDataSet
         notifyDataSetChanged()
     }
 
 
 }
-class DietResultHolder(dietResult: View) : RecyclerView.ViewHolder(dietResult) {
+class ExerciseResultHolder(dietResult: View) : RecyclerView.ViewHolder(dietResult) {
     var textName : TextView =  dietResult.findViewById(R.id.textName)
     var buttonAdd : Button = dietResult.findViewById(R.id.buttonAdd)
 }
