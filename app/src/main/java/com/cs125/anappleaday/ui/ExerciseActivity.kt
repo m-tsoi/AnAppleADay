@@ -1,178 +1,128 @@
 package com.cs125.anappleaday.ui
 
-import android.app.Activity
+import android.content.Intent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
-import com.cs125.anappleaday.R
+
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+
+import androidx.recyclerview.widget.RecyclerView
+import com.cs125.anappleaday.R
+import com.google.gson.JsonObject
+
+import androidx.lifecycle.lifecycleScope
 import com.cs125.anappleaday.api.ApiMain
+import com.cs125.anappleaday.data.enumTypes.ExerciseData
+import com.cs125.anappleaday.data.record.models.healthPlans.ExercisePlan
 import com.cs125.anappleaday.data.record.models.live.ActivityData
 import com.cs125.anappleaday.services.auth.FBAuth
+import com.cs125.anappleaday.services.firestore.FbActivityServices
+import com.cs125.anappleaday.services.firestore.FbHealthPlanServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.Date
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.FirebaseFirestore
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import androidx.recyclerview.widget.RecyclerView
-import kotlin.math.roundToInt
+
+
 class ExerciseActivity : AppCompatActivity() {
 
-    private lateinit var MET: TextView // Metabolic Equivalent of Task
-    private lateinit var calories_burned: TextView
-    private lateinit var exercise_duration_mins: TextView
-    private lateinit var exercise_score : TextView
-    //Placeholders until retrieving stored data
-    private lateinit var calories_total: TextView // calories_burned +/- calories_total + diet
-    private lateinit var recyclerRecommendations : RecyclerView //Helps recycle data already loaded, exercise data
-
-    // API
+    // firebase variables
     private lateinit var fbAuth: FBAuth
-    private lateinit var exerciseDataDocRef : DocumentReference
-    private lateinit var autoCompleteTextViewExercise: AutoCompleteTextView
-    private lateinit var exerciseAdapter: ArrayAdapter<String>
+    private lateinit var profileServices: FbProfileServices
+    private lateinit var personicleServices: FbPersonicleServices
+    private lateinit var healthPlanServices: FbHealthPlanServices
+    private lateinit var activityServices: FbActivityServices
 
-    // Buttons
-    private lateinit var submit_exercise : Button // Submit exercises as list
+    // ExercisePlan vars (from data.record.models.healthPlans.ExercisePlan)
+    private var exercisePlan: ExercisePlan? = null // recs
+    private var exerciseData: ExerciseData? = null  // access
+
+    // UI components
+    private lateinit var textScore : TextView
+    private lateinit var recyclerRecommendations : RecyclerView
+    private lateinit var buttonEnter : Button
+    private lateinit var buttonView : Button
+
+    // Ninja API
+    private val apiService = ApiMain.getNinjaServices()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise)
 
-        fbAuth = FBAuth() // Authorizes Firebase to initialize profile
+        // Init firebase
+        fbAuth = FBAuth()
+        profileServices = FbProfileServices(Firebase.firestore)
+        healthPlanServices = FbHealthPlanServices(Firebase.firestore)
+        activityServices = FbActivityServices(Firebase.firestore)
+        personicleServices = FbPersonicleServices(Firebase.firestore)
 
-        // Displayed variables through UI
-        MET = findViewById(R.id.MET)
-        calories_burned = findViewById(R.id.calories_burned)
-        exercise_duration_mins = findViewById(R.id.exercise_duration)
-
-        // MET, weight, and exercise duration
-        // toDoubleOrNull is like ternary statement in JavaScript, return double if double, return null if nondouble
-        val metValue: Double = MET.text.toString().toDoubleOrNull() ?: 0.0
-        val durationHours: Double = exercise_duration_mins.text.toString().toDoubleOrNull() ?: 0.0
-
-        // Calculate calories burned using private function
-        //val caloriesBurnedValue: Double = caloriesBurnedCalculation(metValue, personWeight, durationHours)
-        //calories_burned.text = "Calories burned: ${caloriesBurnedValue.roundToInt()}"
-
-        // Make API call to NinjaAPI
-        val apiServices = ApiMain.getNinjaServices()
-        val call = apiServices.getRecommendedExercises(param1, param2, param3) //Edit params
-        call.enqueue(object : Callback<ActivityData.recommendedExercises> {
-            override fun onResponse(call: Call<recommendedExercises>, response: Response<RecommendedExercises>) {
-                if (response.isSuccessful) {
-                    val exerciseDataList = response.body()
-                    val exerciseResultNames = mutableListOf<String>()
-
-                    exerciseDataList?.forEach{ exerciseDate}
-                } else {
-                    // Unsuccessful
-                }
-            }
-
-            override fun onFailure(call: Call<RecommendedExercises>, t: Throwable) {
-                t.printStackTrace()
-                call.cancel()
-            }
-        })
+        // init UI components
+        textScore = findViewById(R.id.textScore)
+        recyclerRecommendations = findViewById<RecyclerView>(R.id.recyclerRecommendations)
+        buttonEnter = findViewById<Button>(R.id.buttonEnter)
+        buttonView = findViewById<Button>(R.id.buttonView)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
+        if (fbAuth.getUser()?.uid  != null) {
+            lifecycleScope.launch {
+                loadUserData()
+            }
+        }
+    }
 
-        val db = Firebase.firestore
-        val profileServices = FbProfileServices(db)
-        val personicleServices = FbPersonicleServices(db)
-        val userId = fbAuth.getUser()?.uid
-        if (userId != null) {
+    private fun loadUserData() {
+        val userId =  fbAuth.getUser()?.uid
+        if (  userId != null) {
             lifecycleScope.launch {
                 val profile = profileServices.getProfile(userId)
-                if (profile != null && profile.personicleId != null) {
-                    val personicle = personicleServices.getPersonicle(profile.personicleId)
-                    if (personicle != null) {
-                        val activityDataId = personicle.activityDataId
-                        if (activityDataId != null) {
-                            // Retrieve user's exercise data from firebase
-                            exerciseDataDocRef =  db.collection("SleepData").document(activityDataId)
-                            Log.d("BUG", "activityDataId is not null")
-
-                        } else {
-                            Log.d("HomeActivity", "activityDataId is null")
-                        }
-
-                        // Initialize UI with data from db
-                        updateUI()
-
-                    } else {
-                        Log.d("BUG", "personicle is null")
-                    }
-                } else {
-                    Log.d("BUG", "profile or personicleId is null")
+                val healthPlan = healthPlanServices.getHealthPLan(profile?.healthPlanId!!)
+                val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
+                if (healthPlan != null) {
+                    exercisePlan = healthPlan.exercisePlan
                 }
-                if (!this@ExerciseActivity::exerciseDataDocRef.isInitialized) {
-                    Toast.makeText(this@ExerciseActivity, "Could not get activityDataId for this user", Toast.LENGTH_SHORT).show()
+                if (personicle != null) {
+                    if (personicle.activityDataId != null)
+                        exerciseData = activityServices.getDietData(personicle.dietDataId!!)
                 }
             }
-        } else {
-            Toast.makeText(this, "Could not get activityDataId for this user", Toast.LENGTH_SHORT).show()
-            Log.d("BUG", "userId is null")
         }
     }
 
-    // Update UI with data from db
-    fun updateUI() {
-        exerciseDataDocRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d("EXERCISE DATA", document.data.toString())
-                    val exerciseData = document.toObject(ActivityData::class.java)!!
-                    Log.d("EXERCISE DATA", exerciseData.recommendedExercises.toString())
+    private fun getRecommendations(){
 
-                    if (ActivityData.dailyExerciseRecords.isNotEmpty()) {
-                        val exerciseRecordsToday = exerciseData.dailyExerciseRecords.last()
-                        if (!isToday(exerciseRecordsToday.enteredDate))  {
-                            time_range_confirm.setVisibility(View.VISIBLE)
-                            exercise_score.setText("??")
-                        } else {
+        // adjust parameters
+        val call = apiService.getRecipes(q ="star")
 
 
-                } else {
-                    Log.d("EXERCISE DATA", "failed :(")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("EXERCISE DATA", "get failed with ", exception)
-            }
     }
-    // Might be scrapped due to API
-    fun caloriesBurnedCalculation(met: Double, weight: Double, durationHours: Double): Double {
-        return met * weight * durationHours
+
+    // opens search and view respectively
+    fun openDietSearch(view: View){
+        val intent = Intent(this, DietSearchActivity::class.java)
+        startActivity(intent)
     }
-    // If input date == today's date, return score
-    // If input date != today's date, return ??
-    fun isToday(date: Date?): Boolean {
-        val today = Date()
-        if (date != null
-            && date.day == today.day
-            && date.month == today.month
-            && date.year == today.year) {
-            return true
-        } else {
-            return false
-        }
+
+    fun openDietView(view: View){
+        val intent = Intent(this, DietViewActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun openHomeView(view: View) {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun updateUI(response: JsonObject) {
+        // Update UI based on the API response
+        // probably for the uhhhhhhh firebase score and idk suggestions???
     }
 }

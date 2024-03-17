@@ -9,14 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class ExerciseViewAdapter(private val dataSet: MutableList<String>) :
-    RecyclerView.Adapter<DietViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietViewHolder {
+    RecyclerView.Adapter<ExerciseViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.diet_view, parent, false)
-        return DietViewHolder(view)
+            .inflate(R.layout.exercise_view, parent, false)
+        return ExerciseViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: DietViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         holder.textName.text = dataSet[position]
         holder.buttonDelete.setOnClickListener {
             dataSet.removeAt(position) // may have bug if rapidly clicked but uh
