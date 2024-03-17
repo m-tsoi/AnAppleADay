@@ -73,7 +73,7 @@ class WeightTrackerActivity: AppCompatActivity() {
                 val personicle = personicleServices.getPersonicle(profile.personicleId)
 
                 if (personicle != null) {
-                    weightDataId = personicle.weightRecordsId
+                    weightDataId = personicle.weightDataId
                     if (weightDataId != null) {
                         pastWeightRecords =  weightServices.getPastWeightRecords(id = weightDataId!!)
                     }
