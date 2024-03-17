@@ -24,7 +24,6 @@ import com.cs125.anappleaday.data.record.models.healthPlans.DietPlan
 import com.cs125.anappleaday.data.record.models.live.DietData
 import com.cs125.anappleaday.data.record.models.live.RecommendedMeal
 import com.cs125.anappleaday.data.recycler.DietRecAdapter
-import com.cs125.anappleaday.data.recycler.DietResultAdapter
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbDietServices
 import com.cs125.anappleaday.services.firestore.FbHealthPlanServices
@@ -82,7 +81,6 @@ class DietActivity : AppCompatActivity() {
         if (fbAuth.getUser()?.uid  != null) {
             lifecycleScope.launch {
                 loadUserData()
-                updateUI()
             }
         }
     }
@@ -101,19 +99,38 @@ class DietActivity : AppCompatActivity() {
                 if (personicle != null) {
                     if (personicle.dietDataId != null) // causing issues rn cause dietDataId was not there
                         dietData = dietServices.getDietData(personicle.dietDataId!!)
+
+                        // calculate score and recs
+                        var score = 0.0
+                        var mealRecs = mutableListOf<RecommendedMeal>()
+                        if (dietAdvisor != null && dietData != null){
+                            // get prev day
+                            var calendar = Calendar.getInstance()
+                            calendar.add(Calendar.DATE, -1)
+                            val prevDate = calendar.time
+
+                            // get nutrition for previous day
+                            val nutrition = dietData!!.nutrition[prevDate]
+                            if (nutrition != null) {
+                                score = dietAdvisor!!.computeDailyScore(nutrition)
+                                // setting rec
+                                var exampleNutritionData = nutrition[0]
+                                mealRecs = dietAdvisor!!.checkMealAndRecommend(exampleNutritionData )
+                            }
+                        }
+
+                        // put score in after calculating
+                        textScore.text = score.toString()
+                        dietServices.addScoreRecord(personicle.dietDataId!!, score)
+
+                        // update/bind recycler
+                        dietRecAdapter = DietRecAdapter(mealRecs)
+                        recyclerRecommendations.adapter = dietRecAdapter
                 }
             }
         }
     }
 
-    private fun getRecommendations(){
-        //maybe return as list
-        // api call moment
-        if (dietData != null && dietPlan != null){
-
-
-        }
-    }
 
     // opens search and view respectively
     fun openDietSearch(view: View){
@@ -129,34 +146,5 @@ class DietActivity : AppCompatActivity() {
     fun openHomeView(view: View) {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
-    }
-
-    private fun updateUI() {
-        // Update UI for Score and Recs
-
-        // score finding for PREVIOUS DAY (can change it if this is inc)
-        var score = 0
-        var mealRecs = mutableListOf<RecommendedMeal>()
-        if (dietAdvisor != null && dietData != null){
-            // get prev day
-            var calendar = Calendar.getInstance()
-            calendar.add(Calendar.DATE, -1)
-            val prevDate = calendar.time
-
-            // get nutrition for previous day
-            val nutrition = dietData!!.nutrition[prevDate]
-            if (nutrition != null) {
-                score = dietAdvisor!!.computeDailyScore(nutrition)
-                // setting rec
-                var exampleNutritionData = nutrition[0]
-                mealRecs = dietAdvisor!!.checkMealAndRecommend(exampleNutritionData )
-            }
-        }
-        textScore.text = score.toString()
-
-        // update/bind recycler
-        dietRecAdapter = DietRecAdapter(mealRecs)
-        recyclerRecommendations.adapter = dietRecAdapter
-
     }
 }

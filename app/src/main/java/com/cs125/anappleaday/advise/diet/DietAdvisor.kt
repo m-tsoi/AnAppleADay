@@ -10,26 +10,26 @@ import com.cs125.anappleaday.utils.isInRange
 class DietAdvisor(
     private var dietPlan: DietPlan,
 ) {
-    fun computeDailyScore(dailyInputNutritionList: MutableList<NutritionData>): Int {
+    fun computeDailyScore(dailyInputNutritionList: MutableList<NutritionData>): Double {
         var initialScore = DAYLY_SCORE
 
         val stats = getMacroNuStats(dailyInputNutritionList)
 
         if (!isInRange(stats["protein%"]!!,dietPlan.dayProteinIntake - MACRONU_TOLERANCE_RATE,
                 dietPlan.dayProteinIntake + MACRONU_TOLERANCE_RATE ))
-            initialScore -= 25
+            initialScore -= 25.0
 
         if (!isInRange(stats["protein%"]!!,dietPlan.dayCarbIntake - MACRONU_TOLERANCE_RATE,
                 dietPlan.dayCarbIntake + MACRONU_TOLERANCE_RATE ))
-            initialScore -= 25
+            initialScore -= 25.0
 
         if (!isInRange(stats["protein%"]!!,dietPlan.dayFatIntake - MACRONU_TOLERANCE_RATE,
                 dietPlan.dayFatIntake + MACRONU_TOLERANCE_RATE ))
-            initialScore -= 25
+            initialScore -= 25.0
 
         if (!isInRange(stats["protein%"]!!,dietPlan.dayCaloriesIntake - CALORIES_TOLERANCE_RATE,
                 dietPlan.dayCaloriesIntake + CALORIES_TOLERANCE_RATE ))
-            initialScore -= 25
+            initialScore -= 25.0
 
 
         return initialScore
@@ -86,7 +86,7 @@ class DietAdvisor(
     }
 
     companion object {
-        private val DAYLY_SCORE: Int = 100
+        private val DAYLY_SCORE: Double = 100.0
         private val MACRONU_TOLERANCE_RATE: Double = 0.025
         private val CALORIES_TOLERANCE_RATE: Double = 0.05
         
