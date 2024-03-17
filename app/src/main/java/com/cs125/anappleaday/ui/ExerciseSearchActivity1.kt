@@ -22,7 +22,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ExerciseSearchActivity : AppCompatActivity() {
+class ExerciseSearchActivity1 : AppCompatActivity() {
 
     //
     private lateinit var fbAuth: FBAuth

@@ -78,7 +78,7 @@ class HomeActivity : AppCompatActivity() {
         exercise_region
             .setOnClickListener{
                 Log.d("BUTTONS", "User tapped the login")
-                val sendIntent = Intent(this, ExerciseActivity1::class.java)
+                val sendIntent = Intent(this, ExerciseActivity::class.java)
                 startActivity(sendIntent)
             }
 

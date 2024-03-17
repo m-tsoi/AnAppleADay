@@ -28,3 +28,4 @@ class FbActivityServices (firestore: FirebaseFirestore) : FbBaseServices<Activit
 //            .update("exercises", FieldValue.arrayUnion(exercise))
 //    }
 }
+
