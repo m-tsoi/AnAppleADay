@@ -15,7 +15,7 @@ class ExerciseResultAdapter(private var dataSet: MutableList<ExerciseData>, priv
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseResultHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.diet_result, parent, false)
+            .inflate(R.layout.exercise_result, parent, false)
         return ExerciseResultHolder(view)
     }
 
@@ -34,10 +34,8 @@ class ExerciseResultAdapter(private var dataSet: MutableList<ExerciseData>, priv
         dataSet = newDataSet
         notifyDataSetChanged()
     }
-
-
 }
-class ExerciseResultHolder(dietResult: View) : RecyclerView.ViewHolder(dietResult) {
-    var textName : TextView =  dietResult.findViewById(R.id.textName)
-    var buttonAdd : Button = dietResult.findViewById(R.id.buttonAdd)
+class ExerciseResultHolder(exerciseResult: View) : RecyclerView.ViewHolder(exerciseResult) {
+    var textName : TextView =  exerciseResult.findViewById(R.id.textName) // Change to name of text
+    var buttonAdd : Button = exerciseResult.findViewById(R.id.buttonAdd) // & button
 }
