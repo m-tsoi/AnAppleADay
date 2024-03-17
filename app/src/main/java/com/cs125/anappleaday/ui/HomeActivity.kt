@@ -10,12 +10,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.cs125.anappleaday.R
-import com.cs125.anappleaday.data.record.models.live.SleepData
+import com.cs125.anappleaday.data.record.models.user.Personicle
 import com.cs125.anappleaday.services.auth.FBAuth
+import com.cs125.anappleaday.services.firestore.FbExerciseServices
+import com.cs125.anappleaday.services.firestore.FbDietServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
+import com.cs125.anappleaday.services.firestore.FbSleepServices
 import com.google.android.material.card.MaterialCardView
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
@@ -24,7 +26,6 @@ import java.util.Date
 class HomeActivity : AppCompatActivity() {
     private lateinit var fbAuth: FBAuth
     private lateinit var imageView: ImageView
-    private lateinit var sleepDataDocRef : DocumentReference
     private lateinit var ls_score : TextView
     private lateinit var sleep_region : MaterialCardView
     private lateinit var sleep_score : TextView
@@ -37,72 +38,81 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var health_plan_region : Button
     private lateinit var logout_button : Button
 
+    // Services
+    private lateinit var profileServices: FbProfileServices
+    private lateinit var personicleServices: FbPersonicleServices
+    private lateinit var dietServices: FbDietServices
+    private lateinit var exerciseServices: FbExerciseServices
+    private lateinit var sleepServices: FbSleepServices
+
+    private var personicle: Personicle? = null
+    private var scoreSet: HashMap<String, Double> = hashMapOf(
+        "lifeStyle" to 0.0,
+        "diet" to 0.0,
+        "exercise" to 0.0,
+        "sleep" to 0.0
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
         fbAuth = FBAuth()
+        val db = Firebase.firestore
+        profileServices = FbProfileServices(db)
+        personicleServices = FbPersonicleServices(db)
+        dietServices = FbDietServices(db)
+        exerciseServices = FbExerciseServices(db)
+        sleepServices = FbSleepServices(db)
 
-
-        ls_score = findViewById<TextView>(R.id.lifestyle_score)
-        imageView = findViewById<ImageView>(R.id.imageView)
-        sleep_region = findViewById<MaterialCardView>(R.id.sleep_region)
-        sleep_score = findViewById<TextView>(R.id.sleep_score)
-        diet_region = findViewById<MaterialCardView>(R.id.diet_region)
-        diet_score = findViewById<TextView>(R.id.diet_score)
-        exercise_region = findViewById<MaterialCardView>(R.id.exercise_region)
-        exercise_score = findViewById<TextView>(R.id.exercise_score)
-        weight_region = findViewById<MaterialCardView>(R.id.weight_region)
+        ls_score = findViewById(R.id.lifestyle_score)
+        imageView = findViewById(R.id.imageView)
+        sleep_region = findViewById(R.id.sleep_region)
+        sleep_score = findViewById(R.id.sleep_score)
+        diet_region = findViewById(R.id.diet_region)
+        diet_score = findViewById(R.id.diet_score)
+        exercise_region = findViewById(R.id.exercise_region)
+        exercise_score = findViewById(R.id.exercise_score)
+        weight_region = findViewById(R.id.weight_region)
         personicle_region = findViewById(R.id.personicle_region)
         health_plan_region = findViewById(R.id.health_plan_region)
-        logout_button = findViewById<Button>(R.id.logout_button)
+        logout_button = findViewById(R.id.logout_button)
 
         // Sleep button functionalities
-        sleep_region
-            .setOnClickListener{
+        sleep_region.setOnClickListener{
                 Log.d("BUTTONS", "User tapped the login")
-
-                val sendIntent = Intent(this, SleepActivity::class.java)
-                startActivity(sendIntent)
+                startActivity(Intent(this, SleepActivity::class.java))
             }
 
         // Diet button functionalities
-        diet_region
-            .setOnClickListener{
+        diet_region.setOnClickListener{
                 Log.d("BUTTONS", "User tapped the login")
-                val sendIntent = Intent(this, DietActivity::class.java)
-                startActivity(sendIntent)
+                startActivity(Intent(this, DietActivity::class.java))
             }
 
         // Exercise button functionalities
-        exercise_region
-            .setOnClickListener{
+        exercise_region.setOnClickListener{
                 Log.d("BUTTONS", "User tapped the login")
-                val sendIntent = Intent(this, ExerciseActivity::class.java)
-                startActivity(sendIntent)
+                startActivity(Intent(this, ExerciseActivity::class.java))
             }
 
         weight_region.setOnClickListener{
             Log.d("BUTTONS", "User tapped the login")
-            val sendIntent = Intent(this, WeightTrackerActivity::class.java)
-            startActivity(sendIntent)
+            startActivity(Intent(this, WeightTrackerActivity::class.java))
         }
 
         // Personicle button functionalities
         personicle_region
             .setOnClickListener{
                 Log.d("BUTTONS", "User tapped the login")
-
-                val sendIntent = Intent(this, PersonicleActivity::class.java)
-                startActivity(sendIntent)
+                startActivity(Intent(this, PersonicleActivity::class.java))
             }
 
         // Change plan button functionalities
         health_plan_region
             .setOnClickListener{
                 Log.d("BUTTONS", "User tapped the login")
-                val sendIntent = Intent(this, SelectPlanActivity::class.java)
-                startActivity(sendIntent)
+                startActivity(Intent(this, SelectPlanActivity::class.java))
             }
 
         // Logout
@@ -127,84 +137,48 @@ class HomeActivity : AppCompatActivity() {
                 imageView.scaleType = ImageView.ScaleType.FIT_XY
             }
         }
+        loadUserData()
     }
 
     override fun onResume() {
         super.onResume()
+        loadUserData()
+    }
 
-        val db = Firebase.firestore
-        val profileServices = FbProfileServices(db)
-        val personicleServices = FbPersonicleServices(db)
+    private fun loadUserData() {
         val userId = fbAuth.getUser()?.uid
-        if (userId != null) {
-            lifecycleScope.launch {
-                val profile = profileServices.getProfile(userId)
-                if (profile != null && profile.personicleId != null) {
-                    val personicle = personicleServices.getPersonicle(profile.personicleId)
-                    if (personicle != null) {
-                        val sleepDataId = personicle.sleepDataId
-                        if (sleepDataId != null) {
-                            sleepDataDocRef =  db.collection("SleepData").document(sleepDataId)
-                            Log.d("BUG", "sleepDataId is not null")
+        lifecycleScope.launch {
+            val profile = profileServices.getProfile(userId!!)
+            if (profile != null) {
+                personicle = personicleServices.getPersonicle(profile.personicleId)
 
-                        } else {
-                            Log.d("HomeActivity", "sleepDataId is null")
-                        }
-                        // TODO: get activityDataId and dietDataId
+                if (personicle != null) {
+                    val dietScore = dietServices.getDietScore(personicle?.dietDataId!!)
+                    val exerciseScore = exerciseServices.getExerciseScore(personicle?.exerciseDataId!!)
+                    val sleepScore = sleepServices.getSleepScore(personicle?.sleepDataId!!)
+                    val lifeStyleScore = (dietScore + exerciseScore + sleepScore) / 3
 
-                        // Initialize UI with data from db
-                        updateUI()
-
-                    } else {
-                        Log.d("BUG", "personicle is null")
-                    }
-                } else {
-                    Log.d("BUG", "profile or personicleId is null")
-                }
-                if (!this@HomeActivity::sleepDataDocRef.isInitialized) {
-                    Toast.makeText(this@HomeActivity, "Could not get sleepDataId for this user", Toast.LENGTH_SHORT).show()
+                    Log.d("Diet Score", dietScore.toString())
+                    Log.d("Exercise Score", exerciseScore.toString())
+                    Log.d("Sleep Score", sleepScore.toString())
+                    Log.d("LS Score", lifeStyleScore.toString())
+                    
+                    scoreSet["lifeStyle"] = lifeStyleScore
+                    scoreSet["diet"] = dietScore
+                    scoreSet["exercise"] = exerciseScore
+                    scoreSet["sleepScore"] = sleepScore
+                    updateScoreUI()
                 }
             }
-        } else {
-            Toast.makeText(this, "Could not get sleepDataId for this user", Toast.LENGTH_SHORT).show()
-            Log.d("BUG", "userId is null")
         }
     }
 
-    fun updateUI() {
+    fun updateScoreUI() {
         // Update sleep score from db
-        sleepDataDocRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d("SLEEP DATA", document.data.toString())
-                    val sleepData = document.toObject(SleepData::class.java)!!
-                    Log.d("SLEEP DATA", sleepData.dailySleepRecords.toString())
-
-                    if (sleepData.dailySleepRecords.isNotEmpty()) {
-                        val sleepRecordsToday = sleepData.dailySleepRecords.last()
-                        if (isToday(sleepRecordsToday.enteredDate))  {
-                            sleep_score.setText(sleepRecordsToday.sleepScore.toString())
-                        } else {
-                            sleep_score.setText("??")
-                        }
-                    } else {
-                        sleep_score.setText("??")
-                    }
-
-                } else {
-                    Log.d("SLEEP DATA", "failed :<")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("SLEEP DATA", "get failed with ", exception)
-            }
-
-        // TODO: Update diet score from db
-
-        // TODO: Update exercise score from db
-
-        // TODO: Update lifestyle score from db
-
+        ls_score.text = String.format("%.1f", scoreSet["lifeStyle"])
+        diet_score.text = String.format("%.1f", scoreSet["diet"])
+        exercise_score.text = String.format("%.1f", scoreSet["exercise"])
+        sleep_score.text = String.format("%.1f", scoreSet["sleep"])
     }
 
 
