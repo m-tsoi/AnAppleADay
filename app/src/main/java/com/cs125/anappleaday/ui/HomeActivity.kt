@@ -83,10 +83,8 @@ class HomeActivity : AppCompatActivity() {
         exercise_region
             .setOnClickListener{
                 Log.d("BUTTONS", "User tapped the login")
-
-                // TODO: link to Exercise page
-//                val sendIntent = Intent(this, SleepActivity::class.java)
-//                startActivity(sendIntent)
+                val sendIntent = Intent(this, ExerciseActivity::class.java)
+                startActivity(sendIntent)
             }
 
         // Personicle button functionalities

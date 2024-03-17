@@ -5,35 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextViewExercise"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="53dp"
-        android:hint="Search for an exercise"
-        app:layout_constraintTop_toBottomOf="@+id/textViewExerciseSearch"
-        tools:layout_editor_absoluteX="0dp" />
-
     <TextView
-        android:id="@+id/textViewExerciseSearch"
+        android:id="@+id/textTodayMeals"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Exercise Search"
-        android:textSize="34sp"
+        android:layout_gravity="center"
+        android:text="Today Meals"
+        android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintVertical_bias="0.124"
+        />
 
-    <Button
-        android:id="@+id/confirm_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit Exercises for Recommendation"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerMeals"
+        android:layout_width="350dp"
+        android:layout_height="250dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.913" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -159,7 +159,7 @@ class ExerciseActivity : AppCompatActivity() {
             }
     }
     // Might be scrapped due to API
-    private fun caloriesBurnedCalculation(met: Double, weight: Double, durationHours: Double): Double {
+    fun caloriesBurnedCalculation(met: Double, weight: Double, durationHours: Double): Double {
         return met * weight * durationHours
     }
     // If input date == today's date, return score
