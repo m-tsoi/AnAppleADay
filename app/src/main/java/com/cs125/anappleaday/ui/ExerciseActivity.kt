@@ -23,9 +23,11 @@ import com.cs125.anappleaday.services.firestore.FbHealthPlanServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
 import kotlinx.coroutines.launch
+import java.util.Date
+
 class ExerciseActivity : AppCompatActivity() {
 
-    private lateinit var MET: TextView // Metabolic Equivalent of Task
+    // private lateinit var MET: TextView // Metabolic Equivalent of Task
     private lateinit var calories_burned: TextView
     private lateinit var exercise_duration_mins: TextView
     private lateinit var exercise_score: TextView
@@ -63,38 +65,69 @@ class ExerciseActivity : AppCompatActivity() {
 
         // MET, weight, and exercise duration
         // toDoubleOrNull is like ternary statement in JavaScript, return double if double, return null if nondouble
-        val metValue: Double = MET.text.toString().toDoubleOrNull() ?: 0.0
-        val durationHours: Double = exercise_duration_mins.text.toString().toDoubleOrNull() ?: 0.0
+//        val metValue: Double = MET.text.toString().toDoubleOrNull() ?: 0.0
+//        val durationHours: Double = exercise_duration_mins.text.toString().toDoubleOrNull() ?: 0.0
 
         // Calculate calories burned using private function
         //val caloriesBurnedValue: Double = caloriesBurnedCalculation(metValue, personWeight, durationHours)
         //calories_burned.text = "Calories burned: ${caloriesBurnedValue.roundToInt()}"
 
-        // Make API call to NinjaAPI
-        val apiServices = ApiMain.getNinjaServices()
-        val call = apiServices.getRecommendedExercises(param1, param2, param3) //Edit params
-        call.enqueue(object : Callback<ActivityData.recommendedExercises> {
-            override fun onResponse(
-                call: Call<recommendedExercises>,
-                response: Response<RecommendedExercises>
-            ) {
+        calories_burned = findViewById(R.id.calories_burned)
+        exercise_duration_mins = findViewById(R.id.exercise_duration)
+        submit_exercise = findViewById(R.id.submit_exercise)
+        recyclerRecommendations = findViewById(R.id.recycler_recommendations)
+
+        fetchExerciseRecommendations()
+
+        submit_exercise.setOnClickListener {
+            // Placeholder for exercise submission logic
+            // Replace with actual code for exercise submission
+            submitExercise()
+        }
+    }
+    private fun fetchExerciseRecommendations() {
+        lifecycleScope.launch {
+            try {
+                val response = apiService.getRecommendedExercises("param1", "param2", "param3").execute()
                 if (response.isSuccessful) {
-                    val exerciseDataList = response.body()
-                    val exerciseResultNames = mutableListOf<String>()
-
-                    exerciseDataList?.forEach { exerciseDate }
+                    val recommendations = response.body()
+                    if (recommendations != null) {
+                        // Process recommendations and update UI
+                    } else {
+                        Log.e("ExerciseActivity", "Empty recommendations response")
+                    }
                 } else {
-                    // Unsuccessful
+                    Log.e("ExerciseActivity", "Failed to fetch exercise recommendations: ${response.code()}")
                 }
+            } catch (e: Exception) {
+                Log.e("ExerciseActivity", "Error fetching exercise recommendations", e)
             }
-
-            override fun onFailure(call: Call<RecommendedExercises>, t: Throwable) {
-                t.printStackTrace()
-                call.cancel()
-            }
-        })
+        }
+    }
+    private fun submitExercise() {
+        // Placeholder for exercise submission logic
+        // Replace with actual code for exercise submission
     }
 
+    private fun updateUI() {
+        // Placeholder for updating UI with exercise data from Firestore
+        // Replace with actual code to update UI
+    }
+    // If input date == today's date, return score
+    // If input date != today's date, return ??
+    fun isToday(date: Date?): Boolean {
+        val today = Date()
+        if (date != null
+            && date.day == today.day
+            && date.month == today.month
+            && date.year == today.year
+        ) {
+            return true
+        } else {
+            return false
+        }
+    }
+}
     override fun onResume() {
         super.onResume()
 
@@ -167,29 +200,7 @@ class ExerciseActivity : AppCompatActivity() {
                             Log.d("EXERCISE DATA", "get failed with ", exception)
                         }
                 }
-                // Might be scrapped due to API
-                fun caloriesBurnedCalculation(
-                    met: Double,
-                    weight: Double,
-                    durationHours: Double
-                ): Double {
-                    return met * weight * durationHours
-                }
 
-                // If input date == today's date, return score
-                // If input date != today's date, return ??
-                fun isToday(date: Date?): Boolean {
-                    val today = Date()
-                    if (date != null
-                        && date.day == today.day
-                        && date.month == today.month
-                        && date.year == today.year
-                    ) {
-                        return true
-                    } else {
-                        return false
-                    }
-                }
             }
     }
-}
+

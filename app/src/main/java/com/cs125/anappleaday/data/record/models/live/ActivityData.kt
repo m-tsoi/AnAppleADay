@@ -9,10 +9,4 @@ data class ActivityData(
     //val activities: MutableList<ExerciseSessionRecord>,
     val dailyExerciseRecords: MutableList<ExerciseSession> = mutableListOf<ExerciseSession>(),
     //val recommendedExercises: MutableList<>
-
-    // Values
-    val name: String,
-    val calories_per_hour: Int,
-    val duration_minutes: Double,
-    val total_calories: Int,
 )
