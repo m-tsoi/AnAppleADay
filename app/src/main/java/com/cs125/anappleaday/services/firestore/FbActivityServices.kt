@@ -3,7 +3,6 @@ package com.cs125.anappleaday.services.firestore
 import android.util.Log
 import com.cs125.anappleaday.data.record.models.live.ActivityData
 import com.cs125.anappleaday.data.record.models.live.DietData
-import com.cs125.anappleaday.data.record.models.live.MealRecord
 import com.cs125.anappleaday.utils.toMap
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FieldValue
