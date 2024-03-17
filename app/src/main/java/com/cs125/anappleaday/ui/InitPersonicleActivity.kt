@@ -10,14 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.cs125.anappleaday.R
 import com.cs125.anappleaday.data.enumTypes.ActivityLevel
-import com.cs125.anappleaday.data.record.models.live.ActivityData
+import com.cs125.anappleaday.data.record.models.live.ExerciseData
 import com.cs125.anappleaday.data.record.models.live.DietData
 import com.cs125.anappleaday.data.record.models.live.SleepData
 import com.cs125.anappleaday.data.record.models.live.WeightData
 import com.cs125.anappleaday.data.record.models.user.Personicle
 import com.cs125.anappleaday.databinding.ActivityInitPersonicleBinding
 import com.cs125.anappleaday.services.auth.FBAuth
-import com.cs125.anappleaday.services.firestore.FbActivityServices
+import com.cs125.anappleaday.services.firestore.FbExerciseServices
 import com.cs125.anappleaday.services.firestore.FbDietServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
@@ -35,7 +35,7 @@ class InitPersonicleActivity: AppCompatActivity() {
     private lateinit var profileServices: FbProfileServices
     private lateinit var personicleServices: FbPersonicleServices
     private lateinit var dietServices: FbDietServices
-    private lateinit var activityServices: FbActivityServices
+    private lateinit var exerciseServices: FbExerciseServices
     private lateinit var sleepServices: FbSleepServices
     private lateinit var weightServices: FbWeightServices
     private lateinit var binding: ActivityInitPersonicleBinding
@@ -54,7 +54,7 @@ class InitPersonicleActivity: AppCompatActivity() {
         profileServices = FbProfileServices(db)
         personicleServices = FbPersonicleServices(db)
         dietServices = FbDietServices(db)
-        activityServices = FbActivityServices(db)
+        exerciseServices = FbExerciseServices(db)
         sleepServices = FbSleepServices(db)
         weightServices = FbWeightServices(db)
 
@@ -97,7 +97,7 @@ class InitPersonicleActivity: AppCompatActivity() {
                                     rmr = rmr ,
                                     caloriesBudget = caloriesBudget,
                                     dietDataId = idSet["dietDataDocId"],
-                                    activityDataId = idSet["activityDataDocID"],
+                                    exerciseDataId = idSet["activityDataDocID"],
                                     sleepDataId = idSet["sleepDataDocUUID"],
                                     weightDataId = idSet["weightRecordId"]
                                 )
@@ -130,7 +130,7 @@ class InitPersonicleActivity: AppCompatActivity() {
         dietServices.createDiet(dietDataDocId, DietData())
 
         val activityDataDocID = UUID.randomUUID().toString()
-        activityServices.createActivityData(activityDataDocID, ActivityData())
+        exerciseServices.createExerciseData(activityDataDocID, ExerciseData())
 
         val sleepDataDocId = UUID.randomUUID().toString()
         sleepServices.createSleepData(sleepDataDocId, SleepData())

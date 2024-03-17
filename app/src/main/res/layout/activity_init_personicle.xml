@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="72dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:clickable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -132,7 +132,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Confirm"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_marginVertical="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -144,11 +144,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="To Health Plan"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginVertical="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/activityLevelNote"
+        app:layout_constraintTop_toBottomOf="@id/personicle_stats_card"
         app:layout_constraintVertical_bias="0.775" />
 
 
