@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.cs125.anappleaday.data.enumTypes.ActivityData
+import com.cs125.anappleaday.data.enumTypes.ExerciseData
 
 
 class ExerciseResultAdapter(private var dataSet: MutableList<NutritionData>, private val onAddClickListener: OnAddClickListener) :
