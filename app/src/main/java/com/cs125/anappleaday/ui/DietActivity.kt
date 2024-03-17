@@ -1,6 +1,5 @@
 package com.cs125.anappleaday.ui
 
-import DietViewActivity
 import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +18,7 @@ import com.cs125.anappleaday.R
 import com.google.gson.JsonObject
 
 import androidx.lifecycle.lifecycleScope
+import com.cs125.anappleaday.api.ApiMain
 import com.cs125.anappleaday.data.record.models.healthPlans.DietPlan
 import com.cs125.anappleaday.data.record.models.live.DietData
 import com.cs125.anappleaday.services.auth.FBAuth
@@ -48,6 +48,9 @@ class DietActivity : AppCompatActivity() {
     private lateinit var buttonEnter : Button
     private lateinit var buttonView : Button
 
+    // Edamam API
+    private val apiService = ApiMain.getEdamamServices()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diet)
@@ -70,7 +73,7 @@ class DietActivity : AppCompatActivity() {
         super.onStart()
         if (fbAuth.getUser()?.uid  != null) {
             lifecycleScope.launch {
-                // set the score?
+                loadUserData()
             }
         }
     }
@@ -86,10 +89,19 @@ class DietActivity : AppCompatActivity() {
                     dietPlan = healthPlan.dietPlan
                 }
                 if (personicle != null) {
-                    dietData = dietServices.getDietData(personicle.dietDataId!!)
+                    if (personicle.dietDataId != null)
+                        dietData = dietServices.getDietData(personicle.dietDataId!!)
                 }
             }
         }
+    }
+
+    private fun getRecommendations(){
+
+        // adjust parameters
+        val call = apiService.getRecipes(q ="star")
+
+
     }
 
     // opens search and view respectively

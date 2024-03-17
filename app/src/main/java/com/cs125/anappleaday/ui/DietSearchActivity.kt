@@ -29,30 +29,27 @@ import retrofit2.Response
 
 class DietSearchActivity : AppCompatActivity() {
 
-    //
+    // firebase i think
     private lateinit var fbAuth: FBAuth
     private lateinit var profileServices: FbProfileServices
     private lateinit var personicleServices: FbPersonicleServices
     private lateinit var dietServices: FbDietServices
 
-    private var dietData: DietData? = null
-
+    // UI components
     private lateinit var searchView : SearchView
     private lateinit var recyclerResults : RecyclerView
     private lateinit var dietResultAdapter: DietResultAdapter
 
-    // also add in adapter???
-
+    // nutrition api
     private val apiService = ApiMain.getNinjaServices()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diet_search)
 
+        // setting UI components
         searchView = findViewById<SearchView>(R.id.searchView)
         recyclerResults = findViewById<RecyclerView>(R.id.recyclerResults)
-        // add recycler adapter
 
         // listener for search view
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -79,6 +76,8 @@ class DietSearchActivity : AppCompatActivity() {
 
                     val onAddClickListener: (Int) -> Unit = { position ->
                         var selectedNutritionData = mutableDataList[position]
+
+                        Log.d("DietSearchActivity", "Selected NutritionData: $selectedNutritionData")
                         addNutritionDataToFirebase(selectedNutritionData)
                     }
 
@@ -110,6 +109,8 @@ class DietSearchActivity : AppCompatActivity() {
                 val profile = profileServices.getProfile(userId)
                 val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
                 if (personicle != null) {
+                    // the problem child
+                    // i think nothing is being passed rn
                     dietServices.addNutritionData(personicle.dietDataId!!, nutritionData)
                 }
             }

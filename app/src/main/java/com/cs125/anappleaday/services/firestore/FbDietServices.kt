@@ -47,6 +47,7 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
         }
     }
 
+    // gets NutritionData for corresponding date
     suspend fun getPastNutritionData(id: String, date:Date): MutableList<NutritionData> {
         return try {
             val document = collectionRef.document(id).get().await()
