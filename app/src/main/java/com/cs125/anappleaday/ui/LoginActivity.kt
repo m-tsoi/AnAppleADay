@@ -11,6 +11,8 @@ import com.google.firebase.Firebase
 import com.cs125.anappleaday.R
 import com.cs125.anappleaday.databinding.ActivityLoginBinding
 import com.cs125.anappleaday.services.auth.FBAuth
+import com.cs125.anappleaday.services.firestore.FbHealthPlanServices
+import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
@@ -20,6 +22,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var fbAuth: FBAuth
     private lateinit var binding: ActivityLoginBinding
     private lateinit var profileService: FbProfileServices
+    private lateinit var healthPlanServices: FbHealthPlanServices
+    private lateinit var personicleServices: FbPersonicleServices
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +31,10 @@ class LoginActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth
         fbAuth = FBAuth()
-        profileService = FbProfileServices(Firebase.firestore)
+        val db = Firebase.firestore
+        profileService = FbProfileServices(db)
+        healthPlanServices = FbHealthPlanServices(db)
+        personicleServices = FbPersonicleServices(db)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -55,21 +62,7 @@ class LoginActivity : AppCompatActivity() {
                                 .show()
                             lifecycleScope.launch {
                                 val userId = fbAuth.getUser()?.uid
-                                if (userId != null) {
-                                    if (profileService.getProfile(userId) == null) {
-                                        startActivity(
-                                            Intent(
-                                                this@LoginActivity,
-                                                ProfileCreationActivity::class.java
-                                            )
-                                        )
-                                    } else {
-                                        startActivity(
-                                            Intent(this@LoginActivity,
-                                                HomeActivity::class.java)
-                                        )
-                                    }
-                                }
+                                redirectNotCreated(userId)
                             }
                         }
                     }
@@ -89,9 +82,48 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if(fbAuth.isCurrentUser()){
-            startActivity(
-                Intent(this, HomeActivity::class.java)
-            )
+            val userId = fbAuth.getUser()?.uid
+            redirectNotCreated(userId)
+        }
+    }
+
+    private fun redirectNotCreated(userId: String? = null) {
+        if (userId == null) return
+        lifecycleScope.launch {
+            val profile = profileService.getProfile(userId)
+            if (profile == null) {
+                startActivity(
+                    Intent(
+                        this@LoginActivity,
+                        ProfileCreationActivity::class.java
+                    )
+                )
+            } else {
+                if (personicleServices.getPersonicle(profile.personicleId) == null) {
+                    startActivity(
+                        Intent(
+                            this@LoginActivity,
+                            InitPersonicleActivity::class.java
+                        )
+                    )
+                } else if (profile.healthPlanId?.let { it1 ->
+                        healthPlanServices.getHealthPLan(it1)
+                    } == null) {
+                    startActivity(
+                        Intent(
+                            this@LoginActivity,
+                            SelectPlanActivity::class.java
+                        )
+                    )
+                } else {
+                    startActivity(
+                        Intent(
+                            this@LoginActivity,
+                            HomeActivity::class.java
+                        )
+                    )
+                }
+            }
         }
     }
 }
