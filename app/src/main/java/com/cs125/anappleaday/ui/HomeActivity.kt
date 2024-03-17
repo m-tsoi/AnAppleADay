@@ -73,7 +73,6 @@ class HomeActivity : AppCompatActivity() {
         diet_score = findViewById(R.id.diet_score)
         exercise_region = findViewById(R.id.exercise_region)
         exercise_score = findViewById(R.id.exercise_score)
-        weight_region = findViewById(R.id.weight_region)
         personicle_region = findViewById(R.id.personicle_region)
         health_plan_region = findViewById(R.id.health_plan_region)
         logout_button = findViewById(R.id.logout_button)
@@ -95,11 +94,6 @@ class HomeActivity : AppCompatActivity() {
                 Log.d("BUTTONS", "User tapped the login")
                 startActivity(Intent(this, ExerciseActivity::class.java))
             }
-
-        weight_region.setOnClickListener{
-            Log.d("BUTTONS", "User tapped the login")
-            startActivity(Intent(this, WeightTrackerActivity::class.java))
-        }
 
         // Personicle button functionalities
         personicle_region
