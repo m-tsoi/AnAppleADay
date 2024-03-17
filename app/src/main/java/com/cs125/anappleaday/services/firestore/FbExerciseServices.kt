@@ -36,7 +36,7 @@ class FbExerciseServices (firestore: FirebaseFirestore) : FbBaseServices<Exercis
             Log.d("Exer Score", document.toString())
 
             if (document != null)
-                document.get(AggregateField.average("score"))?.toDouble()
+                return document.get(AggregateField.average("score"))?.toDouble()!!
 
             0.0
         } catch (e: Exception) {
