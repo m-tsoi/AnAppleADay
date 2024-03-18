@@ -52,14 +52,16 @@ class WeightTrackerActivity: AppCompatActivity() {
 
     fun addWeightRecord() {
         val weight = binding.weightInput.text.toString().toInt()
-        weightServices.addWeight(weightDataId!!, weight)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Weight record was added", Toast.LENGTH_SHORT)
-                    .show()
-            }.addOnFailureListener {
-                Toast.makeText(this, "Failed to add weight record.", Toast.LENGTH_SHORT)
-                    .show()
-            }
+        if (weightDataId != null) {
+            weightServices.addWeight(weightDataId!!, weight)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Weight record was added", Toast.LENGTH_SHORT)
+                        .show()
+                }.addOnFailureListener {
+                    Toast.makeText(this, "Failed to add weight record.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+        }
     }
 
     override fun onStart() {
@@ -69,11 +71,15 @@ class WeightTrackerActivity: AppCompatActivity() {
             val profile = profileServices.getProfile(userId!!)
             if (profile != null) {
                 startingWeight = profile.weight
-                healthPlan = healthPlanServices.getHealthPLan(profile.healthPlanId!!)
+                if (profile.healthPlanId != null)       {
+                    healthPlan = healthPlanServices.getHealthPLan(profile.healthPlanId!!)
+                }
+
+                
                 val personicle = personicleServices.getPersonicle(profile.personicleId)
 
                 if (personicle != null) {
-                    weightDataId = personicle.weightRecordsId
+                    weightDataId = personicle.weightDataId
                     if (weightDataId != null) {
                         pastWeightRecords =  weightServices.getPastWeightRecords(id = weightDataId!!)
                     }

@@ -10,12 +10,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.cs125.anappleaday.R
 import com.cs125.anappleaday.data.enumTypes.ActivityLevel
+import com.cs125.anappleaday.data.record.models.live.ExerciseData
+import com.cs125.anappleaday.data.record.models.live.DietData
 import com.cs125.anappleaday.data.record.models.live.SleepData
+import com.cs125.anappleaday.data.record.models.live.WeightData
 import com.cs125.anappleaday.data.record.models.user.Personicle
 import com.cs125.anappleaday.databinding.ActivityInitPersonicleBinding
 import com.cs125.anappleaday.services.auth.FBAuth
+import com.cs125.anappleaday.services.firestore.FbExerciseServices
+import com.cs125.anappleaday.services.firestore.FbDietServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
+import com.cs125.anappleaday.services.firestore.FbSleepServices
+import com.cs125.anappleaday.services.firestore.FbWeightServices
 import com.cs125.anappleaday.utils.StatCalculator
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.Firebase
@@ -27,6 +34,10 @@ class InitPersonicleActivity: AppCompatActivity() {
     private lateinit var fbAuth: FBAuth
     private lateinit var profileServices: FbProfileServices
     private lateinit var personicleServices: FbPersonicleServices
+    private lateinit var dietServices: FbDietServices
+    private lateinit var exerciseServices: FbExerciseServices
+    private lateinit var sleepServices: FbSleepServices
+    private lateinit var weightServices: FbWeightServices
     private lateinit var binding: ActivityInitPersonicleBinding
 
     // UI components
@@ -39,8 +50,13 @@ class InitPersonicleActivity: AppCompatActivity() {
 
         // Init firebase
         fbAuth = FBAuth()
-        profileServices = FbProfileServices(Firebase.firestore)
-        personicleServices = FbPersonicleServices(Firebase.firestore)
+        val db = Firebase.firestore
+        profileServices = FbProfileServices(db)
+        personicleServices = FbPersonicleServices(db)
+        dietServices = FbDietServices(db)
+        exerciseServices = FbExerciseServices(db)
+        sleepServices = FbSleepServices(db)
+        weightServices = FbWeightServices(db)
 
         // Init UI component
         binding = ActivityInitPersonicleBinding.inflate(layoutInflater)
@@ -70,12 +86,7 @@ class InitPersonicleActivity: AppCompatActivity() {
                                 weight = profile.weight.toDouble()
                             )
                             val caloriesBudget = StatCalculator.computeCaloriesBudget(rmr, activityLevel)
-
-                            // Create new blank SleepData, DietData, ActivityData documents in firestore for this user
-                            val db = Firebase.firestore
-                            val sleepDataDocUUID = UUID.randomUUID().toString()
-                            db.collection("SleepData").document(sleepDataDocUUID).set(SleepData())
-                            // TODO: do the same for DietData and ActivityData
+                            val idSet = initUserLiveData()
 
                             // Create personicle in firestore
                             personicleServices.createPersonicle(
@@ -85,8 +96,10 @@ class InitPersonicleActivity: AppCompatActivity() {
                                     bmi = bmi,
                                     rmr = rmr ,
                                     caloriesBudget = caloriesBudget,
-                                    sleepDataId = sleepDataDocUUID
-                                    // TODO: do the same for DietData and ActivityData
+                                    dietDataId = idSet["dietDataDocId"],
+                                    exerciseDataId = idSet["activityDataDocID"],
+                                    sleepDataId = idSet["sleepDataDocUUID"],
+                                    weightDataId = idSet["weightRecordId"]
                                 )
                             ).addOnSuccessListener {
                                 Toast.makeText(this@InitPersonicleActivity,
@@ -108,6 +121,29 @@ class InitPersonicleActivity: AppCompatActivity() {
             findViewById<Button>(R.id.to_health_plan_button).setOnClickListener{
                 startActivity(Intent(this, SelectPlanActivity::class.java))
             }
+    }
+
+    // Create a set of user data holder (DietData, ActivityData, SleepData, WeightData)
+    // return a map of their ids
+    private fun initUserLiveData(): HashMap<String, String> {
+        val dietDataDocId = UUID.randomUUID().toString()
+        dietServices.createDiet(dietDataDocId, DietData())
+
+        val activityDataDocID = UUID.randomUUID().toString()
+        exerciseServices.createExerciseData(activityDataDocID, ExerciseData())
+
+        val sleepDataDocId = UUID.randomUUID().toString()
+        sleepServices.createSleepData(sleepDataDocId, SleepData())
+
+        val weightDataDocId = UUID.randomUUID().toString()
+        weightServices.createWeightData(weightDataDocId, WeightData())
+
+        return hashMapOf(
+            "dietDataDocId" to dietDataDocId,
+            "activityDataDocID" to activityDataDocID,
+            "sleepDataDocUUID" to sleepDataDocId,
+            "weightDataDocId" to weightDataDocId,
+        )
     }
 
     private fun renderPersonicleResult(bmi: Double, rmr: Double, caloriesBudget: Double) {

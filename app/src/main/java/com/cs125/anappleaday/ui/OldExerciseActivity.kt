@@ -25,7 +25,7 @@ import com.cs125.anappleaday.services.firestore.FbProfileServices
 import kotlinx.coroutines.launch
 import java.util.Date
 
-class ExerciseActivity : AppCompatActivity() {
+class OldExerciseActivity : AppCompatActivity() {
 
     // private lateinit var MET: TextView // Metabolic Equivalent of Task
     private lateinit var calories_burned: TextView

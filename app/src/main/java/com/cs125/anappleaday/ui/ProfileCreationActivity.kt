@@ -1,10 +1,14 @@
 package com.cs125.anappleaday.ui
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
@@ -12,6 +16,8 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -30,6 +36,8 @@ import com.google.firebase.storage.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.util.UUID
 
 class ProfileCreationActivity: AppCompatActivity() {
@@ -56,10 +64,12 @@ class ProfileCreationActivity: AppCompatActivity() {
         // Preload default avatar
         val avatarView = findViewById<ImageView>(R.id.avatarView)
         val initial = fbAuth.getUser()?.email?.first()
+
         Glide
             .with(this)
             .asBitmap()
-            .load("https://ui-avatars.com/api/?name=${initial}&background=random")
+            .load("https://firebasestorage.googleapis.com/v0/b/anappleaday-bf6c3.appspot.com/o/avatars%2Fdefault_avatar.png?alt=media&token=a7f51466-d4ed-4151-a4ed-382d74a6d22f")
+            //.load("https://ui-avatars.com/api/?name=${initial}&background=random")  <- the api suddenly failed
             .into(object: CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     avatarView.setImageBitmap(resource)
@@ -144,5 +154,38 @@ class ProfileCreationActivity: AppCompatActivity() {
                 Toast.makeText(this, "Unauthenticated user.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun drawableToBitmap(drawable: Drawable): Bitmap {
+        if (drawable is BitmapDrawable) {
+            return drawable.bitmap
+        }
+        val bitmap = Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
+    }
+
+    fun bitmapToUri(context: Context, bitmap: Bitmap): Uri {
+        val filesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val imageFile = File(filesDir, "avatar.png")
+        val outputStream = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        outputStream.close()
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            imageFile
+        )
+    }
+
+    fun drawableToUri(context: Context, drawable: Drawable): Uri {
+        val bitmap = drawableToBitmap(drawable)
+        return bitmapToUri(context, bitmap)
     }
 }

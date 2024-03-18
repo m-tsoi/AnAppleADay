@@ -51,7 +51,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/weightInputLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
                 android:layout_columnWeight="1"
                 android:layout_gravity="top">
@@ -69,6 +69,7 @@
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="54dp"
+                android:layout_gravity="center_vertical"
                 android:text="Add" />
         </GridLayout>
 

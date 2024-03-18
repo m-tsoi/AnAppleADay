@@ -1,7 +1,8 @@
 package com.cs125.anappleaday.services.firestore
 
 import android.util.Log
-import com.cs125.anappleaday.data.record.models.live.ActivityData
+import com.cs125.anappleaday.data.record.models.live.ExerciseData
+import com.cs125.anappleaday.data.record.models.live.WeightData
 import com.cs125.anappleaday.data.record.models.live.WeightRecord
 import com.cs125.anappleaday.data.record.models.user.Personicle
 import com.google.android.gms.tasks.Task
@@ -12,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 
-class FbWeightServices(firestore: FirebaseFirestore) : FbBaseServices<ActivityData>(
+class FbWeightServices(firestore: FirebaseFirestore) : FbBaseServices<ExerciseData>(
     "WeightData", firestore) {
     // Note: add functions if needed
 
@@ -78,6 +79,10 @@ class FbWeightServices(firestore: FirebaseFirestore) : FbBaseServices<ActivityDa
             Log.e(TAG + "Weight", "${e.message}")
             mutableListOf<WeightRecord>()
         }
+    }
+
+    fun createWeightData(id: String, _weightData: WeightData): Task<Void> {
+       return collectionRef.document(id).set(_weightData)
     }
 
 
