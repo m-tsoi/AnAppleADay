@@ -35,7 +35,7 @@
         android:id="@+id/lifestyle_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0.0"
+        android:text="0"
         android:textSize="60sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -100,7 +100,7 @@
                     android:id="@+id/diet_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.0"
+                    android:text="0"
                     android:textSize="36sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -136,7 +136,7 @@
                     android:id="@+id/exercise_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.0"
+                    android:text="0"
                     android:textSize="36sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -171,7 +171,7 @@
                     android:id="@+id/sleep_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.0"
+                    android:text="0"
                     android:textSize="36sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
