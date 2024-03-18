@@ -23,17 +23,21 @@ import nl.joery.timerangepicker.TimeRangePicker
 import org.w3c.dom.Text
 import java.util.Date
 import kotlin.math.min
+import com.cs125.anappleaday.data.record.models.user.Profile
 
 class ExerciseRecommendationActivity : AppCompatActivity() {
     private val exerciseTypes = listOf("Lifting", "Cardio", "Stretching")
-    private lateinit var MET : TextView
     private lateinit var exerciseTypeEditText: TextView
     private lateinit var durationEditText: TextView
-    private lateinit var displayTextView: TextView
     private lateinit var submitBtn: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise)
+
+        exerciseTypeEditText = findViewById(R.id.exerciseTypeEditText)
+        durationEditText = findViewById(R.id.durationEditText)
+        submitBtn = findViewById(R.id.submitBtn)
 
         submitBtn.setOnClickListener {
             val exerciseType = exerciseTypeEditText.text.toString()
@@ -41,12 +45,16 @@ class ExerciseRecommendationActivity : AppCompatActivity() {
 
             if (exerciseTypes.contains(exerciseType) && duration != null && duration > 0) {
                 val displayText = "Exercise Type: $exerciseType, Duration: $duration minutes"
-                displayTextView.text = displayText
+
+                // Calculate and display MET
+                val weight = 70.0 // Assume user weight as 70 kg for demonstration
+                val MET = calculateMET(weight, exerciseType)
             } else {
                 showToast("Please enter a valid exercise type (Lifting, Cardio, Yoga) and duration")
             }
         }
     }
+
     private fun showToast(message: String) {
         Toast.makeText(this@ExerciseRecommendationActivity, message, Toast.LENGTH_SHORT).show()
     }
@@ -66,7 +74,6 @@ class ExerciseRecommendationActivity : AppCompatActivity() {
             "stretching" -> energyExpenditureStretching / rmr
             else -> 0.0
         }
-
         return met
     }
 }
