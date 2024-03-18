@@ -4,7 +4,9 @@ import android.util.Log
 import com.cs125.anappleaday.data.enumTypes.NutritionData
 import com.cs125.anappleaday.data.record.models.healthPlans.HealthPlan
 import com.cs125.anappleaday.data.record.models.live.DietData
+import com.cs125.anappleaday.data.record.models.live.ScoreDay
 import com.cs125.anappleaday.utils.toMap
+import java.text.SimpleDateFormat
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.AggregateField
 import com.google.firebase.firestore.AggregateSource
@@ -37,7 +39,7 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
             val dietData = document.toObject(DietData::class.java)
 
             dietData?.let { // if not null
-                val currentDate = Date()
+                val currentDate = SimpleDateFormat("M/d/yy").format(Date())
                 if (it.nutrition.containsKey(currentDate)) {
                     it.nutrition[currentDate]?.add(nutritionData)
                 } else {
@@ -50,13 +52,13 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
         }
     }
 
-    suspend fun resetNutritionData(id: String, date: Date, nutritionDataList: MutableList<NutritionData>) {
+    suspend fun deleteNutritionData(id: String, date: Date, nutritionData: NutritionData) {
         try {   // this is to straight up resent NutritionData list
             val document = collectionRef.document(id).get().await()
             val dietData = document.toObject(DietData::class.java)
 
             dietData?.let { // if not null
-                it.nutrition[date] = nutritionDataList  // sets date to list
+                it.nutrition[SimpleDateFormat("M/d/yy").format(date)]?.remove(nutritionData)
                 document.reference.set(it)
             }
         } catch (e: Exception) {
@@ -70,7 +72,7 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
             val document = collectionRef.document(id).get().await()
             val dietData = document.toObject(DietData::class.java)
             dietData?.let {
-                val nutritionForDate = it.nutrition[date]
+                val nutritionForDate = it.nutrition[SimpleDateFormat("M/d/yy").format(date)]
                 nutritionForDate ?: mutableListOf()
             } ?: mutableListOf() // returns nothing if nothing
         } catch (e: Exception) {
@@ -98,12 +100,19 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
         }
     }
 
-    fun addScoreRecord(id: String, score: Double): Task<DocumentReference> {
-         return collectionRef.document(id).collection("Scores").add(
-             hashMapOf(
-                 "score" to score,
-                 "date" to FieldValue.serverTimestamp()
-             )
-         )
+    suspend fun addScoreRecord(id: String, score: Double){
+        try {
+            val document = collectionRef.document(id).get().await()
+            val dietData = document.toObject(DietData::class.java)
+
+            dietData?.let { // if not null
+                val scoreDay = ScoreDay(SimpleDateFormat("M/d/yy").format(Date()), score)
+                it.scores.add(scoreDay)
+
+                document.reference.set(it)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG + "AddNutritionData", "${e.message}")
+        }
     }
 }

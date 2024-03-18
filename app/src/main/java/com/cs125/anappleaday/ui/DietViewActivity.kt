@@ -17,6 +17,7 @@ import com.cs125.anappleaday.services.firestore.FbProfileServices
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 import java.util.Date
 
@@ -45,6 +46,9 @@ class DietViewActivity : AppCompatActivity() { // displays meals corresponding t
         profileServices = FbProfileServices(Firebase.firestore)
         personicleServices = FbPersonicleServices(Firebase.firestore)
         dietServices = FbDietServices(Firebase.firestore)
+
+
+
     }
 
     override fun onStart(){
@@ -59,18 +63,12 @@ class DietViewActivity : AppCompatActivity() { // displays meals corresponding t
                     if (personicle.dietDataId != null){
                         val dietData = dietServices.getDietData(personicle?.dietDataId!!)
                         if (dietData != null) {
-                            nutritionDataList = dietData.nutrition[Date()]!!
+                            nutritionDataList = dietData.nutrition[SimpleDateFormat("M/d/yy").format(Date())]!!
                         }
 
-                        val onDeleteClickListener: (MutableList<NutritionData>) -> Unit = { dataSet ->
-                            Log.d("DietViewActivity", "Reset NutritionData: $dataSet")
-                            launch {
-                                dietServices.resetNutritionData(
-                                    personicle.dietDataId,
-                                    Date(),
-                                    dataSet
-                                )
-                            }
+                        val onDeleteClickListener: (NutritionData) -> Unit = { deletedNutritionData ->
+                            Log.d("DietViewActivity", "DeleteNutritionData: $deletedNutritionData")
+                            deleteNutritionDataFromFirebase(deletedNutritionData)
                         }
 
                         dietViewAdapter = DietViewAdapter(nutritionDataList,onDeleteClickListener )
@@ -85,6 +83,20 @@ class DietViewActivity : AppCompatActivity() { // displays meals corresponding t
 
         super.onStart()
 
+    }
+
+    private fun deleteNutritionDataFromFirebase(nutritionData: NutritionData) {
+        val userId =  fbAuth.getUser()?.uid
+        if (  userId != null) {
+            lifecycleScope.launch {
+                val profile = profileServices.getProfile(userId)
+                val personicle = personicleServices.getPersonicle(profile?.personicleId!!)
+                if (personicle != null) {
+                    if (personicle.dietDataId!= null)
+                        dietServices.deleteNutritionData(personicle.dietDataId, Date(), nutritionData)
+                }
+            }
+        }
     }
 
 

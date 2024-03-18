@@ -13,4 +13,6 @@ data class NutritionData (
     val carbohydratesTotalG: Int,
     val fiberG: Int,
     val sugarG: Int
-)
+) {
+    constructor() : this("", 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0)
+}

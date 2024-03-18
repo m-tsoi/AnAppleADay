@@ -30,6 +30,7 @@ import com.cs125.anappleaday.services.firestore.FbHealthPlanServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
@@ -77,12 +78,12 @@ class DietActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
-        super.onStart()
         if (fbAuth.getUser()?.uid  != null) {
             lifecycleScope.launch {
                 loadUserData()
             }
         }
+        super.onStart()
     }
 
     private fun loadUserData() {
@@ -97,27 +98,31 @@ class DietActivity : AppCompatActivity() {
                     dietAdvisor = DietAdvisor(dietPlan!!)
                 }
                 if (personicle != null) {
-                    if (personicle.dietDataId != null) // causing issues rn cause dietDataId was not there
+                    if (personicle.dietDataId != null) {// causing issues rn cause dietDataId was not there
                         dietData = dietServices.getDietData(personicle.dietDataId!!)
 
                         // calculate score and recs
                         var score = 0.0
                         var mealRecs = mutableListOf<RecommendedMeal>()
-                        if (dietAdvisor != null && dietData != null){
+                        // put in dummy data for now
+                        mealRecs.add(RecommendedMeal(label = "Chickpea Curry"))
+                        mealRecs.add(RecommendedMeal(label = "Lentil Curry"))
+                        mealRecs.add(RecommendedMeal(label = "Curry Curry"))
+
+                        if (dietAdvisor != null && dietData != null) {
                             // get prev day
                             var calendar = Calendar.getInstance()
                             calendar.add(Calendar.DATE, -1)
-                            val prevDate = calendar.time
 
-                            // get nutrition for previous day
-                            val nutrition = dietData!!.nutrition[prevDate]
+                            val nutrition = dietData!!.nutrition[SimpleDateFormat("M/d/yy").format(Date())]
                             if (nutrition != null) {
                                 score = dietAdvisor!!.computeDailyScore(nutrition)
                                 // setting rec
                                 var exampleNutritionData = nutrition[0]
-                                mealRecs = dietAdvisor!!.checkMealAndRecommend(exampleNutritionData )
+                                mealRecs = dietAdvisor!!.checkMealAndRecommend(exampleNutritionData)
                             }
                         }
+
 
                         // put score in after calculating
                         textScore.text = score.toString()
@@ -126,6 +131,7 @@ class DietActivity : AppCompatActivity() {
                         // update/bind recycler
                         dietRecAdapter = DietRecAdapter(mealRecs)
                         recyclerRecommendations.adapter = dietRecAdapter
+                    }
                 }
             }
         }

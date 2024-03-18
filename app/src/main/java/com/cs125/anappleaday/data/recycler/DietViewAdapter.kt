@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.data.enumTypes.NutritionData
 
-class DietViewAdapter(private val dataSet: MutableList<NutritionData>, private val onDeleteClickListener: (MutableList<NutritionData>) -> Unit) :
+class DietViewAdapter(private val dataSet: MutableList<NutritionData>, private val onDeleteClickListener: (NutritionData) -> Unit) :
     RecyclerView.Adapter<DietViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -20,8 +20,9 @@ class DietViewAdapter(private val dataSet: MutableList<NutritionData>, private v
     override fun onBindViewHolder(holder: DietViewHolder, position: Int) {
         holder.textName.text = dataSet[position].name
         holder.buttonDelete.setOnClickListener {
+            val deletedNutritionData = dataSet[position]
+            onDeleteClickListener.invoke(deletedNutritionData) // outside function to delete from db
             dataSet.removeAt(position) // may have bug if rapidly clicked but uh
-            onDeleteClickListener.invoke(dataSet) // outside function to delete
             notifyItemRemoved(position)
         }
     }
