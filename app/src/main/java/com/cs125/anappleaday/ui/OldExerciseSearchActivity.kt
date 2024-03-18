@@ -8,25 +8,23 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.cs125.anappleaday.api.ApiMain
-import com.google.gson.JsonObject
 import com.cs125.anappleaday.data.enumTypes.ExerciseData
 import com.cs125.anappleaday.data.record.models.live.ActivityData
+import android.health.connect.datatypes.ExerciseSessionRecord
 import com.cs125.anappleaday.data.recycler.ExerciseResultAdapter
 import com.cs125.anappleaday.services.auth.FBAuth
 import com.cs125.anappleaday.services.firestore.FbActivityServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.ktx.firestore
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DietSearchActivity : AppCompatActivity() {
+class OldExerciseSearchActivity : AppCompatActivity() {
 
-    // firebase i think
+    // firebase
     private lateinit var fbAuth: FBAuth
     private lateinit var profileServices: FbProfileServices
     private lateinit var personicleServices: FbPersonicleServices
@@ -37,12 +35,12 @@ class DietSearchActivity : AppCompatActivity() {
     private lateinit var recyclerResults : RecyclerView
     private lateinit var exerciseResultAdapter: ExerciseResultAdapter
 
-    // nutrition api
+    // Exercise
     private val apiService = ApiMain.getNinjaServices()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_exercise_search)
+        setContentView(R.layout.old_activity_exercise_search)
 
         // fb setting
         fbAuth = FBAuth()
@@ -68,19 +66,21 @@ class DietSearchActivity : AppCompatActivity() {
     }
 
     private fun fetchSearchResults(query: String) {
+        val activity = query
+        val weight = "medium" // Example weight
+        val duration = "45" // Example duration
 
-        val call = apiService.getNutrition(query)
-
-        call.enqueue(object : Callback<List<ExerciseData>> {
-            override fun onResponse(call: Call<List<ExerciseData>>, response: Response<List<ExerciseData>>) {
+        val call = apiService.getCaloriesBurnedExercises(activity, weight, duration)
+        call.enqueue(object : Callback<List<ExerciseSessionRecord>> {
+            override fun onResponse(call: Call<List<ExerciseData>>, response: Response<List<ExerciseSessionRecord>>) {
                 if (response.isSuccessful) {
                     val exerciseDataList = response.body()
-                    val mutableDataList: MutableList<ActivityData> = exerciseDataList?.toMutableList() ?: mutableListOf()
+                    val mutableDataList: MutableList<ExerciseSessionRecord> = exerciseDataList?.toMutableList() ?: mutableListOf()
 
                     val onAddClickListener: (Int) -> Unit = { position ->
                         var selectedExerciseData = mutableDataList[position]
 
-                        Log.d("DietSearchActivity", "Selected NutritionData: $selectedExerciseData")
+                        Log.d("ExerciseSearchActivity", "Selected ExerciseData: $selectedExerciseData")
                         addExerciseDataToFirebase(selectedExerciseData)
                     }
 
@@ -88,12 +88,12 @@ class DietSearchActivity : AppCompatActivity() {
                     recyclerResults.adapter = exerciseResultAdapter
 
                 } else {
-                    Log.e("YourActivity", "API Request failed with code: ${response.code()}")
+                    Log.e("ExerciseSearchActivity", "API Request failed with code: ${response.code()}")
                 }
             }
 
-            override fun onFailure(call: Call<List<ActivityData>>, t: Throwable) {
-                Log.e("YourActivity", "API Request failed", t)
+            override fun onFailure(call: Call<List<ExerciseData>>, t: Throwable) {
+                Log.e("ExerciseSearchActivity", "API Request failed", t)
             }
         })
     }

@@ -26,7 +26,7 @@ import com.cs125.anappleaday.services.firestore.FbProfileServices
 import kotlinx.coroutines.launch
 
 
-class ExerciseActivity2 : AppCompatActivity() {
+class OldExerciseActivity2 : AppCompatActivity() {
 
     // firebase variables
     private lateinit var fbAuth: FBAuth
@@ -51,7 +51,7 @@ class ExerciseActivity2 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_exercise)
+        setContentView(R.layout.old_activity_exercise)
 
         // Init firebase
         fbAuth = FBAuth()
@@ -104,12 +104,12 @@ class ExerciseActivity2 : AppCompatActivity() {
 
     // opens search and view respectively
     fun openDietSearch(view: View){
-        val intent = Intent(this, ExerciseSearchActivity::class.java)
+        val intent = Intent(this, OldExerciseSearchActivity::class.java)
         startActivity(intent)
     }
 
     fun openDietView(view: View){
-        val intent = Intent(this, ExerciseViewActivity::class.java)
+        val intent = Intent(this, OldExerciseViewActivity::class.java)
         startActivity(intent)
     }
 

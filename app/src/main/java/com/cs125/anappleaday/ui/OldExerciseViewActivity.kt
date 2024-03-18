@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import java.util.Date
 
 
-class ExerciseViewActivity : AppCompatActivity() { // displays meals corresponding to current Date
+class OldExerciseViewActivity : AppCompatActivity() { // displays meals corresponding to current Date
 
     private lateinit var fbAuth: FBAuth
     private lateinit var profileServices: FbProfileServices
@@ -30,7 +30,7 @@ class ExerciseViewActivity : AppCompatActivity() { // displays meals correspondi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_exercise_view)
+        setContentView(R.layout.old_activity_exercise_view)
 
         recyclerExercises = findViewById<RecyclerView>(R.id.recyclerExercises)
 
