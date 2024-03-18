@@ -4,7 +4,6 @@ import android.util.Log
 import com.cs125.anappleaday.data.enumTypes.NutritionData
 import com.cs125.anappleaday.data.record.models.healthPlans.HealthPlan
 import com.cs125.anappleaday.data.record.models.live.DietData
-import com.cs125.anappleaday.data.record.models.live.ExerciseData
 import com.cs125.anappleaday.data.record.models.live.ScoreDay
 import com.cs125.anappleaday.utils.toMap
 import java.text.SimpleDateFormat
@@ -24,10 +23,6 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
 
     private val subCollectionName = "DietData"
 
-    fun createDiet(id: String, _dietData: DietData): Task<Void> {
-        return collectionRef.document(id).set(_dietData)
-    }
-
     suspend fun getDietData(id: String): DietData? {
         return try {
             val document = super.getDocument(id).await()
@@ -37,19 +32,6 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
             null
         }
     }
-
-    suspend fun getDietScore(id: String): Double {
-        return try {
-            val document = super.getDocument(id).await()
-            val dietData = document.toObject(DietData::class.java)
-
-            dietData?.scores?.get(0)?.score ?: 0.0
-        } catch (e: Exception) {
-            Log.e(TAG + "DietData", "${e.message}")
-            0.0
-        }
-    }
-
 
     suspend fun addNutritionData(id: String, nutritionData: NutritionData) {
         try {
@@ -99,6 +81,24 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
         }
     }
 
+    suspend fun getDietScore(id: String): Double {
+        return try {
+            val document = collectionRef.document(id)
+                .collection("Scores")
+                .aggregate(AggregateField.average("score"))
+                .get(AggregateSource.SERVER)
+                .await()
+
+            if (document != null)
+                return document.get(AggregateField.average("score"))?.toDouble()!!
+
+            0.0
+        } catch (e: Exception) {
+            Log.e(TAG + "Diet", "${e.message}")
+            0.0
+        }
+    }
+
     suspend fun getAverageScore(id: String): Double? {
         return try {
             val avgResult = collectionRef.document(id)
@@ -109,11 +109,11 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
                 .await()
             avgResult?.let {
                 val averageScore = it.getDouble(AggregateField.average("score")) // Extracting the average score
-                averageScore
+                averageScore!!
             }
         } catch (e: Exception) {
             Log.e(TAG + "Diet average score", "${e.message}")
-            null
+            0.0
         }
     }
 
@@ -131,5 +131,9 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
         } catch (e: Exception) {
             Log.e(TAG + "AddNutritionData", "${e.message}")
         }
+    }
+
+    fun createDiet(id: String, _dietData: DietData): Task<Void> {
+        return collectionRef.document(id).set(_dietData)
     }
 }

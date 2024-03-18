@@ -150,7 +150,12 @@ class HomeActivity : AppCompatActivity() {
                 personicle = personicleServices.getPersonicle(profile.personicleId)
 
                 if (personicle != null) {
-                    val dietScore = dietServices.getDietScore(personicle?.dietDataId!!)
+                    var dietScore = dietServices.getAverageScore(personicle?.dietDataId!!)
+
+                    if (dietScore == null) {
+                        dietScore = 0.0
+                    }
+
                     val exerciseScore = exerciseServices.getExerciseScore(personicle?.exerciseDataId!!)
                     val sleepScore = sleepServices.getSleepScore(personicle?.sleepDataId!!)
                     val lifeStyleScore = (dietScore + exerciseScore + sleepScore) / 3
