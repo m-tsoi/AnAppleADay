@@ -1,3 +1,18 @@
+
+import java.util.Properties
+
+val propertiesFile = File(rootProject.projectDir, "app/api.properties")
+val apiProperties = Properties().apply {
+    load(propertiesFile.inputStream())
+}
+
+// Retrieve API key
+val ninjaKey: String = apiProperties.getProperty("NINJA_URL")
+val ninjaUrl: String = apiProperties.getProperty("NINJA_KEY")
+val edamamUrl: String = apiProperties.getProperty("EDAMAM_URL")
+val edamamId: String = apiProperties.getProperty("EDAMAM_ID")
+val edamamKey: String = apiProperties.getProperty("EDAMAM_KEY")
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -9,6 +24,8 @@ android {
     namespace = "com.cs125.anappleaday"
     compileSdk = 34
 
+    buildFeatures.buildConfig = true
+
     defaultConfig {
         applicationId = "com.cs125.anappleaday"
         minSdk = 26
@@ -17,6 +34,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "ninjaUrl", ninjaUrl)
+        buildConfigField("String", "ninjaKey", ninjaKey)
+        buildConfigField("String", "edamamUrl", edamamUrl)
+        buildConfigField("String", "edamamId", edamamId)
+        buildConfigField("String", "edamamKey", edamamKey)
+
     }
 
     sourceSets {
@@ -57,13 +80,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.4.1")
     implementation("androidx.navigation:navigation-ui-ktx:2.4.1")
     implementation(kotlin("reflect"))
-
-    // Room Database
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
     implementation("nl.joery.timerangepicker:timerangepicker:1.0.0")
-    testImplementation("androidx.room:room-testing:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
