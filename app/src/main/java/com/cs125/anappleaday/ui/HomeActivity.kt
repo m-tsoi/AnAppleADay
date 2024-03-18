@@ -17,7 +17,9 @@ import com.cs125.anappleaday.services.firestore.FbDietServices
 import com.cs125.anappleaday.services.firestore.FbPersonicleServices
 import com.cs125.anappleaday.services.firestore.FbProfileServices
 import com.cs125.anappleaday.services.firestore.FbSleepServices
+import com.cs125.anappleaday.data.record.models.live.SleepData
 import com.google.android.material.card.MaterialCardView
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
@@ -33,10 +35,11 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var diet_score : TextView
     private lateinit var exercise_region : MaterialCardView
     private lateinit var exercise_score : TextView
-    private lateinit var weight_region: MaterialCardView
     private lateinit var personicle_region : Button
     private lateinit var health_plan_region : Button
     private lateinit var logout_button : Button
+
+    private lateinit var sleepDataDocRef : DocumentReference
 
     // Services
     private lateinit var profileServices: FbProfileServices
@@ -147,21 +150,42 @@ class HomeActivity : AppCompatActivity() {
                 personicle = personicleServices.getPersonicle(profile.personicleId)
 
                 if (personicle != null) {
-                    val dietScore = dietServices.getDietScore(personicle?.dietDataId!!)
+                    var dietScore = dietServices.getAverageScore(personicle?.dietDataId!!)
+
+                    if (dietScore == null) {
+                        dietScore = 0.0
+                    }
+
                     val exerciseScore = exerciseServices.getExerciseScore(personicle?.exerciseDataId!!)
                     val sleepScore = sleepServices.getSleepScore(personicle?.sleepDataId!!)
                     val lifeStyleScore = (dietScore + exerciseScore + sleepScore) / 3
 
-                    Log.d("Diet Score", dietScore.toString())
-                    Log.d("Exercise Score", exerciseScore.toString())
-                    Log.d("Sleep Score", sleepScore.toString())
-                    Log.d("LS Score", lifeStyleScore.toString())
-                    
-                    scoreSet["lifeStyle"] = lifeStyleScore
-                    scoreSet["diet"] = dietScore
-                    scoreSet["exercise"] = exerciseScore
-                    scoreSet["sleepScore"] = sleepScore
-                    updateScoreUI()
+                    val sleepDataId = personicle!!.sleepDataId
+                    if (sleepDataId != null) {
+                        val db = Firebase.firestore
+                        sleepDataDocRef =  db.collection("SleepData").document(sleepDataId)
+                        Log.d("BUG", "sleepDataId is not null")
+
+                    } else {
+                        Log.d("HomeActivity", "sleepDataId is null")
+                    }
+
+                    if (dietScore == null || exerciseScore == null || sleepScore == null) {
+                      Log.d("Something", "failed to load score")
+                    } else {
+                        Log.d("Diet Score", dietScore.toString())
+                        Log.d("Exercise Score", exerciseScore.toString())
+                        Log.d("Sleep Score", sleepScore.toString())
+                        Log.d("LS Score", lifeStyleScore.toString())
+
+                        scoreSet["lifeStyle"] = lifeStyleScore
+                        scoreSet["diet"] = dietScore
+                        scoreSet["exercise"] = exerciseScore
+                        scoreSet["sleepScore"] = sleepScore
+                        updateScoreUI()
+                    }
+
+
                 }
             }
         }
@@ -169,10 +193,36 @@ class HomeActivity : AppCompatActivity() {
 
     fun updateScoreUI() {
         // Update sleep score from db
-        ls_score.text = String.format("%.1f", scoreSet["lifeStyle"])
-        diet_score.text = String.format("%.1f", scoreSet["diet"])
-        exercise_score.text = String.format("%.1f", scoreSet["exercise"])
-        sleep_score.text = String.format("%.1f", scoreSet["sleep"])
+        ls_score.text = String.format("%.0f", scoreSet["lifeStyle"])
+        diet_score.text = String.format("%.0f", scoreSet["diet"])
+        exercise_score.text = String.format("%.0f", scoreSet["exercise"])
+//        sleep_score.text = String.format("%.1f", scoreSet["sleep"])
+
+        sleepDataDocRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d("SLEEP DATA", document.data.toString())
+                    val sleepData = document.toObject(SleepData::class.java)!!
+                    Log.d("SLEEP DATA", sleepData.dailySleepRecords.toString())
+
+                    if (sleepData.dailySleepRecords.isNotEmpty()) {
+                        val sleepRecordsToday = sleepData.dailySleepRecords.last()
+                        if (isToday(sleepRecordsToday.enteredDate))  {
+                            sleep_score.text = sleepRecordsToday.sleepScore.toString()
+                        } else {
+                            sleep_score.text = "0.0"
+                        }
+                    } else {
+                        sleep_score.text = "0.0"
+                    }
+
+                } else {
+                    Log.d("SLEEP DATA", "failed :<")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("SLEEP DATA", "get failed with ", exception)
+            }
     }
 
 

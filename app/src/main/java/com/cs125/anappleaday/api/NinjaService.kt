@@ -2,6 +2,7 @@ package com.cs125.anappleaday.api
 
 import android.health.connect.datatypes.ExerciseSessionRecord
 import android.health.connect.datatypes.NutritionRecord
+import com.cs125.anappleaday.data.enumTypes.NutritionData
 import com.cs125.anappleaday.data.record.models.live.ProposedExercise
 import com.google.gson.JsonElement
 import retrofit2.Call
@@ -29,5 +30,5 @@ interface NinjaService {
     @GET("nutrition")
     fun getNutrition(
         @Query("query") query: String   // input prompt
-    ): Call<List<NutritionRecord>>
+    ): Call<List<NutritionData>>
 }
