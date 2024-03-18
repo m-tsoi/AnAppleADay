@@ -86,6 +86,7 @@ class InitPersonicleActivity: AppCompatActivity() {
                                 weight = profile.weight.toDouble()
                             )
                             val caloriesBudget = StatCalculator.computeCaloriesBudget(rmr, activityLevel)
+
                             val idSet = initUserLiveData()
 
                             // Create personicle in firestore

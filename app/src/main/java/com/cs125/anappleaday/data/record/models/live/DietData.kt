@@ -1,9 +1,10 @@
 package com.cs125.anappleaday.data.record.models.live
 
-import android.health.connect.datatypes.NutritionRecord
+import com.cs125.anappleaday.data.enumTypes.NutritionData
+import java.util.Date
+
 
 data class DietData(
     val scores: MutableList<ScoreDay> = mutableListOf(),
-
-    val nutrition: MutableList<NutritionRecord> = mutableListOf()
+    val nutrition: MutableMap<String, MutableList<NutritionData>> =  mutableMapOf()
 )

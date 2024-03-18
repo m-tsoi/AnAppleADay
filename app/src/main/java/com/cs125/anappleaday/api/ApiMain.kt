@@ -36,13 +36,13 @@ class ApiMain {
         }
 
         fun getNinjaServices(): NinjaService {
-            return getApiServices(BuildConfig.ninjaUrl,
-                BuildConfig.ninjaKey).create(NinjaService::class.java)
+            return getApiServices("https://api.api-ninjas.com/v1/",
+                "vXw8nrEUVqjNp1HQtqYEhw==Ll6OUX0i7EuFlI3q").create(NinjaService::class.java)
         }
 
 
         fun getEdamamServices(): EdamamService {
-            return getApiServices(BuildConfig.edamamUrl)
+            return getApiServices("https://api.edamam.com/api/")
                 .create(EdamamService::class.java)
         }
     }
