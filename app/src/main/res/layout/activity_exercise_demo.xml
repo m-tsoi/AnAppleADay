@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ExerciseRecommendationDemo">
+
+    <Spinner
+        android:id="@+id/exerciseSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:entries="@array/exercise_types"
+        android:layout_centerHorizontal="true"/>
+
+    <EditText
+        android:id="@+id/durationEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/exerciseSpinner"
+        android:layout_marginTop="16dp"
+        android:hint="Enter Duration"
+        android:inputType="number"/>
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/durationEditText"
+        android:layout_marginTop="16dp"
+        android:text="Submit"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/scoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/submitButton"
+        android:layout_marginTop="16dp"
+        android:text=""
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
