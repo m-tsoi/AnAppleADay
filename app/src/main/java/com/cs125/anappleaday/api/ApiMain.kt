@@ -1,5 +1,6 @@
 package com.cs125.anappleaday.api
 
+import com.cs125.anappleaday.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -35,18 +36,14 @@ class ApiMain {
         }
 
         fun getNinjaServices(): NinjaService {
-            return getApiServices("https://api.api-ninjas.com/v1/",
-                "vXw8nrEUVqjNp1HQtqYEhw==Ll6OUX0i7EuFlI3q")
-                .create(NinjaService::class.java)
+            return getApiServices(BuildConfig.ninjaUrl,
+                BuildConfig.ninjaKey).create(NinjaService::class.java)
         }
 
 
         fun getEdamamServices(): EdamamService {
-            return getApiServices("https://api.edamam.com/api/",)
+            return getApiServices(BuildConfig.edamamUrl)
                 .create(EdamamService::class.java)
         }
-
-        val edamamId="d5db0761"
-        val edamamKey="9966c4e86fd00511590cd7a67c92e9ac"
     }
 }
