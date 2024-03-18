@@ -35,7 +35,7 @@
         android:id="@+id/lifestyle_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="\??"
+        android:text="0.0"
         android:textSize="60sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,13 +94,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Diet"
-                    android:textSize="28sp"
+                    android:textSize="20sp"
                     android:textColor="#ff6750a4"/>
                 <TextView
                     android:id="@+id/diet_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="\??"
+                    android:text="0.0"
                     android:textSize="36sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -122,6 +122,7 @@
                 android:layout_height="wrap_content"
                 android:minWidth="120dp"
                 android:minHeight="120dp"
+                android:padding="12dp"
                 android:orientation="vertical"
                 android:gravity="center">
                 <TextView
@@ -129,13 +130,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Exercise"
-                    android:textSize="28sp"
+                    android:textSize="20sp"
                     android:textColor="#ff6750a4"/>
                 <TextView
                     android:id="@+id/exercise_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="\??"
+                    android:text="0.0"
                     android:textSize="36sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -164,13 +165,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sleep"
-                    android:textSize="28sp"
+                    android:textSize="20sp"
                     android:textColor="#ff6750a4"/>
                 <TextView
                     android:id="@+id/sleep_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="\??"
+                    android:text="0.0"
                     android:textSize="36sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -199,7 +200,7 @@
 <!--                    android:layout_width="wrap_content"-->
 <!--                    android:layout_height="wrap_content"-->
 <!--                    android:text="Weight\nTracker"-->
-<!--                    android:textSize="28sp"-->
+<!--                    android:textSize="20sp"-->
 <!--                    android:textColor="#ff6750a4"/>-->
 <!--            </LinearLayout>-->
 <!--        </com.google.android.material.card.MaterialCardView>-->

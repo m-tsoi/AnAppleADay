@@ -9,8 +9,9 @@
         android:id="@+id/textViewHealthPlan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Init Your Personicle"
+        android:text="Init Personicle"
         android:textSize="34sp"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Select physical activity level"
+            android:editable="false"
             app:simpleItems="@array/activity_level_list"/>
     </com.google.android.material.textfield.TextInputLayout>
 
