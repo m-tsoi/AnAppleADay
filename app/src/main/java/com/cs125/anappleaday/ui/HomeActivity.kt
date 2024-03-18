@@ -76,7 +76,6 @@ class HomeActivity : AppCompatActivity() {
         diet_score = findViewById(R.id.diet_score)
         exercise_region = findViewById(R.id.exercise_region)
         exercise_score = findViewById(R.id.exercise_score)
-//        weight_region = findViewById(R.id.weight_region)
         personicle_region = findViewById(R.id.personicle_region)
         health_plan_region = findViewById(R.id.health_plan_region)
         logout_button = findViewById(R.id.logout_button)
