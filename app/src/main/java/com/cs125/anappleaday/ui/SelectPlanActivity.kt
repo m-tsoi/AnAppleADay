@@ -264,7 +264,7 @@ class SelectPlanActivity : AppCompatActivity() {
             healthPlanCard.visibility = View.VISIBLE
 
         if (healthPlan != null) {
-            goalTextView.text = "< Goal: ${healthPlan!!.healthGoal.displayName} >"
+            goalTextView.text = "Goal: ${healthPlan!!.healthGoal.displayName}"
             startDateTextView.text = healthPlan!!.startDate
             endDateTextView.text = healthPlan!!.endDate
 
