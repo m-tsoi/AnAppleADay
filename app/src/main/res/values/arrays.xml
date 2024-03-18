@@ -17,4 +17,9 @@
         <item>Be Healthy</item>
         <item>Lose Fat</item>
     </string-array>
+    <string-array name="exercise_types">
+        <item>Lifting</item>
+        <item>Cardio</item>
+        <item>Stretching</item>
+    </string-array>
 </resources>

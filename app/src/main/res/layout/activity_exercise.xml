@@ -1,7 +1,66 @@
+<!-- activity_main.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.ExerciseRecommendationActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exercise"
+        android:textSize="24sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"/>
+
+    <EditText
+        android:id="@+id/exerciseTypeEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter exercise type"
+        android:inputType="text"
+        android:layout_below="@id/titleTextView"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="32dp"/>
+
+    <Spinner
+        android:id="@+id/exerciseTypeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/exerciseTypeEditText"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="32dp"
+        android:entries="@array/exercise_types"/>
+
+    <EditText
+        android:id="@+id/durationEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter duration in minutes"
+        android:inputType="number"
+        android:layout_below="@id/exerciseTypeSpinner"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="32dp"/>
+
+    <Button
+        android:id="@+id/submitBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_below="@id/durationEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"/>
+
+    <TextView
+        android:id="@+id/addedExerciseTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_below="@id/submitBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"/>
+
+</RelativeLayout>
