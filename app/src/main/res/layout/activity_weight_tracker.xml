@@ -1,161 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/weightTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weight Tracker"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.084" />
+
+    <TextView
+        android:id="@+id/weightNote"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:text="Notes: Measuring your body weight in the early morning gives the most precise result."
+        android:gravity="center"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginVertical="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weightTitle"/>
 
-        <TextView
-            android:id="@+id/weightTitle"
+    <GridLayout
+        android:id="@+id/weightGridLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weightNote"
+        >
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/weightInputLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Weight Tracker"
-            android:textSize="32sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.084" />
-
-        <TextView
-            android:id="@+id/weightNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Notes: Measuring your body weight in the early morning gives the most precise result."
-            android:gravity="center"
-            android:layout_marginHorizontal="32dp"
-            android:layout_marginVertical="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/weightTitle"/>
-
-        <GridLayout
-            android:id="@+id/weightGridLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="3"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginVertical="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/weightNote"
-            >
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/weightInputLayout"
-                android:layout_width="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="top">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/weightInput"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:layout_columnWeight="1"
-                android:layout_gravity="top">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/weightInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter today body weight (lbs)"
-                    android:inputType="number"
-                    />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Enter today body weight (lbs)"
+                android:inputType="number"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/weightInputButton"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="54dp"
-                android:layout_gravity="center_vertical"
-                android:text="Add" />
-        </GridLayout>
-
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/divider1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:dividerInsetStart="16dp"
-            app:dividerInsetEnd="16dp"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginVertical="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/weightGridLayout"/>
-
-        <TextView
-            android:id="@+id/summaryLabel"
+        <Button
+            android:id="@+id/weightInputButton"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider1"
-            android:text="Summary"
-            android:textSize="24dp"/>
+            android:layout_height="54dp"
+            android:layout_gravity="center_vertical"
+            android:text="Add" />
+    </GridLayout>
 
-<!--        <include-->
-<!--            android:id="@+id/totalGainLossLayout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginHorizontal="24dp"-->
-<!--            android:layout_marginVertical="24dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.5"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/summaryLabel"-->
-<!--            app:layout="@layout/weight_gain_loss_info" />-->
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:dividerInsetStart="16dp"
+        app:dividerInsetEnd="16dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weightGridLayout"/>
 
-<!--        <include-->
-<!--            android:id="@+id/yesterdayGainLossLayout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginHorizontal="24dp"-->
-<!--            android:layout_marginVertical="24dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.5"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/totalGainLossLayout"-->
-<!--            app:layout="@layout/weight_gain_loss_info" />-->
+    <TextView
+        android:id="@+id/summaryLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider1"
+        android:text="Summary"
+        android:textSize="24dp"/>
 
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/divider2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:dividerInsetStart="16dp"
-            app:dividerInsetEnd="16dp"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginVertical="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/summaryLabel"/>
-
+    <GridLayout
+        android:id="@+id/totalGainLossLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/summaryLabel"
+        android:rowCount="2"
+        android:columnCount="2">
         <TextView
-            android:id="@+id/historyLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider2"
-            android:text="Your History"
-            android:textSize="24dp"/>
+            android:id="@+id/totalGainLossLabel"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="Gain/Loss"
+            android:textSize="20dp"/>
+        <TextView
+            android:id="@+id/percentGainLossLabel"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="Rate"
+            android:textSize="20dp"/>
+        <TextView
+            android:id="@+id/totalGainLoss"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="0 lbs"
+            android:textSize="32dp"
+            android:textColor="#ff6750a4"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/percentGainLoss"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="0%"
+            android:textSize="32dp"
+            android:textColor="#ff6750a4"
+            android:textStyle="bold"/>
+    </GridLayout>
+    <GridLayout
+        android:id="@+id/yesterdayGainLossLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/totalGainLossLayout"
+        android:rowCount="2"
+        android:columnCount="2">
+        <TextView
+            android:id="@+id/yesterdayGainLossLabel"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="Gain/Loss"
+            android:textSize="20dp"/>
+        <TextView
+            android:id="@+id/yesterdayPercentGainLossLabel"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="Rate"
+            android:textSize="20dp"/>
+        <TextView
+            android:id="@+id/gainLoss"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="0lbs"
+            android:textSize="32dp"
+            android:textColor="#ff6750a4"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/yesterdayPercentGainLoss"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="0%"
+            android:textSize="32dp"
+            android:textColor="#ff6750a4"
+            android:textStyle="bold"/>
+    </GridLayout>
 
-        <ListView
-            android:id="@+id/weightHistoryList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginVertical="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/historyLabel"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:dividerInsetStart="16dp"
+        app:dividerInsetEnd="16dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/yesterdayGainLossLayout"/>
+
+    <TextView
+        android:id="@+id/historyLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider2"
+        android:text="Your History"
+        android:textSize="24dp"/>
+
+    <ListView
+        android:id="@+id/weightHistoryList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        android:nestedScrollingEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/historyLabel" />
+</androidx.constraintlayout.widget.ConstraintLayout>
