@@ -20,74 +20,54 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 import nl.joery.timerangepicker.TimeRangePicker
+import org.w3c.dom.Text
 import java.util.Date
 import kotlin.math.min
+
 class ExerciseRecommendationActivity : AppCompatActivity() {
-
-    private val exercisesList = mutableListOf<String>()
-    private lateinit var adapter: ArrayAdapter<String>
-    private var userWeight: Double = 0.0
-
+    private val exerciseTypes = listOf("Lifting", "Cardio", "Stretching")
+    private lateinit var MET : TextView
+    private lateinit var exerciseTypeEditText: TextView
+    private lateinit var durationEditText: TextView
+    private lateinit var displayTextView: TextView
+    private lateinit var submitBtn: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_exercise_recommendation)
+        setContentView(R.layout.activity_exercise)
 
-        // Initialize the adapter
-        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, exercisesList)
+        submitBtn.setOnClickListener {
+            val exerciseType = exerciseTypeEditText.text.toString()
+            val duration = durationEditText.text.toString().toIntOrNull()
 
-        // Set the adapter for exerciseListView
-        exerciseListView.adapter = adapter
-
-        // Click listener for addExerciseButton
-        addExerciseButton.setOnClickListener {
-            val newExercise = exerciseEditText.text.toString().trim()
-            val durationText = exerciseDurationEditText.text.toString().trim()
-            if (newExercise.isNotEmpty() && durationText.isNotEmpty()) {
-                val duration = durationText.toInt()
-                val weightLoss = calculateWeightLoss(newExercise, duration)
-                val message = "You burned $weightLoss kg by doing $newExercise for $duration minutes"
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                exercisesList.add("$newExercise - $duration min")
-                adapter.notifyDataSetChanged()
-                exerciseEditText.text.clear()
-                exerciseDurationEditText.text.clear()
+            if (exerciseTypes.contains(exerciseType) && duration != null && duration > 0) {
+                val displayText = "Exercise Type: $exerciseType, Duration: $duration minutes"
+                displayTextView.text = displayText
             } else {
-                Toast.makeText(this, "Please enter an exercise and duration", Toast.LENGTH_SHORT).show()
+                showToast("Please enter a valid exercise type (Lifting, Cardio, Yoga) and duration")
             }
         }
-
-        // Check if it's the first time the user opens the app
-        val sharedPref = getPreferences(MODE_PRIVATE)
-        if (!sharedPref.contains("userWeight")) {
-            // If it's the first time, prompt the user to input their weight
-            inputUserWeight()
-        } else {
-            // If weight is already stored, retrieve it
-            userWeight = sharedPref.getFloat("userWeight", 0.0f).toDouble()
-        }
+    }
+    private fun showToast(message: String) {
+        Toast.makeText(this@ExerciseRecommendationActivity, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun inputUserWeight() {
-        // Prompt the user to input their weight
-        // You can customize this dialog according to your UI design
-        // For simplicity, I'll just use a Toast as an example
-        Toast.makeText(this, "Please input your weight", Toast.LENGTH_SHORT).show()
+    private fun calculateMET(weight: Double, activityType: String): Double {
+        // Assume a standard resting metabolic rate (RMR) of 1.0 kcal/kg/hour
+        val rmr = 1.0
 
-        // For demonstration purposes, let's assume the user inputs the weight through another interface
-        // and stores it in the shared preferences
-        val editor = getPreferences(MODE_PRIVATE).edit()
-        editor.putFloat("userWeight", userWeight.toFloat())
-        editor.apply()
-    }
+        // Define energy expenditure values for different activities (kcal/kg/hour)
+        val energyExpenditureLifting = 3.0
+        val energyExpenditureCardio = 7.0
+        val energyExpenditureStretching = 2.0
 
-    private fun calculateWeightLoss(exerciseType: String, duration: Int): Double {
-        val intensityFactor = when (exerciseType.toLowerCase()) {
-            "running" -> 0.1
-            "weight lifting" -> 0.05
-            "yoga" -> 0.03
-            "swimming" -> 0.08
-            else -> 0.0
+        // Calculate MET based on the activity type
+        val met = when (activityType.toLowerCase()) {
+            "lifting" -> energyExpenditureLifting / rmr
+            "cardio" -> energyExpenditureCardio / rmr
+            "stretching" -> energyExpenditureStretching / rmr
+            else -> 0.0 // Default to 0.0 for unknown activity types
         }
-        return intensityFactor * duration
+
+        return met
     }
 }
