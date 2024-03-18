@@ -4,6 +4,7 @@ import android.util.Log
 import com.cs125.anappleaday.data.enumTypes.NutritionData
 import com.cs125.anappleaday.data.record.models.healthPlans.HealthPlan
 import com.cs125.anappleaday.data.record.models.live.DietData
+import com.cs125.anappleaday.data.record.models.live.ExerciseData
 import com.cs125.anappleaday.data.record.models.live.ScoreDay
 import com.cs125.anappleaday.utils.toMap
 import java.text.SimpleDateFormat
@@ -23,6 +24,10 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
 
     private val subCollectionName = "DietData"
 
+    fun createDiet(id: String, _dietData: DietData): Task<Void> {
+        return collectionRef.document(id).set(_dietData)
+    }
+
     suspend fun getDietData(id: String): DietData? {
         return try {
             val document = super.getDocument(id).await()
@@ -32,6 +37,19 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
             null
         }
     }
+
+    suspend fun getDietScore(id: String): Double {
+        return try {
+            val document = super.getDocument(id).await()
+            val dietData = document.toObject(DietData::class.java)
+
+            dietData?.scores?.get(0)?.score ?: 0.0
+        } catch (e: Exception) {
+            Log.e(TAG + "DietData", "${e.message}")
+            0.0
+        }
+    }
+
 
     suspend fun addNutritionData(id: String, nutritionData: NutritionData) {
         try {

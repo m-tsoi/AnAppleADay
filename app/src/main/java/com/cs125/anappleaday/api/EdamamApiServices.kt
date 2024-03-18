@@ -55,7 +55,7 @@ class EdamamApiServices {
         fun recommendRecipes(q: String, calories: Double, mealType: MealType): MutableList<RecommendedMeal> {
             var _result = mutableListOf<RecommendedMeal>()
             val call = ApiMain.getEdamamServices()
-                .getRecipes(q = q, calories = calories.toString(), mealType = mealType.toString())
+                .getRecipes(q = q, calories = calories.toString())
             call.enqueue(object : Callback<JsonElement> {
                 override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                     if (response.isSuccessful) {

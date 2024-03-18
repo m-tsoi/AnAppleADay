@@ -101,7 +101,7 @@ class DietActivity : AppCompatActivity() {
                         dietData = dietServices.getDietData(personicle.dietDataId!!)
 
                         // calculate score and recs
-                        var score = 0.0
+                        var score = 50.0
                         var mealRecs = mutableListOf<RecommendedMeal>()
                         // put in dummy data for now
                         mealRecs.add(RecommendedMeal(label = "Chickpea Curry"))
