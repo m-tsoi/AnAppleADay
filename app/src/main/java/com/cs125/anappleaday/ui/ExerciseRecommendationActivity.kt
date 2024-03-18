@@ -52,10 +52,9 @@ class ExerciseRecommendationActivity : AppCompatActivity() {
     }
 
     private fun calculateMET(weight: Double, activityType: String): Double {
-        // Assume a standard resting metabolic rate (RMR) of 1.0 kcal/kg/hour
+        // Assume a standard resting metabolic rate of 1.0 kcal/kg/hour
         val rmr = 1.0
 
-        // Define energy expenditure values for different activities (kcal/kg/hour)
         val energyExpenditureLifting = 3.0
         val energyExpenditureCardio = 7.0
         val energyExpenditureStretching = 2.0
@@ -65,7 +64,7 @@ class ExerciseRecommendationActivity : AppCompatActivity() {
             "lifting" -> energyExpenditureLifting / rmr
             "cardio" -> energyExpenditureCardio / rmr
             "stretching" -> energyExpenditureStretching / rmr
-            else -> 0.0 // Default to 0.0 for unknown activity types
+            else -> 0.0
         }
 
         return met
