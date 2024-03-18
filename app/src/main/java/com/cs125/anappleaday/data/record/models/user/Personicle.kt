@@ -12,13 +12,11 @@ data class Personicle(
     // Total Daily Energy Expenditure
     var caloriesBudget: Double = 0.0,
 
-    val weightRecordsId: String? = null,
+    val weightDataId: String? = null,
 
     val dietDataId: String? = null,
 
-    val activityDataId: String? = null,
-
-//    val relaxationDataId: String? = null,
+    val exerciseDataId: String? = null,
 
     val sleepDataId: String? = null,
 )

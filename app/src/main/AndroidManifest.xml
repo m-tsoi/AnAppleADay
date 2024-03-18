@@ -27,6 +27,9 @@
         <activity android:name=".ui.RegisterActivity"/>
         <activity android:name=".ui.MedicalRecordActivity"/>
         <activity android:name=".ui.InitPersonicleActivity"/>
+        <activity android:name=".ui.WeightTrackerActivity" />
+        <activity android:name=".ui.DietActivity" />
+        <activity android:name=".ui.ExerciseActivity" />
         <activity android:name=".ui.SleepActivity"/>
         <activity android:name=".ui.SelectPlanActivity"/>
         <activity android:name=".ui.PersonicleActivity"/>

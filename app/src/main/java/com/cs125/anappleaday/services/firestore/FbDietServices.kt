@@ -89,7 +89,6 @@ class FbDietServices(firestore: FirebaseFirestore) : FbBaseServices<DietData>(
                 .aggregate(AggregateField.average("score"))
                 .get(AggregateSource.SERVER)
                 .await()
-
             avgResult?.let {
                 val averageScore = it.getDouble(AggregateField.average("score")) // Extracting the average score
                 averageScore

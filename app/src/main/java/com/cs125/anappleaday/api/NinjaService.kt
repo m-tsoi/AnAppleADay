@@ -15,7 +15,7 @@ interface NinjaService {
         @Query("activity") name: String,
         @Query("weight") type: String,
         @Query("duration") muscle: String
-    ): Call<ExerciseSessionRecord>
+    ): Call<List<ExerciseSessionRecord>>
 
     // Note: Optional use if required for generating recommendations
     @GET("exercises")
@@ -25,7 +25,7 @@ interface NinjaService {
         @Query("muscle") muscle: String,
         @Query("difficulty") difficulty: String,
         @Query("offset") offset: Int
-    ) : Call<ProposedExercise>
+    ) : Call<List<ProposedExercise>>
 
     @GET("nutrition")
     fun getNutrition(

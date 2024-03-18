@@ -62,7 +62,6 @@ class DietActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diet)
-
         // Init firebase
         fbAuth = FBAuth()
         profileServices = FbProfileServices(Firebase.firestore)
