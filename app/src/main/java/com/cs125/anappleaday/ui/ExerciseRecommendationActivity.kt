@@ -2,27 +2,10 @@ package com.cs125.anappleaday.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Toast
-import android.app.TimePickerDialog
-import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import androidx.lifecycle.lifecycleScope
 import com.cs125.anappleaday.R
-import com.cs125.anappleaday.services.auth.FBAuth
-import com.cs125.anappleaday.services.firestore.FbPersonicleServices
-import com.cs125.anappleaday.services.firestore.FbProfileServices
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.launch
-import nl.joery.timerangepicker.TimeRangePicker
-import org.w3c.dom.Text
-import java.util.Date
-import kotlin.math.min
 import com.cs125.anappleaday.data.record.models.user.Profile
 
 class ExerciseRecommendationActivity : AppCompatActivity() {
@@ -30,6 +13,8 @@ class ExerciseRecommendationActivity : AppCompatActivity() {
     private lateinit var exerciseTypeEditText: TextView
     private lateinit var durationEditText: TextView
     private lateinit var submitBtn: Button
+    private lateinit var addedExerciseTextView: TextView
+    private lateinit var userProfile: Profile // Assuming userProfile is obtained from somewhere
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +23,7 @@ class ExerciseRecommendationActivity : AppCompatActivity() {
         exerciseTypeEditText = findViewById(R.id.exerciseTypeEditText)
         durationEditText = findViewById(R.id.durationEditText)
         submitBtn = findViewById(R.id.submitBtn)
+        addedExerciseTextView = findViewById(R.id.addedExerciseTextView)
 
         submitBtn.setOnClickListener {
             val exerciseType = exerciseTypeEditText.text.toString()
@@ -46,9 +32,16 @@ class ExerciseRecommendationActivity : AppCompatActivity() {
             if (exerciseTypes.contains(exerciseType) && duration != null && duration > 0) {
                 val displayText = "Exercise Type: $exerciseType, Duration: $duration minutes"
 
-                // Calculate and display MET
-                val weight = 70.0 // Assume user weight as 70 kg for demonstration
+                // Calculate MET
+                val weight = userProfile.weight.toDouble() // Get user's weight
                 val MET = calculateMET(weight, exerciseType)
+
+                // Calculate calories burned
+                val caloriesBurned = calculateCaloriesBurned(MET, weight, duration.toString())
+
+                // Display
+                val resultText = "$displayText\nCalories Burned: $caloriesBurned kcal"
+                addedExerciseTextView.text = resultText
             } else {
                 showToast("Please enter a valid exercise type (Lifting, Cardio, Yoga) and duration")
             }
@@ -60,20 +53,28 @@ class ExerciseRecommendationActivity : AppCompatActivity() {
     }
 
     private fun calculateMET(weight: Double, activityType: String): Double {
-        // Assume a standard resting metabolic rate of 1.0 kcal/kg/hour
+        // Assume: standard resting metabolic rate of 1.0 kcal/kg/hour
+        // May change
         val rmr = 1.0
 
         val energyExpenditureLifting = 3.0
         val energyExpenditureCardio = 7.0
         val energyExpenditureStretching = 2.0
 
-        // Calculate MET based on the activity type
+        // MET by activity
         val met = when (activityType.toLowerCase()) {
-            "lifting" -> energyExpenditureLifting / rmr
-            "cardio" -> energyExpenditureCardio / rmr
-            "stretching" -> energyExpenditureStretching / rmr
+            "lifting" -> energyExpenditureLifting / (weight * rmr)
+            "cardio" -> energyExpenditureCardio / (weight * rmr)
+            "stretching" -> energyExpenditureStretching / (weight * rmr)
             else -> 0.0
         }
         return met
     }
+
+    private fun calculateCaloriesBurned(weight: Double, duration: Double, activityType: String): Double {
+        val met = calculateMET(weight, activityType)
+        val caloriesPerMinute = met * weight * 4 / 200
+        return caloriesPerMinute * duration
+    }
+
 }
